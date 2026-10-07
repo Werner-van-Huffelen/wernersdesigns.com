@@ -277,7 +277,7 @@
       tags: ['Product design', 'UX design', 'UI design', 'Sales tools'],
       brief: 'GALVANY’s sales partners sell its heat pumps and batteries. The Sales Portal is where they work: their leads and appointments, the offers about to expire and, for team and area leaders, what needs attention in the team.',
       whatIDid: [
-        'Alongside GALVANY OS, I design the Sales Portal: a seller’s day with their leads and offers, and a team view for team and area leaders.',
+        'Alongside GALVANY OS, I design the Sales Portal: a seller’s day with their leads and offers, and a team view for team and area leaders. I built it in code on my own design system, like the OS.',
         'I scoped the portal to one question: what do I, or my team, do next, and how are we doing? Anything GALVANY runs internally stays in the OS, so the portal has no admin area.',
       ],
       decisions: [
@@ -305,7 +305,7 @@
       tags: ['Product design', 'Design in code', 'Design systems', 'User research', 'Internal tools'],
       brief: 'GALVANY sells heat pumps. Every team, from sales to legal, works out of Airtable, and the same project data is kept in several places. GALVANY OS is meant to replace Airtable, and I’m designing it as a clickable prototype first.',
       whatIDid: [
-        'I lead product design at GALVANY. For the OS I own the prototype and the interviews: what each team sees, how a project moves from one team to the next, and what the backend will be built against.',
+        'I lead product design at GALVANY, and its design system started with me. Long before our developer built his version, I built the first one in code, from an existing UI kit skinned to our brand, and ran the OS and the Sales Portal prototypes on it. For the OS itself I own the prototype and the interviews: what each team sees, how a project moves between teams, and what the backend will be built against.',
         'I design it in code with Claude Code: a clickable prototype with over two thousand mock projects and a home view for every team. Claude asks, I decide. Even a sort order waits for my answer, which is logged in the code as a dated decision. When I let it run ahead, as in the overnight build of the first twelve work views, every guess is logged for my review.',
       ],
       decisions: [
@@ -313,8 +313,8 @@
         { heading: 'A rejection names the page', body: "Order review sits beside the signed offer: a seven-point checklist, each point with its page, then release or reject with a reason. A rejection names the failed check and the page, like 'Cancellation policy not signed · p. 12', so whoever fixes it doesn’t have to guess.", image: 'galvany-os-2', imageAlt: 'Order review: the signed offer on the left, the seven-point checklist with its page numbers on the right' },
         { heading: 'Gates before anyone installs', body: 'Nothing gets installed until its gates are clear: subsidy, detailed planning, financing and the customer’s own work. Pipeline cards show the first three as check circles (the electrics joined them later) and the customer’s own work as a tag. The project file shows all four, so what’s blocking is visible at a glance.', image: 'galvany-os-3', imageAlt: 'Three of the gates (subsidy, detailed planning and financing), each with its open, done and not-applicable count' },
       ],
-      outcome: 'GALVANY’s design system took its brand colours from the prototype, and I settled the ten design decisions it still had open. The prototype is meant to become the spec the backend is built from. For now, its status model, decisions and interview findings are inputs to the migration’s planning.',
-      stats: [{ n: '10', label: 'Open design-system decisions settled' }],   /* the outcome's one number */
+      outcome: 'GALVANY’s production design system is our developer’s version of mine. It took its brand colours from my prototype, and I made the ten design calls that were still open. The prototype itself is meant to become the spec the backend is built from.',
+      stats: [],   /* Werner 2026-10-07: the design system is his work, so no disc that frames it as ten decisions */
       nextSlug: 'sales-portal',
       nextType: 'case',
     },
