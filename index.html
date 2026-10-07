@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<link rel="canonical" href="https://www.wernersdesigns.com/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Werner van Huffelen · Zero to shipped.</title>
+<meta name="description" content="Werner van Huffelen, Lead Product Designer in Berlin. 10+ years of 0→1 products for startups and Fortune 500s.">
+<meta name="theme-color" content="#110D1C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Cdefs%3E%3CradialGradient%20id='g'%20cx='.4'%20cy='.36'%20r='.72'%3E%3Cstop%20offset='0'%20stop-color='%23F7F4FF'/%3E%3Cstop%20offset='.42'%20stop-color='%23B3A8FF'/%3E%3Cstop%20offset='1'%20stop-color='%237C6BFF'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle%20cx='16'%20cy='16'%20r='14'%20fill='url(%23g)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Fragment+Mono&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+<!-- ?v=: bump on every change, so a plain reload never runs a cached script against new markup -->
+<link rel="stylesheet" href="css/system.css?v=r7k">
+<link rel="stylesheet" href="css/home.css?v=r7k">
+<link rel="stylesheet" href="css/handoff.css?v=r7k">
+<!-- the scheme (round 4): picked before the first paint, shared with work.html (round 5 moved it into js/scheme.js) -->
+<script src="js/scheme.js?v=r7k"></script>
+<script>
+  /* the portrait is black and white in every scheme (round 4b): its two layers are preloaded here, homepage only */
+  (function(d){
+    var dir='assets/t/mono/';
+    ['portrait-moon.webp','portrait-moon-soft.webp'].forEach(function(f){var l=d.createElement('link');l.rel='preload';l.as='image';l.href=dir+f;d.head.appendChild(l);});
+  })(document);
+</script>
+<script>
+  /* pre-paint flags: static / menu / reduced, so nothing flashes before system.js runs */
+  (function(d){var q=location.search,c=d.documentElement.classList;c.remove('no-js');c.add('js');
+    if(/[?&]static(=|&|$)/.test(q))c.add('is-static');
+    if(/[?&]menu(=|&|$)/.test(q))c.add('menu-open','field-borrowed');
+    /* ?hero=a: the refinement's first hero (smaller headline, portrait 78svh) kept for Werner's A/B */
+    if(/[?&]hero=a(&|$)/.test(q))c.add('hero-a');
+    try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)c.add('is-reduced');}catch(e){}
+    /* the loader (round 7: the bleed, js/handoff.js + js/motion.js); this guard lifts it if scripts never arrive */
+    if(!c.contains('is-static')&&!c.contains('menu-open')&&!c.contains('is-reduced')){c.add('is-loading');
+      setTimeout(function(){if(c.contains('is-loading')){c.remove('is-loading');c.add('loader-bailed');}},7000);}
+    c.add('marquee-js','disc-js');
+  })(document);
+</script>
+<!-- round 5, the iris to the work pages and back: a return from one (sessionStorage fs.back) turns the loader above
+     into html.is-back, which lands its section instead; shared with work.html -->
+<script src="js/handoff.js?v=r7k"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+<script defer src="assets/logos/logos.js"></script>
+<script defer src="js/system.js?v=r7k"></script>
+<script defer src="js/home.js?v=r7k"></script>
+<script defer src="js/motion.js?v=r7k"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- the light: one aurora field behind every circle (canvas, or the still as a fallback) -->
+<canvas id="field" class="field" aria-hidden="true"></canvas>
+
+<!-- ─────────────────────────────── header ─────────────────────────────── -->
+<header class="site-header" data-tone="night">
+  <!-- the brand is the full stop itself: a small lit disc, home -->
+  <a class="brand" href="#top" aria-label="Werner van Huffelen, home"><i class="brand-dot lit" data-lit="track" aria-hidden="true"></i></a>
+  <!-- the section you are in, in plain words -->
+  <div class="f-pill glass stadium" data-readout aria-hidden="true">
+    <i class="ap-icon"><i class="lit"></i></i>
+    <span class="roll"><span>Intro</span></span>
+  </div>
+  <div class="nav-r">
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+      <span class="glass g-menu"><span class="burger" aria-hidden="true"><i></i><i></i></span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ─────────────────────────────── hero ────────────────────────── -->
+<section id="top" class="hero" data-tone="night" data-name="Intro" data-f="1.4" aria-label="Intro">
+  <div id="aperture" class="aperture" aria-hidden="true">
+    <div class="ap-sky"></div>
+    <div class="portrait">
+      <img class="p-soft" src="assets/portrait-moon-soft.webp" alt="" width="700" height="700" decoding="async">
+      <img class="p-moon" src="assets/portrait-moon.webp" alt="" width="1400" height="1400" decoding="async">
+    </div>
+  </div>
+  <div class="barrel" aria-hidden="true">
+    <i class="b-focus"></i>
+    <div class="b-lens"><i class="b-hair b-hair--in"></i><i class="b-hair b-hair--out"></i><svg class="ring-svg" id="hero-ring"></svg></div>
+  </div>
+  <a class="portrait-link" href="#about" aria-label="Click to learn more" data-lens="portrait" data-src="assets/portrait-true.webp" data-ring="CLICK TO LEARN MORE · " data-loupe-for="#aperture .p-moon" data-lens-circle=".barrel .b-focus" data-lens-inset="6">
+    <img class="sr-only" src="assets/portrait-moon-soft.webp" alt="Portrait of Werner van Huffelen" data-loupe>
+  </a>
+
+  <!-- round 4: the scheme switch (4c: black and white left the cycle, every portrait is black and white now). A reload moves to the next scheme (head script); the button reloads too. The keys
+       read ⌘ R / Ctrl R / a tap (html.kbd-*); the five stops are the five schemes, this one lit. -->
+  <button class="hero-eyebrow" type="button" data-scheme-next aria-label="Reload in a new colour scheme">
+    <span class="eb-keys" aria-hidden="true"><kbd class="eb-key glass eb-mod"><span class="k-mac">⌘</span><span class="k-pc">Ctrl</span><svg class="k-touch" viewBox="0 0 24 24"><path d="M19.4 13.2A7.6 7.6 0 1 1 17 6.6M19.2 3.4v4.2H15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></kbd><kbd class="eb-key glass eb-r">R</kbd></span>
+    <span class="eb-text"><span class="k-touch">Tap </span>for a new experience</span>
+    <span class="eb-dots" aria-hidden="true"><i data-s="violet"></i><i data-s="ember"></i><i data-s="cobalt"></i><i data-s="sodium"></i><i data-s="borealis"></i></span>
+  </button>
+  <h1 class="hero-title" data-lens="text" data-lit="track"><span class="w">Zer<span class="ctr">o</span></span> <span class="w">to</span><br><span class="w">shipped<span class="stop" id="hero-stop">.</span></span></h1>
+  <p class="hero-title knock" aria-hidden="true" data-lit="track"><span class="w">Zer<span class="ctr">o</span></span> <span class="w">to</span><br><span class="w">shipped<span class="stop">.</span></span></p>
+  <p class="hero-title ink" aria-hidden="true" data-lit="track"><span class="w">Zer<span class="ctr">o</span></span> <span class="w">to</span><br><span class="w">shipped<span class="stop">.</span></span></p>
+  <p class="hero-sub">10+ years of 0<span class="to" role="img" aria-label="to"><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>1 products<br>for startups and Fortune 500s.</p>
+  <script>
+    /* the scheme's headline (round 4: "similarly short and succinct"), written into all three copies before the first
+       paint. The lit counter (.ctr) is always an "o" (its disc is measured on that glyph), the period is the stop the
+       hero stops down into. The hero portrait swaps to black and white here, the about eye in FS.theme.retint(). */
+    (function (d) {
+      var S = window.FS_SCHEME || { id: 'violet' }, id = S.id;
+      var H = { violet: ['Zero', 'to', 'shipped', 0], ember: ['Hunch', 'to', 'launch', 1], cobalt: ['Draft', 'to', 'done', 1],
+        sodium: ['Napkin', 'to', 'product', 1], borealis: ['Messy', 'to', 'made', 1] }[id];
+      if (!H) return;
+      var dots = d.querySelectorAll('.eb-dots i');
+      for (var k = 0; k < dots.length; k++) if (dots[k].getAttribute('data-s') === id) dots[k].className = 'is-on';
+      d.title = 'Werner van Huffelen · ' + H[0] + ' ' + H[1] + ' ' + H[2] + '.';
+      /* the portrait: black and white in every scheme (round 4b); the sky around it keeps the scheme's light */
+      d.querySelectorAll('#aperture .portrait img, #top .portrait-link img').forEach(function (im) {
+        im.setAttribute('src', im.getAttribute('src').replace(/^assets\//, 'assets/t/mono/')); });
+      if (id === 'violet') return;
+      var w = function (t, ctr) { var o = ctr ? t.indexOf('o') : -1;
+        return '<span class="w">' + (o < 0 ? t : t.slice(0, o) + '<span class="ctr">o</span>' + t.slice(o + 1)) + '</span>'; };
+      var html = function (stopId) { return w(H[0], H[3] === 0) + ' ' + w(H[1], H[3] === 1) + '<br><span class="w">' + H[2] +
+        '<span class="stop"' + (stopId ? ' id="hero-stop"' : '') + '>.</span></span>'; };
+      var t = d.querySelectorAll('#top .hero-title');
+      for (var n = 0; n < t.length; n++) t[n].innerHTML = html(t[n].tagName === 'H1');
+    })(document);
+  </script>
+
+  <!-- the See-the-work badge: a small sibling of the portrait ring (js/home.js HOME.seeGeom) -->
+  <a class="see" href="#work" aria-label="See the work" data-scroll data-cursor="hide">
+    <span class="see-in">
+      <i class="see-hair see-hair--in"></i><i class="see-hair see-hair--out"></i>
+      <svg class="ring-svg see-ring" id="see-ring"></svg>
+      <span class="see-core glass"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v17M6 14l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </span>
+  </a>
+
+</section>
+
+<!-- ─────────────────────────────── vision ───────────────────────── -->
+<section id="vision" class="vision wrap" data-tone="night" data-name="Vision" data-f="2.8" aria-labelledby="vision-l">
+  <p class="label" id="vision-l">02 · Vision</p>
+  <div class="manifesto" data-lens="text">
+    <p class="m-line"><span class="w">Make</span> <span class="w">it</span> <span class="w">real<span class="stop">.</span></span></p>
+    <p class="m-line"><span class="w">Put</span> <span class="w">it</span> <span class="w">in</span><br class="m-br"> <span class="w">someone’s</span> <span class="w">hands<span class="stop">.</span></span></p>
+    <p class="m-line"><span class="w">Watch</span><br class="m-br"> <span class="w">what</span> <span class="w">happens<span class="stop" id="vision-stop">.</span></span></p>
+  </div>
+</section>
+
+<!-- ─────────────────────────────── about ──────────────────────────── -->
+<section id="about" class="about" data-tone="night" data-name="About" data-f="4" aria-labelledby="about-h">
+  <article class="bio-card on-ice" data-tone="ice">
+    <div class="bio-body">
+      <p class="label">03 · About</p>
+      <h2 class="bio-h" id="about-h" data-lens="text">Getting sh*t done since 2015</h2>
+      <p class="bio-text">I ask a lot of questions. Your users, your constraints, the reasons nobody wrote down. Not to poke holes, your context usually holds the better answer. Sometimes that ends in a no. Far more often it ends in, what if we do this instead. From there I design straight into the code, so there's no handover and no big reveal. And I build with AI because it's faster.</p>
+    </div>
+    <div class="bio-stub">
+      <div class="bio-top">
+      <span class="bio-eye" aria-hidden="true"><i class="lit"></i><img class="be-soft" src="assets/portrait-moon-soft.webp" alt="" width="700" height="700" loading="lazy" decoding="async"><img class="be-sharp" src="assets/portrait-moon.webp" alt="" width="1400" height="1400" loading="lazy" decoding="async"></span>
+      <p class="bio-now">Currently designing the tools <strong>GALVANY</strong> runs on</p>
+      </div>
+      <dl class="bio-facts">
+        <div><dt>Based</dt><dd>Berlin</dd></div>
+        <div><dt>Originally from</dt><dd>The Netherlands</dd></div>
+        <div><dt>Role</dt><dd>Lead Product Designer</dd></div>
+        <div><dt>Shipping since</dt><dd>2015</dd></div>
+        <div><dt>Companies built</dt><dd>7</dd></div>
+      </dl>
+      <a class="pill pill--ink pill--lg" href="cv/Werner-van-Huffelen-CV-web.pdf" download="Werner-van-Huffelen-CV.pdf">
+        <span>Download resume</span>
+        <span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+    </div>
+  </article>
+</section>
+
+<!-- ─────────────────────────────── clients ──────────────────────── -->
+<section id="clients" class="clients" data-tone="night" data-name="Clients" data-f="5.6" aria-labelledby="clients-h">
+  <div class="wrap clients-head">
+    <p class="label">04 · Clients</p>
+    <h2 class="caption" id="clients-h" data-lens="text">Companies I worked for<span class="stop" id="clients-stop">.</span></h2>
+  </div>
+  <div class="wrap">
+    <div class="logo-band" data-cursor="default">
+      <canvas id="logo-canvas" aria-hidden="true"></canvas>
+    </div>
+  </div>
+  <ul class="sr-only" id="logo-list">
+    <li>FC Bayern München</li><li>Daimler</li><li>Techniker Krankenkasse</li><li>Sartorius</li><li>BASF</li><li>Temasek</li>
+    <li>Volkswagen</li><li>Wüstenrot</li><li>BCG Digital Ventures</li><li>ClimatePartner</li><li>Carlsberg</li><li>Galvany</li>
+  </ul>
+</section>
+
+<!-- ─────────────────────────────── work ───────────────────────────── -->
+<section id="work" class="work wrap on-ice" data-tone="ice" data-name="Work" data-f="8" aria-labelledby="work-h">
+  <div class="work-head">
+    <div>
+      <p class="label">05 · Work</p>
+      <h2 class="h2" id="work-h" data-lens="text">Selected work<span class="stop">.</span></h2>
+    </div>
+    <div class="work-tags" role="radiogroup" aria-label="Filter projects">
+      <button class="tag" type="button" role="radio" aria-checked="true" data-filter="all"><i class="t-stop"><i class="lit"></i></i>All<span class="t-count">6</span></button>
+      <button class="tag" type="button" role="radio" aria-checked="false" data-filter="recent"><i class="t-stop"><i class="lit"></i></i>Recent work<span class="t-count">2</span></button>
+      <button class="tag" type="button" role="radio" aria-checked="false" data-filter="case"><i class="t-stop"><i class="lit"></i></i>Case studies<span class="t-count">3</span></button>
+      <button class="tag" type="button" role="radio" aria-checked="false" data-filter="shots"><i class="t-stop"><i class="lit"></i></i>Side quests<span class="t-count">1</span></button>
+    </div>
+  </div>
+
+  <div class="work-grid">
+    <div class="wcol">
+      <!-- 01 · GALVANY OS (2026-10-05; Nº 01 and Recent work since 2026-10-05, Werner) -->
+      <article class="work-card card on-night" data-tone="night" data-kind="recent" data-lit="track" style="--h1:var(--iris);--h2:var(--orchid);--ax:30%;--ay:24%">
+        <div class="wc-media" data-lens="media" data-src="assets/galvany-os-3200.webp" data-ring="RECENT WORK · GALVANY OS · ">
+          <div class="wc-zoom">
+            <i class="wc-ap lit" aria-hidden="true"></i>
+            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/galvany-os-halo.png);mask-image:url(assets/work/galvany-os-halo.png)"></i>
+            <img class="wc-soft" src="assets/galvany-os-soft-moon.webp" alt="" width="800" height="676" loading="lazy" decoding="async">
+            <img class="wc-sharp" src="assets/galvany-os.webp" srcset="assets/galvany-os.webp 1600w, assets/galvany-os-3200.webp 3200w" sizes="(max-width:767px) 100vw, 46vw" alt="GALVANY OS's leads board on a laptop" width="1600" height="1352" loading="lazy" decoding="async" data-loupe>
+          </div>
+        </div>
+        <i class="tear tear--h"></i>
+        <div class="wc-stub">
+          <p class="wc-label">Nº 01 · Recent work</p>
+          <p class="wc-name">GALVANY OS</p>
+          <h3 class="wc-title">One system for every team, from lead to installed heat pump<span class="stop">.</span></h3>
+        </div>
+        <a class="wc-btn glass g-m" href="work.html?p=galvany-os" aria-label="GALVANY OS, recent work"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </article>
+      <!-- 03 · Bandcamp (round 7: Werner's own player shots, and its own page) -->
+      <article class="work-card card on-night" data-tone="night" data-kind="shots" data-lit="track" style="--h1:var(--orchid);--h2:var(--iris);--ax:72%;--ay:26%">
+        <div class="wc-media" data-lens="media" data-src="assets/bandcamp.webp" data-ring="SIDE QUEST · BANDCAMP · ">
+          <div class="wc-zoom">
+            <i class="wc-ap lit" aria-hidden="true"></i>
+            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/bandcamp-halo.png);mask-image:url(assets/work/bandcamp-halo.png)"></i>
+            <img class="wc-soft" src="assets/bandcamp-soft-moon.webp" alt="" width="800" height="894" loading="lazy" decoding="async">
+            <img class="wc-sharp" src="assets/bandcamp.webp" alt="The Bandcamp player's Collection and Discovery panels" width="1600" height="1787" loading="lazy" decoding="async" data-loupe>
+          </div>
+        </div>
+        <i class="tear tear--h"></i>
+        <div class="wc-stub">
+          <p class="wc-label">Nº 03 · Side quest</p>
+          <p class="wc-name">Bandcamp</p>
+          <h3 class="wc-title">Music player for Bandcamp<span class="stop">.</span></h3>
+        </div>
+        <a class="wc-btn glass g-m" href="work.html?p=bandcamp" aria-label="Bandcamp, side quest"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </article>
+      <!-- 05 -->
+      <article class="work-card card on-night" data-tone="night" data-kind="case" data-lit="track" style="--h1:var(--orchid);--h2:var(--glacier);--ax:50%;--ay:18%">
+        <div class="wc-media" data-lens="media" data-src="assets/goodworker.webp" data-ring="CASE STUDY · GOODWORKER · ">
+          <div class="wc-zoom">
+            <i class="wc-ap lit" aria-hidden="true"></i>
+            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/goodworker-halo.png);mask-image:url(assets/work/goodworker-halo.png)"></i>
+            <img class="wc-soft" src="assets/goodworker-soft-moon.webp" alt="" width="800" height="467" loading="lazy" decoding="async">
+            <img class="wc-sharp" src="assets/goodworker.webp" alt="GoodWorker job marketplace on desktop, tablet and phone" width="1600" height="934" loading="lazy" decoding="async" data-loupe>
+          </div>
+        </div>
+        <i class="tear tear--h"></i>
+        <div class="wc-stub">
+          <p class="wc-label">Nº 05 · Case study</p>
+          <p class="wc-name">GoodWorker</p>
+          <h3 class="wc-title">GoodWorker set out to give millions of people in India control of their livelihoods<span class="stop">.</span></h3>
+        </div>
+        <a class="wc-btn glass g-m" href="work.html?p=goodworker" aria-label="GoodWorker, case study"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </article>
+    </div>
+
+    <div class="wcol wcol--offset">
+      <!-- 02 · GALVANY Sales Portal (2026-10-05, Werner: replaces the old portal card; tools/galvany_portal.py) -->
+      <article class="work-card card on-night" data-tone="night" data-kind="recent" data-lit="track" style="--h1:var(--orchid);--h2:var(--pearl);--ax:28%;--ay:24%">
+        <div class="wc-media" data-lens="media" data-src="assets/sales-portal-3200.webp" data-ring="RECENT WORK · GALVANY SALES PORTAL · ">
+          <div class="wc-zoom">
+            <i class="wc-ap lit" aria-hidden="true"></i>
+            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/sales-portal-halo.png);mask-image:url(assets/work/sales-portal-halo.png)"></i>
+            <img class="wc-soft" src="assets/sales-portal-soft-moon.webp" alt="" width="800" height="676" loading="lazy" decoding="async">
+            <img class="wc-sharp" src="assets/sales-portal.webp" srcset="assets/sales-portal.webp 1600w, assets/sales-portal-3200.webp 3200w" sizes="(max-width:767px) 100vw, 46vw" alt="The GALVANY Sales Portal leads board on a laptop" width="1600" height="1352" loading="lazy" decoding="async" data-loupe>
+          </div>
+        </div>
+        <i class="tear tear--h"></i>
+        <div class="wc-stub">
+          <p class="wc-label">Nº 02 · Recent work</p>
+          <p class="wc-name">GALVANY Sales Portal</p>
+          <h3 class="wc-title">What to do next, for sales partners and their teams<span class="stop">.</span></h3>
+        </div>
+        <a class="wc-btn glass g-m" href="work.html?p=sales-portal" aria-label="GALVANY Sales Portal, recent work"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </article>
+      <!-- 04 -->
+      <article class="work-card card on-night" data-tone="night" data-kind="case" data-lit="track" style="--h1:var(--iris);--h2:var(--glacier);--ax:74%;--ay:72%">
+        <div class="wc-media" data-lens="media" data-src="assets/affinidi.webp" data-ring="CASE STUDY · AFFINIDI · ">
+          <div class="wc-zoom">
+            <i class="wc-ap lit" aria-hidden="true"></i>
+            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/affinidi-halo.png);mask-image:url(assets/work/affinidi-halo.png)"></i>
+            <img class="wc-soft" src="assets/affinidi-soft-moon.webp" alt="" width="800" height="485" loading="lazy" decoding="async">
+            <img class="wc-sharp" src="assets/affinidi.webp" alt="Four iPhones showing Affinidi identity apps" width="1600" height="970" loading="lazy" decoding="async" data-loupe>
+          </div>
+        </div>
+        <i class="tear tear--h"></i>
+        <div class="wc-stub">
+          <p class="wc-label">Nº 04 · Case study</p>
+          <p class="wc-name">Affinidi</p>
+          <h3 class="wc-title">A design system for Affinidi's identity apps<span class="stop">.</span></h3>
+        </div>
+        <a class="wc-btn glass g-m" href="work.html?p=affinidi" aria-label="Affinidi, case study"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </article>
+      <!-- 06 -->
+      <article class="work-card card on-night" data-tone="night" data-kind="case" data-lit="track" style="--h1:var(--glacier);--h2:var(--iris);--ax:20%;--ay:46%">
+        <div class="wc-media" data-lens="media" data-src="assets/heycar.webp" data-ring="CASE STUDY · HEYCAR · ">
+          <div class="wc-zoom">
+            <i class="wc-ap lit" aria-hidden="true"></i>
+            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/heycar-halo.png);mask-image:url(assets/work/heycar-halo.png)"></i>
+            <img class="wc-soft" src="assets/heycar-soft-moon.webp" alt="" width="800" height="817" loading="lazy" decoding="async">
+            <img class="wc-sharp" src="assets/heycar.webp" alt="heycar car search on a MacBook" width="1600" height="1634" loading="lazy" decoding="async" data-loupe>
+          </div>
+        </div>
+        <i class="tear tear--h"></i>
+        <div class="wc-stub">
+          <p class="wc-label">Nº 06 · Case study</p>
+          <p class="wc-name">heycar</p>
+          <h3 class="wc-title">heycar makes buying a second-hand car simple, fair and transparent<span class="stop">.</span></h3>
+        </div>
+        <a class="wc-btn glass g-m" href="work.html?p=heycar" aria-label="heycar, case study"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────── services ──────────────────────── -->
+<section id="services" class="services" data-tone="night" data-name="Services" data-f="11" aria-labelledby="services-h">
+  <div class="wrap services-head">
+    <p class="label">06 · Services</p>
+    <h2 class="h2" id="services-h" data-lens="text">Services<span class="stop">.</span></h2>
+  </div>
+  <ol class="svc-list">
+    <li class="svc" data-i="1">
+      <i class="svc-leak lit" aria-hidden="true"></i><i class="svc-crack lit" aria-hidden="true"></i>
+      <h3 class="svc-h">
+        <button class="svc-head" type="button" aria-expanded="false" aria-controls="svc-p1" id="svc-b1">
+          <span class="svc-idx glass g-l"><i class="b-light lit"></i><span>01</span></span>
+          <span class="svc-title" data-lens="text"><span class="nw">0<span class="to" role="img" aria-label="to"><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>1</span> product&nbsp;design</span>
+          <span class="svc-sub">From nothing to something people actually use</span>
+          <span class="svc-toggle glass g-s" aria-hidden="true"><i></i><i></i></span>
+        </button>
+      </h3>
+      <div class="svc-panel" id="svc-p1" role="region" aria-labelledby="svc-b1">
+        <div class="svc-panel-in">
+          <div class="svc-body">
+            <p>This is my home turf: taking a vague idea and turning it into something real. Research, flows, UI, design system, the lot.</p>
+            <p>I design end to end and stick around for the messy part where it gets built.</p>
+            <ul class="svc-tags"><li class="tag"><i class="t-stop"><i class="lit"></i></i>User research</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>UX/UI design</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Design systems</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Branding</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>User testing</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Responsive design</li></ul>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li class="svc" data-i="2">
+      <i class="svc-leak lit" aria-hidden="true"></i><i class="svc-crack lit" aria-hidden="true"></i>
+      <h3 class="svc-h">
+        <button class="svc-head" type="button" aria-expanded="false" aria-controls="svc-p2" id="svc-b2">
+          <span class="svc-idx glass g-l"><i class="b-light lit"></i><span>02</span></span>
+          <span class="svc-title" data-lens="text">Product strategy</span>
+          <span class="svc-sub">Minus the 80 slide deck</span>
+          <span class="svc-toggle glass g-s" aria-hidden="true"><i></i><i></i></span>
+        </button>
+      </h3>
+      <div class="svc-panel" id="svc-p2" role="region" aria-labelledby="svc-b2">
+        <div class="svc-panel-in">
+          <div class="svc-body">
+            <p>Strategy is deciding what to build and, more importantly, what not to. I start with the problem and keep things grounded in what users need and what the business can actually pull off.</p>
+            <p>All of it fits on one page. Promise.</p>
+            <ul class="svc-tags"><li class="tag"><i class="t-stop"><i class="lit"></i></i>Problem definition</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Ideation</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Brainstorming</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Prioritisation</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Data analysis</li></ul>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li class="svc" data-i="3">
+      <i class="svc-leak lit" aria-hidden="true"></i><i class="svc-crack lit" aria-hidden="true"></i>
+      <h3 class="svc-h">
+        <button class="svc-head" type="button" aria-expanded="false" aria-controls="svc-p3" id="svc-b3">
+          <span class="svc-idx glass g-l"><i class="b-light lit"></i><span>03</span></span>
+          <span class="svc-title" data-lens="text">Prototype &amp; test</span>
+          <span class="svc-sub">Build it, break it, learn, repeat</span>
+          <span class="svc-toggle glass g-s" aria-hidden="true"><i></i><i></i></span>
+        </button>
+      </h3>
+      <div class="svc-panel" id="svc-p3" role="region" aria-labelledby="svc-b3">
+        <div class="svc-panel-in">
+          <div class="svc-body">
+            <p>I'd rather test a rough prototype this week than debate a perfect one for a month. I build it, put it in front of real people, watch it break, fix it, and go again until it works.</p>
+            <p>These days AI makes that loop absurdly fast, and I use it shamelessly.</p>
+            <ul class="svc-tags"><li class="tag"><i class="t-stop"><i class="lit"></i></i>Rapid prototyping</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>User testing</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>MVPs</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>AI in the loop</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Iteration</li></ul>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li class="svc" data-i="4">
+      <i class="svc-leak lit" aria-hidden="true"></i><i class="svc-crack lit" aria-hidden="true"></i>
+      <h3 class="svc-h">
+        <button class="svc-head" type="button" aria-expanded="false" aria-controls="svc-p4" id="svc-b4">
+          <span class="svc-idx glass g-l" id="svc-idx-4"><i class="b-light lit"></i><span>04</span></span>
+          <span class="svc-title" data-lens="text">Design leadership</span>
+          <span class="svc-sub">Hands-on, not hands-off</span>
+          <span class="svc-toggle glass g-s" aria-hidden="true"><i></i><i></i></span>
+        </button>
+      </h3>
+      <div class="svc-panel" id="svc-p4" role="region" aria-labelledby="svc-b4">
+        <div class="svc-panel-in">
+          <div class="svc-body">
+            <p>I've built and led design teams, and I still open Figma every day. I give designers real ownership, clear feedback, and cover when they need it.</p>
+            <p>Good people do great work when you stop micromanaging them.</p>
+            <ul class="svc-tags"><li class="tag"><i class="t-stop"><i class="lit"></i></i>Coaching</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Mentoring</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Process definition</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Hiring</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Team building</li></ul>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<!-- ─────────────────────────────── companies ─────────────────────── -->
+<section id="companies" class="companies wrap on-ice" data-tone="ice" data-name="Companies" data-f="16" aria-labelledby="companies-h">
+  <div class="co-head">
+    <p class="label">07 · Companies</p>
+    <h2 class="h2" id="companies-h" data-lens="text">Companies I helped build<span class="stop">.</span></h2>
+    <p class="lead co-intro">I've been in the founding room of multiple startups. Some hits, some very educational misses.</p>
+  </div>
+  <ol class="co-list">
+    <li class="co-card card" data-value="60">
+      <span class="co-year">2026</span>
+      <span class="co-tag tag"><i class="t-stop"><i class="lit"></i></i>Climate Tech</span>
+      <i class="tear tear--v"></i>
+      <div class="co-body"><h3 class="co-name">Galvany</h3><p class="co-desc">Sells heat pumps</p></div>
+      <p class="co-out"><span class="co-num"><span class="co-val">60</span>M</span><span class="co-lbl">valuation</span></p>
+      <i class="co-punch lit" aria-hidden="true"></i>
+    </li>
+    <li class="co-card card" data-value="50">
+      <span class="co-year">2025</span>
+      <span class="co-tag tag"><i class="t-stop"><i class="lit"></i></i>Climate Tech</span>
+      <i class="tear tear--v"></i>
+      <div class="co-body"><h3 class="co-name">ClimatePartner</h3><p class="co-desc">Measure, reduce &amp; offset carbon footprints</p></div>
+      <p class="co-out"><span class="co-num"><span class="co-val">50</span>M</span><span class="co-lbl">valuation</span></p>
+      <i class="co-punch lit" aria-hidden="true"></i>
+    </li>
+    <li class="co-card card" data-value="100">
+      <span class="co-year">2020</span>
+      <span class="co-tag tag"><i class="t-stop"><i class="lit"></i></i>Data Security</span>
+      <i class="tear tear--v"></i>
+      <div class="co-body"><h3 class="co-name">Affinidi</h3><p class="co-desc">Digital identity, security &amp; verification</p></div>
+      <p class="co-out"><span class="co-num"><span class="co-val">100</span>M+</span><span class="co-lbl">valuation</span></p>
+      <i class="co-punch lit" aria-hidden="true"></i>
+    </li>
+    <li class="co-card card is-miss">
+      <span class="co-year">2020</span>
+      <span class="co-tag tag"><i class="t-stop"><i class="lit"></i></i>HR Tech</span>
+      <i class="tear tear--v"></i>
+      <div class="co-body"><h3 class="co-name">GoodWorker</h3><p class="co-desc">Job marketplace for blue-collar workers</p></div>
+      <p class="co-out"><span class="co-term">sold in 2025</span></p>
+      <i class="co-punch is-unlit" aria-hidden="true"></i>
+    </li>
+    <li class="co-card card" data-value="150">
+      <span class="co-year">2018</span>
+      <span class="co-tag tag"><i class="t-stop"><i class="lit"></i></i>Health Tech</span>
+      <i class="tear tear--v"></i>
+      <div class="co-body"><h3 class="co-name">LabTwin</h3><p class="co-desc">A voice-powered digital lab assistant</p></div>
+      <p class="co-out"><span class="co-num"><span class="co-val">150</span>M+</span><span class="co-lbl">valuation</span></p>
+      <i class="co-punch lit" aria-hidden="true"></i>
+    </li>
+    <li class="co-card card" data-value="900">
+      <span class="co-year">2017</span>
+      <span class="co-tag tag"><i class="t-stop"><i class="lit"></i></i>Mobility</span>
+      <i class="tear tear--v"></i>
+      <div class="co-body"><h3 class="co-name">heycar</h3><p class="co-desc">Second-hand car marketplace</p></div>
+      <p class="co-out"><span class="co-num"><span class="co-val">900</span>M+</span><span class="co-lbl">valuation</span></p>
+      <i class="co-punch lit" aria-hidden="true"></i>
+    </li>
+    <li class="co-card card" data-value="20">
+      <span class="co-year">2016</span>
+      <span class="co-tag tag"><i class="t-stop"><i class="lit"></i></i>Mobility</span>
+      <i class="tear tear--v"></i>
+      <div class="co-body"><h3 class="co-name">Croove</h3><p class="co-desc">Peer-2-peer car sharing platform</p></div>
+      <p class="co-out"><span class="co-num"><span class="co-val">20</span>M</span><span class="co-lbl">exit in 2018 by Turo</span></p>
+      <i class="co-punch lit" id="croove-punch" aria-hidden="true"></i>
+    </li>
+  </ol>
+</section>
+
+</main>
+
+<!-- ─────────────────────────────── footer ────────────────────────── -->
+<footer id="footer" class="footer" data-tone="night" data-name="Contact" data-f="22" aria-labelledby="footer-h">
+  <div class="ft-sky" aria-hidden="true"></div>
+  <h2 class="sr-only" id="footer-h">Let's connect.</h2>
+  <p class="label ft-kicker wrap">08 · Contact</p>
+  <div class="ft-band" aria-hidden="true" data-lens="text">
+    <div class="ft-track">
+      <span class="ft-item">Let’s connect<span class="stop">.</span></span><span class="ft-item">Let’s connect<span class="stop">.</span></span><span class="ft-item">Let’s connect<span class="stop">.</span></span><span class="ft-item">Let’s connect<span class="stop">.</span></span>
+    </div>
+  </div>
+  <div class="ft-main wrap">
+    <div class="ft-copy">
+      <p class="ft-line">Got an idea that needs building, or just want to argue about design systems? I'm up for either.</p>
+      <div class="ft-connect">
+        <p class="label">Connect</p>
+        <div class="ft-pills">
+          <a class="pill" href="https://www.linkedin.com/in/wernervanhuffelen" target="_blank" rel="noopener">
+            <span>LinkedIn</span>
+            <span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="pill" href="https://www.instagram.com" target="_blank" rel="noopener">
+            <span>Instagram</span>
+            <span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="ft-disc">
+      <div class="disc-wrap">
+        <i class="disc-glow" aria-hidden="true"></i>
+        <svg class="ring-svg disc-ring" id="disc-ring" aria-hidden="true"></svg>
+        <a class="disc lit" href="mailto:me@wernersdesigns.com" data-cursor="hide" aria-label="Contact me, me@wernersdesigns.com">
+          <i class="disc-core" aria-hidden="true"></i>
+          <span class="disc-label">Contact me</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="ft-bottom wrap">
+    <span class="fb-c">© 2026 Werner van Huffelen</span>
+    <span class="fb-b">Berlin</span>
+    <i class="ft-dot lit" data-lit="track" aria-hidden="true"></i>
+  </div>
+</footer>
+
+<!-- ─────────────────────────────── menu ─────────────────────────────────── -->
+<div id="menu" class="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden aria-hidden="true">
+  <div class="m-still"></div>
+  <div class="m-vignette"></div>
+  <div class="menu-inner">
+    <nav class="menu-links" aria-label="Sections">
+      <a class="menu-link" href="#about">About<span class="stop">.</span></a>
+      <a class="menu-link" href="#work">Case studies<span class="stop">.</span></a>
+      <a class="menu-link" href="#companies">Companies<span class="stop">.</span></a>
+      <a class="menu-link" href="#footer">Contact<span class="stop">.</span></a>
+    </nav>
+    <aside class="menu-card card on-ice" aria-label="Contact">
+      <div class="mc-top">
+        <p class="mc-name">Werner van Huffelen</p>
+        <p class="mc-role">Lead Product Designer at GALVANY</p>
+        <p class="label mc-label">Say hello</p>
+        <a class="mc-mail" href="mailto:me@wernersdesigns.com">me@wernersdesigns.com</a>
+        <div class="mc-social">
+          <a class="pill pill--sm" href="https://www.linkedin.com/in/wernervanhuffelen" target="_blank" rel="noopener"><span>LinkedIn</span><span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="pill pill--sm" href="https://www.instagram.com" target="_blank" rel="noopener"><span>Instagram</span><span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+        </div>
+      </div>
+      <i class="tear tear--h"></i>
+      <div class="mc-stub">
+        <p class="label">Berlin</p>
+        <a class="pill pill--ink" href="cv/Werner-van-Huffelen-CV-web.pdf" download="Werner-van-Huffelen-CV.pdf"><span>Download resume</span><span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      </div>
+    </aside>
+  </div>
+  <div class="menu-foot"><span>Esc to close</span></div>
+</div>
+
+</body>
+</html>

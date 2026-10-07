@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Selected work · Werner van Huffelen</title>
+<meta name="description" content="Selected work by Werner van Huffelen, Lead Product Designer in Berlin.">
+<meta name="theme-color" content="#110D1C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Cdefs%3E%3CradialGradient%20id='g'%20cx='.4'%20cy='.36'%20r='.72'%3E%3Cstop%20offset='0'%20stop-color='%23F7F4FF'/%3E%3Cstop%20offset='.42'%20stop-color='%23B3A8FF'/%3E%3Cstop%20offset='1'%20stop-color='%237C6BFF'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle%20cx='16'%20cy='16'%20r='14'%20fill='url(%23g)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Fragment+Mono&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+<!-- ?v=: bump on every change, so a plain reload never runs a cached script against new markup -->
+<link rel="stylesheet" href="css/system.css?v=r7k">
+<link rel="stylesheet" href="css/home.css?v=r7k">
+<link rel="stylesheet" href="css/work.css?v=r7k">
+<link rel="stylesheet" href="css/work-illus.css?v=r7k">
+<link rel="stylesheet" href="css/handoff.css?v=r7k">
+<!-- the scheme (round 4), shared with index.html: picked before the first paint -->
+<script src="js/scheme.js?v=r7k"></script>
+<script>
+  /* pre-paint flags: static / menu / reduced, so nothing flashes before system.js runs. hero-pre: the hero waits for its
+     intro (js/work.js WORK.hero): its copy and device are out of focus and, unless an arrival cover is up
+     (html.is-arriving, js/handoff.js), its light waits closed for the intro's iris. The guard lifts it if the scripts
+     have not brought it in by 2.5s (a slow connection: at 5s the headline sat parsed but hidden for seconds), as a
+     focus-in with the scheme's still for its light (css/work.css). */
+  (function(d){var q=location.search,c=d.documentElement.classList;c.remove('no-js');c.add('js');
+    if(/[?&]static(=|&|$)/.test(q))c.add('is-static');
+    if(/[?&]menu(=|&|$)/.test(q))c.add('menu-open','field-borrowed');
+    try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)c.add('is-reduced');}catch(e){}
+    if(!c.contains('is-static')&&!c.contains('menu-open')&&!c.contains('is-reduced')){c.add('hero-pre');
+      setTimeout(function(){if(c.contains('hero-pre')){c.remove('hero-pre');c.add('hero-bailed');}},2500);}
+    c.add('marquee-js','disc-js');
+  })(document);
+</script>
+<!-- the five projects and the template: classic and blocking, so <main> is written before the first paint -->
+<script src="js/work-data.js?v=r7k"></script>
+<script src="js/handoff.js?v=r7k"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+<script defer src="js/system.js?v=r7k"></script>
+<script defer src="js/work.js?v=r7k"></script>
+<script defer src="js/work-illus.js?v=r7k"></script>
+</head>
+<body class="work-page">
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- the light: one aurora field (canvas, or the still as a fallback). Round 6: it fills the hero and the Next band edge to
+     edge, lights the footer through its iris and the menu (js/work.js light) -->
+<canvas id="field" class="field" aria-hidden="true"></canvas>
+
+<!-- ─────────────────────────────── header ─────────────────────────────── -->
+<header class="site-header" data-tone="night">
+  <!-- the brand is the full stop itself: a small lit disc, home -->
+  <a class="brand" href="index.html" aria-label="Werner van Huffelen, home"><i class="brand-dot lit" data-lit="track" aria-hidden="true"></i></a>
+  <!-- the section you are in, in plain words -->
+  <div class="f-pill glass stadium" data-readout aria-hidden="true">
+    <i class="ap-icon"><i class="lit"></i></i>
+    <span class="roll"><span>Work</span></span>
+  </div>
+  <div class="nav-r">
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+      <span class="glass g-menu"><span class="burger" aria-hidden="true"><i></i><i></i></span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<script>WORK.render()</script>
+<noscript><section class="w-none wrap"><p class="label">Selected work</p><p><a href="index.html#work">Back to all work</a></p></section></noscript>
+</main>
+
+<!-- ─────────────────────────────── footer ────────────────────────── -->
+<footer id="footer" class="footer" data-tone="night" data-name="Contact" data-f="22" aria-labelledby="footer-h">
+  <div class="ft-sky" aria-hidden="true"></div>
+  <h2 class="sr-only" id="footer-h">Let's connect.</h2>
+  <p class="label ft-kicker wrap"><span data-ft-n>06</span> · Contact</p>
+  <div class="ft-band" aria-hidden="true" data-lens="text">
+    <div class="ft-track">
+      <span class="ft-item">Let’s connect<span class="stop">.</span></span><span class="ft-item">Let’s connect<span class="stop">.</span></span><span class="ft-item">Let’s connect<span class="stop">.</span></span><span class="ft-item">Let’s connect<span class="stop">.</span></span>
+    </div>
+  </div>
+  <div class="ft-main wrap">
+    <div class="ft-copy">
+      <p class="ft-line">Got an idea that needs building, or just want to argue about design systems? I'm up for either.</p>
+      <div class="ft-connect">
+        <p class="label">Connect</p>
+        <div class="ft-pills">
+          <a class="pill" href="https://www.linkedin.com/in/wernervanhuffelen" target="_blank" rel="noopener">
+            <span>LinkedIn</span>
+            <span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="pill" href="https://www.instagram.com" target="_blank" rel="noopener">
+            <span>Instagram</span>
+            <span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="ft-disc">
+      <div class="disc-wrap">
+        <i class="disc-glow" aria-hidden="true"></i>
+        <svg class="ring-svg disc-ring" id="disc-ring" aria-hidden="true"></svg>
+        <a class="disc lit" href="mailto:me@wernersdesigns.com" data-cursor="hide" aria-label="Contact me, me@wernersdesigns.com">
+          <i class="disc-core" aria-hidden="true"></i>
+          <span class="disc-label">Contact me</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="ft-bottom wrap">
+    <span class="fb-c">© 2026 Werner van Huffelen</span>
+    <span class="fb-b">Berlin</span>
+    <i class="ft-dot lit" data-lit="track" aria-hidden="true"></i>
+  </div>
+</footer>
+<script>WORK.after()</script>
+
+<!-- ─────────────────────────────── menu ─────────────────────────────────── -->
+<div id="menu" class="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden aria-hidden="true">
+  <div class="m-still"></div>
+  <div class="m-vignette"></div>
+  <div class="menu-inner">
+    <nav class="menu-links" aria-label="Sections">
+      <a class="menu-link" href="index.html#about">About<span class="stop">.</span></a>
+      <a class="menu-link" href="index.html#work">Case studies<span class="stop">.</span></a>
+      <a class="menu-link" href="index.html#companies">Companies<span class="stop">.</span></a>
+      <a class="menu-link" href="#footer">Contact<span class="stop">.</span></a>
+    </nav>
+    <aside class="menu-card card on-ice" aria-label="Contact">
+      <div class="mc-top">
+        <p class="mc-name">Werner van Huffelen</p>
+        <p class="mc-role">Lead Product Designer at GALVANY</p>
+        <p class="label mc-label">Say hello</p>
+        <a class="mc-mail" href="mailto:me@wernersdesigns.com">me@wernersdesigns.com</a>
+        <div class="mc-social">
+          <a class="pill pill--sm" href="https://www.linkedin.com/in/wernervanhuffelen" target="_blank" rel="noopener"><span>LinkedIn</span><span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="pill pill--sm" href="https://www.instagram.com" target="_blank" rel="noopener"><span>Instagram</span><span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+        </div>
+      </div>
+      <i class="tear tear--h"></i>
+      <div class="mc-stub">
+        <p class="label">Berlin</p>
+        <a class="pill pill--ink" href="cv/Werner-van-Huffelen-CV-web.pdf" download="Werner-van-Huffelen-CV.pdf"><span>Download resume</span><span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      </div>
+    </aside>
+  </div>
+  <div class="menu-foot"><span>Esc to close</span></div>
+</div>
+
+</body>
+</html>

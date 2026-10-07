@@ -1,0 +1,490 @@
+/* ==========================================================================
+   Full Stop · homepage sections
+   The scroll is one stopping-down: the hero aperture closes into the period of "shipped.".
+   ========================================================================== */
+
+main,.footer{position:relative}
+section{position:relative;z-index:3}
+
+/* ── hero ──────────────────────────────────────────────────────────────────
+   Aperture at rest (B): cx 68vw, cy 50svh + 25px, D ≤ 72svh (JS rewrites these in px: HOME.rest).
+   Bottom-left group, stacked: headline → 28px → subline, whose last baseline sits 64px above the viewport bottom
+   (round 2: the CTA became the See-the-work badge, bottom-right). Gaps are optical, measured from rendered Funnel
+   Display/Sans ink: the "pp" descender ends 1.745em below the h1 box top; the subline's ink starts .28em into its box
+   and its second baseline is 2.287em down.
+   --h1-size here is the ceiling; HOME.fitHeadline() lowers it (inline, px) until every glyph of the headline stays
+   ≥ 24px outside the aperture edge. The headline may pass over the ring's text band (masked there), never the photo.
+   ?hero=a (html.hero-a) keeps the first refinement: portrait 78svh, headline sized to clear the whole ring. */
+.hero{height:100svh;min-height:560px;background:transparent;overflow:clip;
+  --acx:68vw;--acy:calc(50svh + 25px);--ar:36svh;--sy:0px;
+  --sub-size:clamp(28px, 3.8vw, 40px);                /* round 4: doubled, then capped at 40px (Werner) */
+  --h1-size:clamp(64px, min(11.5vw, 18.5svh), 188px);
+  --h1-top:calc(100svh - 64px - 28px - 2.007 * var(--sub-size) - 1.745 * var(--h1-size));
+  --sub-top:calc(var(--h1-top) + 1.745 * var(--h1-size) + 28px - .28 * var(--sub-size))}
+html.hero-a .hero{--acx:66vw;--acy:52svh;--ar:39svh;--h1-size:clamp(64px, min(11.5vw, 21svh, 17.5vw - 12.73svh - 15.9px), 188px)}
+.aperture{position:fixed;inset:0;z-index:0;pointer-events:none;clip-path:circle(var(--ar) at var(--acx) var(--acy))}
+html.is-static .aperture,html.is-reduced .aperture{position:absolute;height:100svh}
+.ap-sky{position:absolute;inset:0;display:none;background:var(--still) center/cover no-repeat,var(--dusk)}
+html.is-static .ap-sky,html.is-reduced .ap-sky,html.field-borrowed .ap-sky{display:block}
+.portrait{position:absolute;width:calc(2.36 * var(--pr,var(--ar)));height:calc(2.36 * var(--pr,var(--ar)));
+  left:calc(var(--acx) - 1.18 * var(--pr,var(--ar)));top:calc(var(--acy) - 1.2384 * var(--pr,var(--ar)))}
+.portrait .p-gl{position:absolute;inset:0;width:100%;height:100%;opacity:0}
+html.portrait-gl .portrait .p-gl{opacity:1}
+html.portrait-gl .portrait img{opacity:0!important}
+.portrait img{will-change:transform}
+.portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.portrait .p-soft{opacity:calc(1 - var(--focus,1))}
+.portrait .p-moon{opacity:var(--focus,1)}
+
+/* lens barrel: ring text + two hairlines, centred on the aperture */
+.barrel{position:fixed;left:var(--acx);top:var(--acy);width:0;height:0;z-index:0;pointer-events:none}
+html.is-static .barrel,html.is-reduced .barrel{position:absolute}
+/* the fixed aperture must never show through the transparent footer */
+html.hero-off:not(.is-static) .aperture,html.hero-off:not(.is-static) .barrel{visibility:hidden}
+.barrel>*{position:absolute;left:0;top:0;transform:translate(-50%,-50%)}
+/* the lens: ring text + hairlines in a frame-sized box, children re-centred on the aperture. No mask (round 2): the
+   ring is one complete, fully opaque circle; the .knock halo keeps it clear of the headline. */
+.barrel>.b-lens{left:calc(-1 * var(--acx));top:calc(-1 * var(--acy));width:var(--fw,100vw);height:var(--fh,100svh);transform:none}
+.b-lens>*{position:absolute;left:var(--acx);top:var(--acy);transform:translate(-50%,-50%)}
+.b-hair{border-radius:50%;box-shadow:inset 0 0 0 1px var(--line-night)}
+.b-hair--in{width:calc(2 * (var(--br,var(--ar)) + var(--hair-in,12px)));height:calc(2 * (var(--br,var(--ar)) + var(--hair-in,12px)))}
+.b-hair--out{width:calc(2 * (var(--br,var(--ar)) + var(--hair-out,46px)));height:calc(2 * (var(--br,var(--ar)) + var(--hair-out,46px)))}
+.barrel .ring-svg{color:#8C86A3cc}
+
+.portrait-link{position:absolute;inset:0;z-index:1;clip-path:circle(var(--ar) at var(--acx) calc(var(--acy) + var(--sy)))}
+.portrait-link:focus-visible{outline:none}
+/* the link is clipped to the aperture, so its focus ring is drawn on the (unclipped) barrel */
+.b-focus{width:calc(2 * (var(--ar) + 6px));height:calc(2 * (var(--ar) + 6px));border-radius:50%;box-shadow:0 0 0 2px var(--glacier);opacity:0;transition:opacity 160ms linear}
+html.portrait-focus .b-focus{opacity:1}
+html.portrait-focus .barrel{opacity:1!important}
+
+.hero-sub{position:absolute;z-index:2;left:var(--margin);top:var(--sub-top);margin:0;font:400 var(--sub-size)/1.3 var(--f-sans);letter-spacing:-.02em;color:#F3F1F8d1}
+/* its knockout: the same night halo as the headline's (.hero-title.knock), under the ring-facing text */
+.hero-sub.knock{z-index:1;color:transparent;-webkit-text-stroke:var(--knock,20px) var(--night);pointer-events:none;user-select:none}
+.hero-sub.knock .arr{color:var(--night)}.hero-sub.knock .arr path{stroke-width:9}
+/* round 4 · the scheme switch: one line above the headline, its bottom --eb-gap above the headline's cap line (the h1 box
+   top + --h1-cap em, measured on Funnel Display 600 at line-height .88). Glass keys like the menu button, then the words,
+   then the five schemes as five stops, this one lit. Clicking it reloads, which moves to the next scheme. */
+.hero{--eb-h:36px;--eb-gap:clamp(24px, 2.2vw, 32px);--h1-cap:.105}
+.hero-eyebrow{position:absolute;z-index:2;left:var(--margin);top:calc(var(--h1-top) + var(--h1-cap) * var(--h1-size) - var(--eb-gap) - var(--eb-h));
+  height:var(--eb-h);display:inline-flex;align-items:center;gap:16px;border-radius:var(--r-pill);
+  font:400 15px/1 var(--f-mono);letter-spacing:.02em;color:#F3F1F8b3;white-space:nowrap;transition:color var(--d-short) var(--ease-focus)}
+.eb-keys{display:inline-flex;gap:5px}
+.eb-key{width:var(--eb-h);height:var(--eb-h);font:400 14px/1 var(--f-mono);color:var(--moon);transition:transform 200ms var(--ease-glass)}
+.eb-key .k-mac{font:400 17px/1 -apple-system,"SF Pro Text",system-ui,sans-serif;transform:translateY(-.5px)}
+.eb-key .k-touch{width:15px;height:15px}
+html.kbd-pc .eb-mod{width:auto;padding:0 12px;border-radius:var(--r-pill)}
+html:not(.kbd-mac) .k-mac,html:not(.kbd-pc) .k-pc,html:not(.kbd-touch) .k-touch,html.kbd-touch .eb-r{display:none}
+.eb-dots{display:inline-flex;align-items:center;gap:7px;margin-left:4px}
+.eb-dots i{position:relative;width:7px;height:7px;border-radius:50%;background:var(--c);opacity:.34;transition:opacity var(--d-short) var(--ease-focus)}
+.eb-dots i.is-on{opacity:1;box-shadow:0 0 0 2.5px var(--night),0 0 0 3.5px color-mix(in srgb,var(--c) 75%,transparent),0 0 10px color-mix(in srgb,var(--c) 60%,transparent)}
+.eb-dots [data-s=violet]{--c:#7C6BFF}.eb-dots [data-s=ember]{--c:#FF6B2B}.eb-dots [data-s=cobalt]{--c:#3F6BFF}
+.eb-dots [data-s=sodium]{--c:#FFC933}.eb-dots [data-s=borealis]{--c:#2EE59D}
+@media (hover:hover){.hero-eyebrow:hover{color:var(--moon)}.hero-eyebrow:hover .eb-key::after{opacity:1}.hero-eyebrow:hover .eb-dots i{opacity:.7}.hero-eyebrow:hover .eb-dots i.is-on{opacity:1}}
+.hero-eyebrow.is-pressed .eb-key{transform:scale(.9)}
+.hero-eyebrow.is-pressed .eb-r{transition-delay:60ms}
+.hero-eyebrow:focus-visible{outline-offset:6px}
+@media (max-width:767px){.hero-eyebrow{gap:10px;font-size:13px}.eb-key{font-size:13px}.eb-key .k-touch{width:14px;height:14px}
+  .eb-dots{gap:6px;margin-left:2px}.eb-dots i{width:6px;height:6px}}
+/* See the work: the portrait ring's small sibling, bottom-right (HOME.seeGeom writes --see-x/-y, the centre in hero px,
+   --see-d, the outer-hairline diameter, --see-core, the glass disc, and the two hairline radii). The ring text is
+   FS.ring fit 'fill' with the portrait ring's tracking, spaces and colour; it spins in ringTick, 3× on hover/focus. */
+.see{position:absolute;z-index:2;left:calc(var(--see-x,-999px) - var(--see-d,132px) / 2);top:calc(var(--see-y,-999px) - var(--see-d,132px) / 2);
+  width:var(--see-d,132px);height:var(--see-d,132px);border-radius:50%;color:var(--moon);-webkit-tap-highlight-color:transparent}
+.see:focus-visible{outline:none}
+.see-in{position:absolute;inset:0;border-radius:50%;transition:transform 320ms var(--ease-glass)}
+.see-in>*{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+.see-in>.see-ring{color:#8C86A3cc;pointer-events:none}
+.see-hair{border-radius:50%;box-shadow:inset 0 0 0 1px var(--line-night);pointer-events:none}
+.see-hair--in{width:calc(2 * var(--see-hin,47px));height:calc(2 * var(--see-hin,47px))}
+.see-hair--out{width:var(--see-d,132px);height:var(--see-d,132px)}
+.see-core{width:var(--see-core,64px);height:var(--see-core,64px)}
+.see-core .b-light{--bl:0%;transition:clip-path 420ms var(--ease-glass)}
+.see-core .arr{width:var(--see-arr,18px);height:var(--see-arr,18px);vertical-align:0;transition:transform 320ms var(--ease-glass),color 240ms var(--ease-focus)}
+@media (hover:hover){.see:hover .b-light{--bl:50%}.see:hover .arr{transform:translateY(4px);color:var(--ink)}.see:hover .glass::after{opacity:1}}
+.see:focus-visible .b-light{--bl:50%}.see:focus-visible .arr{transform:translateY(4px);color:var(--ink)}
+.see:focus-visible .see-core{outline:2px solid var(--glacier);outline-offset:3px}
+.see:active .see-in,.see.is-pressed .see-in{transform:scale(.96)}
+
+.hero-title{position:absolute;z-index:2;left:var(--margin);top:var(--h1-top);margin:0;white-space:nowrap;
+  padding-right:.3em;                                  /* the mask covers the box only: room for the overhanging full stop */
+  font:600 var(--h1-size)/.88 var(--f-display);letter-spacing:-.045em;color:var(--moon)}
+.hero-title .w{display:inline-block}
+/* headline notched into the media: an ink copy clipped by the same circle, in hero-local coordinates */
+.hero-title{--hx:calc(var(--acx) - var(--margin));--hy:calc(var(--acy) + var(--sy) - var(--h1-top))}
+.hero-title.ink{z-index:2;color:var(--ink);pointer-events:none;user-select:none;
+  clip-path:circle(var(--ar) at var(--hx) var(--hy))}
+.hero-title.ink .stop::before{box-shadow:none;opacity:var(--stop-o,1)}
+/* inside the aperture only the ink copy draws: the moon copy (and its stop) is cut out by the same circle,
+   so the aperture swallows the period cleanly instead of showing it over the portrait */
+.hero-title:not(.ink):not(.knock){
+  -webkit-mask:radial-gradient(circle var(--ar) at var(--hx) var(--hy),#0000 calc(var(--ar) - .5px),#000 calc(var(--ar) + .5px));
+  mask:radial-gradient(circle var(--ar) at var(--hx) var(--hy),#0000 calc(var(--ar) - .5px),#000 calc(var(--ar) + .5px))}
+/* knockout: a crisp 10px night halo around every glyph (the stroke is centred on the outline: 20px = 10px out),
+   outside the aperture only, so the barrel's ring text and hairlines pass cleanly behind the headline, never touching it */
+.hero-title.knock{z-index:1;color:transparent;-webkit-text-stroke:var(--knock,20px) var(--night);pointer-events:none;user-select:none;
+  -webkit-mask:radial-gradient(circle var(--ar) at var(--hx) var(--hy),#0000 calc(var(--ar) - .5px),#000 calc(var(--ar) + .5px));
+  mask:radial-gradient(circle var(--ar) at var(--hx) var(--hy),#0000 calc(var(--ar) - .5px),#000 calc(var(--ar) + .5px))}
+/* the stop's halo is a short stadium (a second disc .08em up): it closes the notch between the "d" and the stop,
+   where a sliver of hairline would otherwise float between the two halos */
+.hero-title.knock .stop::before{background:var(--night)!important;box-shadow:0 0 0 calc(var(--knock,20px) / 2) var(--night),0 -.08em 0 calc(var(--knock,20px) / 2) var(--night);clip-path:none}
+.hero-title.knock .ctr::before{display:none}
+/* the bridge (round 2 review): one night block from inside the d's stem to the stop's centre, from .2em above the
+   stadium's top to 10px under the baseline, so "d." knocks out as one shape: no channel between the two halos and
+   no hairline stub cutting across the corner above the stop. em values are measured in the span (baseline 1.0024em
+   under its top, stop centre .139em in and .917em down, radius .095em, stadium top .742em down; the block ends at the disc's right edge). HOME.knockPass knows this box. */
+.hero-title.knock .stop::after{content:"";position:absolute;left:-.1em;width:.334em;background:var(--night);
+  top:calc(.542em - var(--knock,20px) / 2);height:calc(.4604em + var(--knock,20px))}
+/* whole letters only: HOME.knockPass fades a ring glyph out before the halo can slice it */
+.barrel .ring-svg text{transition:opacity 120ms linear}
+
+/* ── irises: a lit rim inside the clip, a hairline halo outside it ─────────── */
+.iris-rim{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;transition:opacity 200ms linear;border-radius:inherit;
+  background:radial-gradient(circle var(--ir,0px) at var(--iox,50%) var(--ioy,0px),#0000 calc(var(--ir,0px) - 40px),color-mix(in srgb,var(--iris) 12.2%,transparent) calc(var(--ir,0px) - 12px),color-mix(in srgb,var(--sky-1) 50.2%,transparent) calc(var(--ir,0px) - 2px),color-mix(in srgb,var(--dusk) 85.1%,transparent) calc(var(--ir,0px) - .5px),#0000 var(--ir,0px))}
+.iris-rim--field{background:radial-gradient(circle var(--ir,0px) at var(--iox,50%) var(--ioy,0px),#0000 calc(var(--ir,0px) - 40px),color-mix(in srgb,var(--iris) 20%,transparent) calc(var(--ir,0px) - 10px),color-mix(in srgb,var(--pearl) 80%,transparent) calc(var(--ir,0px) - 1.5px),#0000 var(--ir,0px))}
+.is-iris>.iris-rim{opacity:1}
+.iris-halo{position:fixed;left:0;top:0;z-index:4;width:0;height:0;border-radius:50%;pointer-events:none;opacity:0;will-change:transform;
+  box-shadow:inset 0 0 0 1px #F3F1F84d,0 0 18px color-mix(in srgb,var(--iris) 14.9%,transparent)}
+.iris-halo--ice{box-shadow:inset 0 0 0 1px #15111F38,0 0 18px color-mix(in srgb,var(--iris) 12.2%,transparent)}
+html.is-static .iris-rim,html.is-reduced .iris-rim,html.is-static .iris-halo,html.is-reduced .iris-halo{display:none}
+
+/* ── vision ───────────────────────────────────────────────────────── */
+.vision{background:var(--night);padding-top:var(--s8);padding-bottom:var(--s7)}
+.manifesto .stop{--sk:1.4}
+.manifesto .stop::before{transition:clip-path 180ms var(--ease-glass);box-shadow:0 0 .3em color-mix(in srgb,var(--iris) 45.1%,transparent),0 0 .08em color-mix(in srgb,var(--pearl) 40%,transparent)}
+.m-br{display:none}
+.manifesto .w{will-change:filter,opacity}
+.manifesto{margin-top:var(--s7);display:grid;gap:0}
+.m-line{font:500 var(--t-manifesto)/1.0 var(--f-display);letter-spacing:-.035em;color:var(--moon);white-space:nowrap;text-wrap:balance}
+.m-line .w{display:inline-block}
+.m-line+.m-line{margin-top:.02em}
+
+/* ── about ──────────────────────────────────────────────────────────── */
+/* one full-bleed band, a viewport tall: the bio on ice (60%), the stub on ice-2 (40%). Both panels share one top
+   line (label / eye); the copy starts on the page margin, the stub ends on it. Werner: the copy sits 40px under the
+   headline (it used to hang on the band's bottom line, ~210px down) */
+.about{background:var(--night);padding-top:var(--s5);padding-bottom:0}
+.bio-card{--bio-py:clamp(112px, 12.5svh, 160px);--bio-px:clamp(48px, 5vw, 112px);
+  position:relative;display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);min-height:max(100svh, 800px);background:var(--ice)}
+.bio-body{padding:var(--bio-py) var(--bio-px) var(--bio-py) var(--margin);display:flex;flex-direction:column;align-items:flex-start}
+.bio-h{font:600 clamp(56px, 6.2vw, 108px)/.98 var(--f-display);letter-spacing:-.035em;margin:clamp(32px, 3.3vw, 56px) 0 40px;max-width:11em;text-wrap:balance}
+.bio-text{font:400 clamp(20px, 1.75vw, 27px)/1.5 var(--f-sans);letter-spacing:-.005em;max-width:32em;margin-top:0;text-wrap:pretty;color:color-mix(in srgb, var(--ink) 90%, transparent)}
+.bio-stub{background:var(--ice-2);padding:var(--bio-py) var(--margin) var(--bio-py) var(--bio-px);display:flex;flex-direction:column;align-items:flex-start}
+.bio-top{display:flex;flex-direction:column;gap:clamp(28px, 2.6vw, 44px);margin-bottom:clamp(32px, 3vw, 56px)}
+/* the hero's circle, stopped down, with Werner in it (sky tuning: a hole through the ice) */
+.bio-eye{position:relative;display:block;width:clamp(168px, 15vw, 240px);height:clamp(168px, 15vw, 240px);border-radius:50%;overflow:hidden;flex:none;
+  box-shadow:inset 0 3px 10px #0000008c,0 0 0 1px color-mix(in srgb, var(--ink) 12%, transparent);isolation:isolate}
+.bio-eye .lit{position:absolute;inset:0;border-radius:50%}
+.bio-eye img{position:absolute;left:-9%;top:-12%;width:118%;height:118%;max-width:none;object-fit:contain;transition:opacity 700ms var(--ease-focus)}
+.bio-eye .be-soft{opacity:0}
+.bio-card.is-soft .bio-eye .be-soft{opacity:1}.bio-card.is-soft .bio-eye .be-sharp{opacity:0}
+.bio-now{font:400 clamp(28px, 2.3vw, 40px)/1.2 var(--f-sans);letter-spacing:-.015em;max-width:13em;text-wrap:balance}
+.bio-now strong{font-weight:700;letter-spacing:.01em}
+.bio-facts{margin:auto 0 clamp(32px, 3.3vw, 48px);width:100%;border-top:1px solid var(--line-ice)}
+.bio-facts>div{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s5);padding:clamp(16px, 1.3vw, 22px) 0;border-bottom:1px solid var(--line-ice)}
+.bio-facts dt{font:400 13px/1.3 var(--f-mono);letter-spacing:.02em;color:var(--haze-ink);white-space:nowrap}
+.bio-facts dd{margin:0;font:500 clamp(17px, 1.35vw, 22px)/1.3 var(--f-sans);letter-spacing:-.01em;text-align:right}
+/* the resume pill, one size up for a chapter this large */
+.pill--lg{height:60px;padding:0 7px 0 28px;gap:22px;font-size:17px}
+.pill--lg .chip{width:46px;height:46px}
+.pill--lg .chip .arr{width:19px;height:19px}
+
+/* ── clients ──────────────────────────────────────────────────────── */
+.clients{background:var(--night);padding-top:var(--s9);padding-bottom:var(--s6)}
+.caption{font:500 var(--t-caption)/1.05 var(--f-display);letter-spacing:-.02em;margin-top:var(--s4)}
+.logo-band{position:relative;height:120px;margin-top:40px}
+.logo-band canvas{position:absolute;inset:0;width:100%;height:100%}
+.logo-band::before,.logo-band::after{content:"";position:absolute;top:0;bottom:0;width:96px;z-index:1;pointer-events:none}
+.logo-band::before{left:0;background:linear-gradient(90deg,var(--night),#110D1C00)}
+.logo-band::after{right:0;background:linear-gradient(270deg,var(--night),#110D1C00)}
+html.is-static .logo-band,html.is-reduced .logo-band{height:240px}
+html.is-static .logo-band::before,html.is-static .logo-band::after,html.is-reduced .logo-band::before,html.is-reduced .logo-band::after{display:none}
+
+/* ── work ───────────────────────────────────────────────────────────── */
+.work{--ground:var(--ice);background:var(--ice);padding-top:var(--s11);padding-bottom:var(--s9)}
+.work-head{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s6)}
+.work-head .h2{margin-top:var(--s4)}
+.work-tags{display:flex;flex-wrap:wrap;gap:var(--s2);justify-content:flex-end;margin-bottom:6px}
+/* the filter reflows the grid (js/home.js places, js/motion.js choreographs): nothing in it may anchor the scroll */
+.work-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--gutter);margin-top:var(--s9);overflow-anchor:none}
+.wcol{display:flex;flex-direction:column;gap:var(--s7);container-type:inline-size;min-width:0}
+.wcol--offset{padding-top:var(--s9)}
+/* round 4 (Werner: "remove the indents on the cards"): the work cards drop the half-disc notch pair (the Companies
+   cards too, since); the r28 corners, the dotted tear and the stop's run along it stay. A filtered-out card leaves the layout. */
+.work-card{--ty:calc(100cqw * 2 / 3);--tear-in:32px;--ground:var(--ice);-webkit-mask:none;mask:none;
+  background:var(--night-2);color:var(--moon)}
+.work-card[hidden]{display:none}
+.work-card[inert]{pointer-events:none}
+/* the perforation's first and last holes sit on the stub padding (hole edge at --tear-in): round fits a whole number
+   of holes (the pitch flexes by under a pixel), and the tile starts half a pitch outside so the hole lands on the inset */
+.work-card .tear--h{left:calc(var(--tear-in) + var(--hole) / 2 - var(--hole-pitch) / 2);right:calc(var(--tear-in) + var(--hole) / 2 - var(--hole-pitch) / 2);
+  background-position:0 50%;background-repeat:round no-repeat}
+.wc-media{position:relative;height:var(--ty);overflow:hidden}
+.wc-zoom{position:absolute;inset:0;transform:scale(var(--rack-scale,1));transform-origin:50% 50%;clip-path:var(--win,none);transition:clip-path 260ms var(--ease-focus)}
+/* the aperture: light reaches the device through one circle; the device breaks out of it when in focus */
+.wc-ap{position:absolute;left:50%;top:50%;aspect-ratio:1;height:auto;border-radius:50%;transform:translate(-50%,-50%);
+  width:calc(var(--ty) * .8);box-shadow:0 0 60px color-mix(in srgb,var(--iris) 25.1%,transparent);animation:breathe 7s ease-in-out infinite alternate;
+  /* the aperture opens from its centre on hover (growth animates the clip radius, and the glow spills as it opens) */
+  clip-path:circle(46% at 50% 50%);transition:clip-path 560ms var(--ease-glass)}
+/* each project casts its own light through the same aurora: a per-card hue pair, soft-lit into the disc */
+.wc-ap::before,.wc-ap::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none}
+/* the key light: its own hue, from its own side (--ax/--ay per card), laid on normally so it really adds colour */
+.wc-ap::before{background:radial-gradient(circle at var(--ax,30%) var(--ay,26%),var(--h1),#0000 60%);opacity:.92}
+/* the fill: the second hue tints the opposite side, keeping the aurora's luminance */
+.wc-ap::after{background:radial-gradient(circle at calc(100% - var(--ax,30%)) calc(100% - var(--ay,26%)),var(--h2),#0000 66%);mix-blend-mode:color;opacity:.8}
+.work-card.is-hover .wc-ap{clip-path:circle(calc(50% + 56px) at 50% 50%)}
+@keyframes breathe{from{opacity:.86}to{opacity:1}}
+.wc-halo,.wc-media img{position:absolute;left:4%;top:5%;width:92%;height:90%}
+.wc-media img{object-fit:contain}
+.wc-halo{display:block;background:radial-gradient(circle at 35% 30%,var(--h1),var(--h2));opacity:calc(.5 * var(--halo,1));
+  -webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  transition:left 320ms var(--ease-focus),top 320ms var(--ease-focus),width 320ms var(--ease-focus),height 320ms var(--ease-focus),opacity 320ms var(--ease-focus)}
+.work-card.is-hover .wc-halo{left:7%;top:8%;width:86%;height:84%;opacity:.8}
+.wc-soft{opacity:var(--soft,0)}
+.wc-sharp{opacity:calc(1 - var(--soft,0))}
+.wc-stub{position:relative;padding:28px 32px 32px;min-height:156px}
+.wc-label{font:400 var(--t-micro)/1.3 var(--f-mono);letter-spacing:.02em;color:var(--haze)}
+.wc-name{font:600 var(--t-ui)/1.2 var(--f-sans);margin-top:var(--s3);color:var(--moon)}
+.wc-title{font:600 var(--t-card)/1.12 var(--f-display);letter-spacing:-.015em;margin-top:var(--s2);max-width:19em;text-wrap:balance}
+.wc-btn{position:absolute;z-index:3;left:calc(100% - 60px - 28px);top:calc(var(--ty) - 28px);color:var(--moon)}
+.wc-btn .arr{width:20px;height:20px;vertical-align:0;transition:color 240ms var(--ease-focus)}
+.wc-btn::after{background:radial-gradient(circle at var(--px,50%) var(--py,0%),color-mix(in srgb,var(--pearl) 20%,transparent),#0000 60%)}
+.wc-btn .lit{--bl:0%}
+.wc-btn .b-light{transition:none}                     /* driven by the stop-travel timeline */
+/* the traveller: a clone of the headline stop that runs up to the tear and along it into the button */
+.wc-trav{position:absolute;left:0;top:0;z-index:2;border-radius:50%;pointer-events:none;visibility:hidden;will-change:transform;box-shadow:0 0 5px color-mix(in srgb,var(--iris) 34.9%,transparent)}
+.wc-title .stop.is-unlit::before{background:var(--night);box-shadow:inset 0 0 0 1px #F3F1F833}
+.work-card{cursor:pointer}   /* the whole card forwards to its button (js/home.js); round 7: Bandcamp's too */
+.wc-soft,.wc-sharp{transition:opacity 420ms var(--ease-focus)}
+
+/* ── services ──────────────────────────────────────────────────────── */
+.services{background:var(--night);padding-top:var(--s11);padding-bottom:var(--s8)}
+.services-head .h2{margin-top:var(--s4)}
+.svc-list{margin-top:var(--s9);border-bottom:1px solid var(--line-night)}
+.svc{position:relative;overflow:clip;border-top:1px solid var(--line-night);transition:background-color 640ms var(--ease-focus);--ix:calc(var(--margin) + 32px);--iy:88px}
+.svc.is-open{background:var(--night-2)}
+.svc-leak{position:absolute;inset:0;pointer-events:none;opacity:.32;z-index:0;
+  -webkit-mask:radial-gradient(circle at var(--ix) var(--iy),#000,#0006 240px,#0000 900px);mask:radial-gradient(circle at var(--ix) var(--iy),#000,#0006 240px,#0000 900px);
+  clip-path:circle(var(--leak,0px) at var(--ix) var(--iy));transition:clip-path 560ms var(--ease-focus)}
+.svc.is-open{--leak:1000px}
+.svc.is-open .svc-leak{transition:clip-path 900ms var(--ease-iris)}
+/* hover: the aperture cracks open around the index glass, a soft pool of light, not a flat disc */
+.svc-crack{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  -webkit-mask:radial-gradient(circle at var(--ix) var(--iy),#000 30px,#0008 56px,#0000 110px);mask:radial-gradient(circle at var(--ix) var(--iy),#000 30px,#0008 56px,#0000 110px);
+  clip-path:circle(var(--crack,0px) at var(--ix) var(--iy));transition:clip-path 520ms var(--ease-glass)}
+.svc.is-open .svc-crack{opacity:0}
+/* the open row's index glass is lit: light through its circle */
+.svc-idx .b-light{transition:clip-path 420ms var(--ease-glass)}
+.svc-idx>span{transition:color 240ms var(--ease-focus)}
+.svc.is-open .svc-idx .b-light{--bl:50%}
+.svc.is-open .svc-idx>span{color:var(--ink)}
+@media (hover:hover){
+  .svc:not(.is-open):hover{--crack:110px}
+  .svc-head:hover .svc-idx::after,.svc-head:hover .svc-toggle::after{opacity:1}
+  .svc-head:hover .svc-sub{color:#F3F1F8b3}
+}
+.svc-sub{transition:color 320ms var(--ease-focus)}
+.svc-h{font:inherit;position:relative;z-index:1}
+.svc-head{width:100%;height:176px;padding:0 var(--margin);display:grid;grid-template-columns:112px minmax(0,1fr) 300px 108px 48px;align-items:center;text-align:left;border-radius:0}
+.svc-head:focus-visible{outline-offset:-6px;border-radius:12px}
+.svc-idx{font:400 13px/1 var(--f-mono);letter-spacing:.02em}
+.svc-title{font:500 clamp(32px,5.1vw,76px)/1.0 var(--f-display);letter-spacing:-.03em;white-space:nowrap}
+.svc-title .to{margin-inline:.16em}
+.nw{white-space:nowrap}
+.svc-sub{font:400 18px/1.4 var(--f-sans);color:var(--haze)}
+.svc-toggle{grid-column:5}
+.svc-toggle i{position:absolute;left:50%;top:50%;width:14px;height:1.5px;margin:-.75px 0 0 -7px;background:currentColor;border-radius:1px;transition:transform 320ms var(--ease-focus)}
+.svc-toggle i:last-child{width:1.5px;height:14px;margin:-7px 0 0 -.75px}
+.svc.is-open .svc-toggle i:last-child{transform:scaleY(0)}
+.svc-panel{position:relative;z-index:1;display:grid;grid-template-rows:0fr;transition:grid-template-rows 640ms var(--ease-focus)}
+.svc.is-open .svc-panel{grid-template-rows:1fr}
+.svc-panel-in{overflow:hidden;min-height:0;visibility:hidden;transition:visibility 0s 640ms}
+.svc.is-open .svc-panel-in{visibility:visible;transition:visibility 0s}
+.svc-body{display:grid;grid-template-columns:112px minmax(0,1fr) 456px;column-gap:0;padding:0 var(--margin) var(--s8);row-gap:var(--s6)}
+.svc-body p{font:400 var(--t-body)/1.6 var(--f-sans);color:#F3F1F8d9;max-width:34em}
+.svc-body p:nth-child(1){grid-column:2;padding-right:var(--s9)}
+.svc-body p:nth-child(2){grid-column:3}
+.svc-tags{grid-column:2 / 4;display:flex;flex-wrap:wrap;gap:var(--s2)}
+.svc-tags .tag{height:36px;font-size:14px}
+
+/* ── companies ─────────────────────────────────────────────────────── */
+.companies{--ground:var(--ice);background:var(--ice);padding-top:var(--s11);padding-bottom:var(--s11)}
+.co-head{max-width:960px;margin:0 auto;text-align:center;display:flex;flex-direction:column;align-items:center}
+.co-head .h2{margin-top:var(--s4);max-width:8.4em}
+.co-intro{max-width:640px;margin-top:var(--s6);color:var(--haze-ink)}
+.co-list{max-width:960px;margin:var(--s9) auto 0;display:flex;flex-direction:column;gap:var(--s4)}
+/* Werner: "remove the indents on the cards like you did for the other cards": no half-disc notch pair (the r28 corners
+   and the dotted tear stay, as on the work cards). The stub holds the year over the sector tag, centred as a pair */
+.co-card{--tx:168px;--ground:var(--ice);-webkit-mask:none;mask:none;
+  height:132px;background:var(--ice-2);display:grid;grid-template-columns:168px minmax(0,1fr) auto 80px;grid-template-rows:1fr 1fr;row-gap:12px;align-items:center}
+.co-card>.co-year{grid-column:1;grid-row:1;align-self:end}
+.co-card>.co-tag{grid-column:1;grid-row:2;align-self:start;justify-self:center}
+.co-card>.co-body{grid-column:2;grid-row:1 / -1}
+.co-card>.co-out{grid-column:3;grid-row:1 / -1}
+.co-card>.co-punch{grid-column:4;grid-row:1 / -1}
+/* Werner: the tags take the scheme (⌘R): a tint of the accent, its ring, the text mixed down to ink (4.7–5.9:1 on the tint
+   in all five schemes), and the stop lit like the punches, so it reads as a label, not an unselected filter */
+.co-tag{height:28px;padding:0 11px 0 10px;gap:7px;font-size:13px;background:color-mix(in srgb,var(--iris) 14%,var(--ice-2));
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent-ice) 30%,transparent);color:color-mix(in srgb,var(--accent-ice) 60%,var(--ink))}
+.co-tag .t-stop{box-shadow:none}
+.co-tag .t-stop .lit{--bl:50%}
+.co-year{text-align:center;font:500 36px/1 var(--f-display);letter-spacing:-.02em;color:var(--ink)}
+.co-body{padding-left:40px;min-width:0}
+.co-name{font:600 36px/1.05 var(--f-display);letter-spacing:-.025em}
+.co-desc{font:400 17px/1.4 var(--f-sans);color:var(--haze-ink);margin-top:6px}
+.co-out{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding-left:24px}
+.co-num{font:600 var(--t-stat)/.95 var(--f-display);letter-spacing:-.03em}
+.co-lbl{font:400 var(--t-micro)/1.2 var(--f-mono);letter-spacing:.02em;color:var(--haze-ink)}
+.co-term{font:400 17px/1.4 var(--f-sans);color:var(--haze-ink)}
+.co-punch{justify-self:center;width:var(--punch);height:var(--punch);border-radius:50%;clip-path:circle(var(--pr,50%) at 50% 50%);
+  box-shadow:inset 0 1px 3px #0000008c,inset 0 0 0 1px #15111F33}
+.co-punch.is-unlit{background:var(--ice);box-shadow:inset 0 0 0 1px var(--line-ice);clip-path:none}
+
+/* ── footer ────────────────────────────────────────────────────────── */
+.footer{z-index:3;min-height:max(100svh,820px);padding-top:var(--s9);display:flex;flex-direction:column;color:var(--moon);overflow:clip}
+.ft-sky{position:absolute;inset:0;z-index:-1;display:none;
+  background:linear-gradient(#110D1C5c,#110D1C5c),var(--still) center/cover no-repeat,var(--dusk)}
+html.is-static .ft-sky,html.field-borrowed .ft-sky,html.field-still .ft-sky{display:block}
+.ft-band{height:240px;border-block:1px solid var(--line-night);display:flex;align-items:center;overflow:hidden}
+.ft-track{display:flex;flex:none;white-space:nowrap;animation:marquee 28s linear infinite;will-change:transform}
+.ft-item{font:600 var(--t-footer)/.86 var(--f-display);letter-spacing:-.05em;padding-right:.5em;flex:none}
+@keyframes marquee{to{transform:translateX(-50%)}}
+.ft-main{flex:1;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center;padding-block:var(--s7)}
+.ft-copy{grid-column:1 / 7;display:flex;flex-direction:column;gap:var(--s7)}
+.ft-line{font:400 26px/1.35 var(--f-sans);letter-spacing:-.01em;max-width:520px}
+.ft-connect .label,.ft-kicker{color:#F3F1F8b3}
+/* the section kicker, clear of the header when the menu's "Contact" lands the footer at the top */
+.ft-kicker{margin:0 0 var(--s4)}
+.ft-pills{display:flex;gap:var(--s2);margin-top:var(--s4)}
+.ft-disc{grid-column:8 / 13;display:grid;place-items:center}
+.disc-wrap{position:relative;width:360px;height:360px}
+.disc-glow{position:absolute;left:50%;top:50%;width:280px;height:280px;margin:-140px 0 0 -140px;border-radius:50%;box-shadow:0 0 120px color-mix(in srgb,var(--iris) 40%,transparent);pointer-events:none}
+.disc{position:absolute;inset:0;display:grid;place-items:center;border-radius:50%;clip-path:circle(var(--dr,140px) at 50% 50%)}
+html:not(.disc-js) .disc{transition:clip-path 520ms var(--ease-glass)}
+.disc-core{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 42% 38%,color-mix(in srgb,var(--pearl) 80%,transparent),#0000 55%)}
+.disc-label{position:relative;font:600 30px/1 var(--f-display);letter-spacing:-.02em;color:var(--ink)}
+.disc-ring{position:absolute;left:50%;top:50%;width:430px;height:430px;margin:-215px 0 0 -215px;color:var(--moon);pointer-events:none;
+  clip-path:circle(0 at 50% 50%);transition:clip-path 520ms var(--ease-focus);animation:spin 14s linear infinite}
+@media (hover:hover){html:not(.disc-js) .disc-wrap:hover .disc{--dr:180px}html:not(.disc-js) .disc-wrap:hover .disc-ring{clip-path:circle(71% at 50% 50%)}}
+html:not(.disc-js) .disc:focus-visible{--dr:180px}
+.disc:focus-visible{outline:none}
+.disc-wrap.is-open .disc-ring,.disc-wrap:focus-within .disc-ring{clip-path:circle(71% at 50% 50%)}
+.ft-bottom{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center;border-top:1px solid var(--line-night);
+  padding-top:var(--s5);padding-bottom:var(--s5);font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:#F3F1F8a6}
+.ft-bottom .fb-c{grid-column:1 / 5}.ft-bottom .fb-b{grid-column:8 / 10}
+/* the page ends on its full stop: the brand's lit disc, as a sign-off */
+.ft-dot{grid-column:12;justify-self:end;display:block;width:13px;height:13px;border-radius:50%;box-shadow:0 0 6px color-mix(in srgb,var(--iris) 40%,transparent)}
+
+/* ── static: no pins, no scrubs; everything at its end state ─────────────── */
+html.is-static .ft-track,html.marquee-js .ft-track{animation:none}
+/* still modes: one line on the margin, no frozen repeats */
+html.is-static .ft-track,html.is-reduced .ft-track{transform:none!important;padding-left:var(--margin)}
+html.is-static .ft-item~.ft-item,html.is-reduced .ft-item~.ft-item{display:none}
+html.is-static .ft-item,html.is-reduced .ft-item{padding-right:0}
+
+/* ── 390 ─────────────────────────────────────────────────────────────────── */
+@media (max-width:767px){
+  /* round 4: the portrait gives 8px of radius (39 → 37vw, cy 274 → 266) so the scheme line fits between the ring and
+     the headline, and the subline grows to 28px (two lines still fit at 360); the stack moves down 17px */
+  .hero,html.hero-a .hero{--acx:50vw;--acy:266px;--ar:37vw;--h1-size:64px;--h1-top:calc(557px - .815 * 64px);--sub-size:clamp(24px, 7.2vw, 28px);
+    --eb-h:30px;--eb-gap:18px;
+    --hair-in:6px;--hair-out:23px;min-height:760px}
+
+  .vision{padding-top:var(--s9);padding-bottom:var(--s7)}
+  .m-br{display:inline}
+  .manifesto{margin-top:var(--s5)}
+  .m-line{white-space:normal;font-size:40px;line-height:1.02}
+  .m-line+.m-line{margin-top:.18em}
+
+  .about{padding-top:var(--s5)}
+  /* stacked, still full-bleed: white then grey, the page margin as the side padding */
+  .bio-card{display:flex;flex-direction:column;min-height:0}
+  .bio-body{padding:var(--s9) var(--margin) var(--s8)}
+  .bio-h{font-size:40px;line-height:1;margin:var(--s5) 0 var(--s6)}
+  .bio-text{font-size:18px;line-height:1.55;margin-top:0}
+  .bio-stub{padding:var(--s7) var(--margin) var(--s8)}
+  .bio-top{flex-direction:row;align-items:center;gap:var(--s5);margin-bottom:var(--s7)}
+  .bio-eye{width:104px;height:104px}
+  .bio-now{font-size:22px;line-height:1.25}
+  .bio-facts{margin:0 0 var(--s6)}
+  .bio-facts>div{padding:16px 0}
+  .bio-facts dt{font-size:12px}
+  .bio-facts dd{font-size:17px}
+
+  .clients{padding-top:var(--s8);padding-bottom:var(--s5)}
+  .logo-band{height:64px;margin-top:28px}
+  .logo-band::before,.logo-band::after{width:32px}
+
+  .work{padding-top:var(--s9);padding-bottom:var(--s9)}
+  .work-head{flex-direction:column;align-items:flex-start;gap:var(--s5)}
+  .work-tags{justify-content:flex-start;margin-bottom:0}
+  .work-tags .tag{height:36px;font-size:14px;padding:0 12px 0 11px;gap:8px}
+  .work-grid{grid-template-columns:minmax(0,1fr);row-gap:var(--s5);margin-top:var(--s7)}
+  .wcol{gap:var(--s5)}
+  .wcol--offset{padding-top:0}
+  .wcol:not(:has(>.work-card:not([hidden]))){display:none}   /* a filter can empty a column: no stray row gap */
+  .work-card{--ty:calc(100cqw * .7486);--tear-in:20px;border-radius:var(--r-card-m)}
+  .wc-stub{min-height:0;padding:24px 20px 24px}
+  .wc-title{max-width:none;padding-right:0}
+
+  .services{padding-top:var(--s9);padding-bottom:var(--s8)}
+  .svc-list{margin-top:var(--s7)}
+  .svc{--ix:calc(var(--margin) + 22px);--iy:56px}
+  .svc-head{height:auto;min-height:112px;padding:20px var(--margin);grid-template-columns:44px minmax(0,1fr) 44px;column-gap:14px;row-gap:4px}
+  .svc-idx{width:44px;height:44px;font-size:11px;grid-row:1 / 3;align-self:center}
+  .svc-title{font-size:30px;white-space:normal;text-wrap:balance;grid-column:2;grid-row:1;line-height:1.02}
+  .svc-sub{grid-column:2;grid-row:2;font-size:15px}
+  .svc-toggle{grid-column:3;grid-row:1 / 3;width:44px;height:44px;align-self:center}
+  .svc-body{grid-template-columns:minmax(0,1fr);padding:4px var(--margin) var(--s7) calc(var(--margin) + 58px);row-gap:var(--s4)}
+  .svc-body p:nth-child(1),.svc-body p:nth-child(2){grid-column:1;padding-right:0;font-size:16px}
+  .svc-tags{grid-column:1}
+  .svc-tags .tag{height:34px;font-size:13px;padding:0 12px 0 10px;gap:8px}
+
+  .companies{padding-top:var(--s9);padding-bottom:var(--s9)}
+  .co-head .h2{max-width:none}
+  .co-intro{font-size:17px}
+  .co-list{margin-top:var(--s7);gap:var(--s3)}
+  /* the top row: the year, its sector tag, the punch */
+  .co-card{--out-h:84px;height:auto;display:grid;grid-template-columns:auto auto minmax(0,1fr) 22px;grid-template-rows:auto auto var(--out-h);
+    padding:20px 20px 0;column-gap:10px;row-gap:10px;border-radius:var(--r-card-m)}
+  .co-card .tear--v{display:none}
+  /* the perforation's first and last holes sit on the card padding (20px), as on the work cards: round fits whole holes */
+  .co-card::after{content:"";position:absolute;left:calc(20px + var(--hole) / 2 - var(--hole-pitch) / 2);right:calc(20px + var(--hole) / 2 - var(--hole-pitch) / 2);bottom:calc(var(--out-h) - var(--hole) / 2);height:var(--hole);opacity:.6;
+    background:radial-gradient(circle calc(var(--hole) / 2),#15111F2e calc(var(--hole) / 2 - .5px),#0000 calc(var(--hole) / 2)) 0 50%/var(--hole-pitch) var(--hole) round no-repeat}
+  .co-card>.co-year{grid-column:1;grid-row:1;text-align:left;font:400 12px/1 var(--f-mono);letter-spacing:.02em;color:var(--haze-ink);align-self:center}
+  .co-card>.co-tag{grid-column:2;grid-row:1;align-self:center;justify-self:start;height:26px;font-size:12px;padding:0 10px 0 9px;gap:6px}
+  .co-card>.co-punch{grid-column:4;grid-row:1;align-self:center}
+  .co-card>.co-body{grid-column:1 / -1;grid-row:2;padding:0 0 18px}
+  .co-name{font-size:28px}
+  .co-desc{font-size:16px}
+  .co-card>.co-out{grid-column:1 / -1;grid-row:3;flex-direction:row;align-items:baseline;justify-content:space-between;padding:0;align-self:center}
+  .co-num{font-size:40px}
+  .co-term{font-size:16px}
+
+  .footer{min-height:0;padding-top:88px}
+  .ft-band{height:124px}
+  .ft-item{font-size:72px}
+  .ft-main{display:flex;flex-direction:column;align-items:stretch;gap:var(--s8);padding-block:var(--s7) var(--s8)}
+  .ft-line{font-size:20px}
+  .ft-disc{align-self:center}
+  .disc-wrap{width:260px;height:260px}
+  .disc{--dr:100px}
+  .disc-glow{width:200px;height:200px;margin:-100px 0 0 -100px;box-shadow:0 0 80px color-mix(in srgb,var(--iris) 40%,transparent)}
+  .disc-label{font-size:24px}
+  @media (hover:hover){html:not(.disc-js) .disc-wrap:hover .disc{--dr:130px}}
+  html:not(.disc-js) .disc:focus-visible{--dr:130px}
+  .ft-bottom{grid-template-columns:minmax(0,1fr) auto;row-gap:14px;padding-bottom:var(--s6)}
+  .ft-bottom .fb-c{grid-column:1;grid-row:1}.ft-dot{grid-column:2;grid-row:1;width:12px;height:12px}
+  .ft-bottom .fb-b{grid-column:1;grid-row:2}
+  html.is-static .ft-item,html.is-reduced .ft-item{font-size:clamp(44px,15vw,72px)}
+  html.is-static .logo-band,html.is-reduced .logo-band{height:256px}
+}
+
+/* ── loader: the pinhole is the hero (§8.1) ──────────────────────────────── */
+html.is-loading .site-header .brand,html.is-loading .site-header .f-pill,html.is-loading .site-header .nav-r,
+html.is-loading .hero-sub,html.is-loading .hero-eyebrow,html.is-loading .see,html.is-loading .hero-title .w,html.is-loading .barrel{opacity:0}
+html.is-loading .hero{--focus:0;--acx:50vw;--acy:50svh;--ar:1px;--pr:39svh}
+html.is-loading .hero .ctr{--cr:0%}
+html.is-loading .hero .stop{--sr:0%}
+html.is-loading .portrait-link{pointer-events:none}
+@media (max-width:767px){html.is-loading .hero{--pr:37vw}}

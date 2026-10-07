@@ -1,0 +1,66 @@
+/* ==========================================================================
+   Full Stop · the handoff (round 5; round 6: the filled light): the layers between the homepage and the work pages
+   (js/handoff.js). Loaded by both pages, render-blocking, so an arrival's cover and a return's veil are there from the
+   first paint. From a card the cover is the card's disc growing (a circle clip); arriving it dissolves into the hero's
+   own light, which fills the hero edge to edge (round 6), so nothing lands in a disc. The veil is the night itself.
+   ========================================================================== */
+
+/* ── 1 · the cover: the card's disc light grown, fixed over everything (the header too) ─────────────────────────
+   js/handoff.js clips it to a circle (clip-path, viewport px) and writes, per frame, the sky's drift offset (--hx/--hy)
+   and the box of the key and fill (--bx/--by/--bw/--bh), the circle's own square. So at every size it is painted like
+   the homepage card's .wc-ap, that disc grown: the scheme's --aurora-lit at 130vw × 130vh anchored to the viewport
+   (every tracked light is), the project's key (--h1 at --ax/--ay, .92) and its fill (--h2 from the opposite side, blend
+   color, .8), isolated so the fill only tints the cover's own light. A box smaller than the circle showed its edges as
+   a lit rectangle. The defaults (inset 0, sky at 0 0) only show if no script ever paints it. The light is one group
+   (.ho-light, --lit-2 under the sky in case it ever falls short) over the night, opaque at 1; arriving, the whole cover
+   dissolves into the hero's light. */
+.ho-cover{position:fixed;inset:0;z-index:95;overflow:hidden;isolation:isolate;contain:strict;visibility:hidden;pointer-events:none;
+  background:var(--night)}
+.ho-cover.is-on{visibility:visible;pointer-events:auto}
+.ho-light{position:absolute;inset:0;isolation:isolate;background:var(--lit-2)}
+.ho-sky{position:absolute;left:0;top:0;width:130vw;height:130vh;background-image:var(--aurora-lit);background-repeat:no-repeat;
+  transform:translate3d(var(--hx,0px),var(--hy,0px),0)}
+.ho-key,.ho-fill{position:absolute;left:var(--bx,0px);top:var(--by,0px);width:var(--bw,100%);height:var(--bh,100%)}
+.ho-key{background:radial-gradient(circle at var(--ax,30%) var(--ay,26%),var(--h1,var(--iris)),#0000 60%);opacity:.92}
+.ho-fill{background:radial-gradient(circle at calc(100% - var(--ax,30%)) calc(100% - var(--ay,26%)),var(--h2,var(--glacier)),#0000 66%);
+  mix-blend-mode:color;opacity:.8}
+
+/* the field's light (an arrival from a Next band, round 6): the scheme's still, the field's own render, dimmed as the
+   field is in the bands (css/work.css .w-sky), over the whole viewport. No key and fill: the band had none either */
+.ho-cover--field .ho-light{background:linear-gradient(color-mix(in srgb,var(--night) 26%,transparent),color-mix(in srgb,var(--night) 26%,transparent)),
+  var(--still) center/cover no-repeat,var(--dusk)}
+.ho-cover--field .ho-sky,.ho-cover--field .ho-key,.ho-cover--field .ho-fill{display:none}
+
+/* the disc and device it leaves from hide under the cover and its ghost (two lights would add up) */
+.work-card.is-handoff .wc-ap,.work-card.is-handoff .wc-halo,.work-card.is-handoff .wc-media img{visibility:hidden}
+
+/* the Next band's leave (round 6): the field is lifted to 95 (js/handoff.js), so the band's words and device (96) and
+   the header (97) ride above the growing light while they focus out, written per frame (no transitions) */
+html.is-leaving .w-next{z-index:96}
+html.is-leaving .site-header{z-index:97}
+html.is-leaving [data-ho]{transition:none!important}
+
+/* ── 2 · the ghost: the device's layers, copied over the cover in their media box and rack window, focusing out.
+   js/handoff.js places every part at its box and copies what its own class gave it (object-fit, the halo's masks). It
+   takes the pointer over its media box: the cover's clip is also its hit area, and outside the young circle the media
+   under it would reopen the loupe (data-cursor=hide, like the cover). ── */
+.ho-ghost{position:fixed;z-index:96;overflow:hidden;pointer-events:auto}
+.ho-ghost .ho-win{position:absolute;inset:0}
+.ho-ghost .ho-part{position:absolute;display:block;margin:0;max-width:none;max-height:none;transform:none;transition:none}
+.ho-ghost i.ho-part{background-repeat:no-repeat}
+
+/* ── 3 · the veil (back): the page focuses out into the night, under the header (70), so the brand, the pill and the
+   menu stay as the frame across the two pages. Going on, the blur leads (the focus curve) and the night follows (the
+   closing iris curve, which holds back first); lifting (.is-lift, the homepage once its section has landed), the
+   night goes first and the blur racks out behind it. ── */
+.ho-veil{position:fixed;inset:0;z-index:65;visibility:hidden;pointer-events:none;background-color:transparent;
+  -webkit-backdrop-filter:blur(0px);backdrop-filter:blur(0px);
+  transition:background-color 300ms var(--ease-iris-close),-webkit-backdrop-filter 300ms var(--ease-focus),backdrop-filter 300ms var(--ease-focus),visibility 0s linear 300ms}
+.ho-veil.is-on{visibility:visible;pointer-events:auto;background-color:var(--night);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  transition:background-color 300ms var(--ease-iris-close),-webkit-backdrop-filter 300ms var(--ease-focus),backdrop-filter 300ms var(--ease-focus),visibility 0s}
+.ho-veil.is-lift{transition:background-color 360ms var(--ease-focus),-webkit-backdrop-filter 640ms var(--ease-focus),backdrop-filter 640ms var(--ease-focus),visibility 0s linear 640ms}
+
+/* the homepage while it lands a return: the pill would still name the hero ("Intro") until the section is landed, and
+   the header's scrim, already in the tone of the section it will land on (ice for #work), would be a pale band over
+   the night (the loader hides it the same way, css/system.css) */
+html.is-back .site-header .f-pill,html.is-back .site-header::before{opacity:0}

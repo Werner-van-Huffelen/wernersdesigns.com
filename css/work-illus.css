@@ -1,0 +1,127 @@
+/* ==========================================================================
+   Full Stop · work pages · the decision illustrations (round 5)
+   js/work-illus.js fills the decisions that have no image (figure.dec-illus[data-illus], css/work.css §6: 4:3, night-2,
+   r28, container-type:size, so cqw/cqh are the card's). Diagrams in the site's own language: circles only (discs, rings,
+   stadiums), lit discs, glass rims, hairlines, Fragment Mono labels, ring text the only uppercase. Every label is words
+   from its decision's own body, verbatim (the script drops any that are not). No new light: a lit disc is the scheme's
+   aurora (.lit), and the white-label copies are lit by the five schemes' own tokens, read from css/system.css.
+   The resting state below is the finished diagram (static, reduced, no script timing): js/work-illus.js only sets a
+   start state inline and animates back to it, clearing what it set.
+   ========================================================================== */
+
+.dec-illus[data-state=ready]{isolation:isolate}
+.il{position:absolute;inset:0;color:var(--haze);font:400 var(--il-fs)/1.32 var(--f-mono);letter-spacing:.02em;
+  --il-fs:12px;--il-in:clamp(18px, 5.4cqh, 28px);--il-rim-a:var(--glass-rim)}
+/* the plate's notes: the principle top left, its counterpoint bottom right, like annotations on a technical plate */
+.il-note{position:absolute;left:var(--il-in);top:calc(var(--il-in) - 3px);max-width:36cqw;text-wrap:balance}
+.il-note--end{left:auto;top:auto;right:var(--il-in);bottom:calc(var(--il-in) - 3px);text-align:right}
+/* a glass rim: the site's 1px conic hairline (css/system.css .glass::before) */
+.il-rim::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--il-rim-a);pointer-events:none;z-index:2;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.il .arr{position:absolute;left:50%;top:50%;width:34%;height:34%;margin:-17% 0 0 -17%;vertical-align:0}
+/* measured cards: 268px tall at 390, 495 at 1440. Small cards get the site's mobile micro size */
+@container (max-height:340px){.il{--il-fs:10px}}
+
+/* ── 1 · Affinidi · white-label (affinidi-2) ─────────────────────────────────────────────────────────────────────────
+   One component (the site's own glass button, unlit: the system) with five duplicates on an orbit around it, each the
+   same button with its style guide swapped: lit by one of the site's five ⌘R schemes, which are the same idea (same
+   system, different brand). The one this page is lit by wears the scheme dots' ring. Around it all, ring text between
+   two hairlines, as on the hero. JS writes the geometry in px (--ro orbit, --cd copy, --cc core; the ring from FS.ring).
+   --k (0 → 1) carries the copies and the orbit out from under the core (the duplication); --o opens each copy's light. */
+.wl-c{position:absolute;left:50%;top:50%;width:0;height:0;--ro:27cqh;--cd:14cqh;--cc:20cqh;--k:1}
+.wl-orbit,.wl-hair{position:absolute;left:0;top:0;border-radius:50%;transform:translate(-50%,-50%);box-shadow:inset 0 0 0 1px var(--line-night)}
+.wl-orbit{width:calc(2 * var(--ro) * var(--k));height:calc(2 * var(--ro) * var(--k))}
+.wl-hair{width:calc(2 * var(--hr));height:calc(2 * var(--hr))}
+.wl-ring{position:absolute;left:0;top:0;width:0;height:0}
+.wl-ring .ring-svg{position:absolute;left:0;top:0;color:color-mix(in srgb,var(--haze) 80%,transparent);animation:spin 96s linear infinite}
+.wl-copy,.wl-core{position:absolute;left:0;top:0;border-radius:50%;color:var(--moon);background:var(--glass-fill)}
+.wl-copy{width:var(--cd);height:var(--cd);margin:calc(var(--cd) / -2) 0 0 calc(var(--cd) / -2);
+  transform:rotate(var(--a)) translateX(calc(var(--ro) * var(--k))) rotate(calc(-1 * var(--a)))}
+/* the copy's light: its scheme's aurora, whole, inside the disc (the page's lit discs show a window onto a 130vw one;
+   a swatch shows the scheme itself). It irises open from the centre over the unlit glass, the arrow turning ink in it */
+.wl-light{position:absolute;inset:0;border-radius:50%;clip-path:circle(var(--o,50%) at 50% 50%);color:var(--ink);
+  background-image:var(--aurora-lit);background-size:100% 100%;background-repeat:no-repeat}
+.wl-copy{box-shadow:0 0 calc(var(--cd) * .5) color-mix(in srgb,var(--iris) calc(var(--gl,1) * 30%),transparent)}
+/* the scheme you are looking at: the ring the homepage's scheme dots wear (css/home.css .eb-dots i.is-on) */
+.wl-copy.is-on::after{content:"";position:absolute;inset:-6px;border-radius:50%;opacity:var(--on,1);
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--iris) 75%,transparent),0 0 12px color-mix(in srgb,var(--iris) 40%,transparent)}
+.wl-core{z-index:1;width:var(--cc);height:var(--cc);margin:calc(var(--cc) / -2) 0 0 calc(var(--cc) / -2);background:var(--night-2)}
+.wl-core>i{position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 36% 28%,color-mix(in srgb,var(--pearl) 14%,transparent),#0000 62%),var(--glass-fill);box-shadow:inset 0 0 0 1px var(--line-night),0 18px 40px -18px #000000b3}
+/* stacked under the core while --k is 0, so the copies come out from under it */
+.wl-copy{z-index:0}
+
+/* ── 2 · GoodWorker · scope (goodworker-1) ───────────────────────────────────────────────────────────────────────────
+   Less scope, more focus, literally: the three flows are lit discs in focus on one hairline, labelled, each inside a
+   focus ring; everything else is the same light out of focus behind them, the way a lens renders what it is not
+   focused on: discs of light, soft-edged, rimmed, adding up where they overlap. JS places the field from a fixed list
+   (--x/--y in %, --d in cqh), clear of the flows, their labels and the notes; some run off the card's edge.
+   The rack focus on reveal: all of it starts equally soft, then the three pull sharp one by one and the rest falls away. */
+.il--scope{--sy:42%;--fd:19cqh}
+.sc-field{position:absolute;inset:0;--fo:1;--fb:0px}
+.sc-bk{position:absolute;left:var(--x);top:var(--y);width:var(--d);height:var(--d);margin:calc(var(--d) / -2) 0 0 calc(var(--d) / -2);border-radius:50%;
+  opacity:calc(var(--op) * var(--fo));mix-blend-mode:screen;filter:blur(calc(var(--d) * .06 + var(--fb)));
+  /* a lens's disc of light: even across, a little brighter at its edge; its colour one of the scheme's lights */
+  background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 30%,transparent),color-mix(in srgb,var(--c) 27%,transparent) 82%,color-mix(in srgb,var(--c) 48%,transparent) 96%,#0000)}
+.sc-bk--ring{background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 8%,transparent) 82%,color-mix(in srgb,var(--c) 55%,transparent) 96%,#0000)}
+.sc-bk[data-c=i]{--c:var(--iris)}.sc-bk[data-c=g]{--c:var(--glacier)}.sc-bk[data-c=o]{--c:var(--orchid)}
+.sc-line{position:absolute;left:22%;right:22%;top:var(--sy);height:1px;margin-top:-.5px;background:color-mix(in srgb,var(--moon) 30%,transparent)}
+.sc-flow{position:absolute;left:var(--x);top:var(--sy);width:var(--fd);height:var(--fd);margin:calc(var(--fd) / -2) 0 0 calc(var(--fd) / -2);border-radius:50%;
+  box-shadow:0 0 calc(var(--fd) * .5) color-mix(in srgb,var(--iris) 32%,transparent)}
+.sc-flow>.lit{position:absolute;inset:0;border-radius:50%;overflow:hidden;animation:breathe 7s ease-in-out infinite alternate}
+/* the project's own light on its three (the hero disc's key and fill: --h1 from --ax/--ay, --h2 as colour) */
+.sc-flow>.lit::before,.sc-flow>.lit::after{content:"";position:absolute;inset:0;border-radius:50%}
+.sc-flow>.lit::before{background:radial-gradient(circle at var(--ax,30%) var(--ay,26%),var(--h1),#0000 62%);opacity:.7}
+.sc-flow>.lit::after{background:radial-gradient(circle at calc(100% - var(--ax,30%)) calc(100% - var(--ay,26%)),var(--h2),#0000 66%);mix-blend-mode:color;opacity:.6}
+/* in focus: a hairline ring just outside each of the three */
+.sc-flow::after{content:"";position:absolute;inset:calc(var(--fd) * -.09);border-radius:50%;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--moon) 34%,transparent);opacity:var(--fr,1)}
+.sc-lab{position:absolute;left:var(--x);top:calc(var(--sy) + var(--fd) * .59 + clamp(10px, 3cqh, 16px));width:max-content;max-width:25cqw;
+  transform:translateX(-50%);text-align:center;color:var(--moon);text-wrap:balance}
+
+/* ── 3 · heycar · contextual tips (heycar-2) ─────────────────────────────────────────────────────────────────────────
+   A buyer's path, five steps on a hairline, in the dark. On two of them the moment is lit: a light disc (the card's
+   own aperture, the project's hue pair) opens on the step, and above it stands the tip, the header's own contextual
+   readout (the glass stadium with its lit disc, which names where you are). The other steps get nothing. At rest
+   (static, reduced) both moments stand open. Live, a lit disc walks the path; on a tip's step the light irises open
+   from the step, the stem rises, the pill irises open from its own disc, and all of it closes again as it moves on. */
+.il--tips{--py:60%;--ty:25%;--nd:clamp(10px, 2.8cqh, 14px);--ad:29cqh;--th:clamp(28px, 7.2cqh, 36px)}
+.tp-path{position:absolute;left:7%;right:7%;top:var(--py);height:1px;margin-top:-.5px;background:color-mix(in srgb,var(--moon) 24%,transparent)}
+.tp-node{position:absolute;left:var(--x);top:var(--py);width:var(--nd);height:var(--nd);margin:calc(var(--nd) / -2) 0 0 calc(var(--nd) / -2);border-radius:50%;
+  background:var(--night-2);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--moon) 32%,transparent)}
+/* the moment: a light disc on the step, the path continuing across it as an ink hairline, the step an ink ring */
+.tp-ap{position:absolute;left:var(--x);top:var(--py);width:var(--ad);height:var(--ad);margin:calc(var(--ad) / -2) 0 0 calc(var(--ad) / -2);border-radius:50%;
+  clip-path:circle(var(--o,50%) at 50% 50%);box-shadow:0 0 50px color-mix(in srgb,var(--iris) 25%,transparent)}
+.tp-ap>.lit{position:absolute;inset:0;border-radius:50%;overflow:hidden;animation:breathe 7s ease-in-out infinite alternate}
+.tp-ap>.lit::before,.tp-ap>.lit::after{content:"";position:absolute;inset:0;border-radius:50%}
+.tp-ap>.lit::before{background:radial-gradient(circle at var(--ax,30%) var(--ay,26%),var(--h1),#0000 60%);opacity:.9}
+.tp-ap>.lit::after{background:radial-gradient(circle at calc(100% - var(--ax,30%)) calc(100% - var(--ay,26%)),var(--h2),#0000 66%);mix-blend-mode:color;opacity:.8}
+.tp-ap::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;margin-top:-.5px;z-index:1;background:color-mix(in srgb,var(--ink) 30%,transparent)}
+.tp-ap::after{content:"";position:absolute;left:50%;top:50%;width:var(--nd);height:var(--nd);margin:calc(var(--nd) / -2) 0 0 calc(var(--nd) / -2);z-index:1;border-radius:50%;
+  box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ink) 70%,transparent)}
+.tp-stem{position:absolute;left:var(--x);top:calc(var(--ty) + var(--th) / 2);bottom:calc(100% - var(--py) + var(--ad) / 2);width:1px;margin-left:-.5px;
+  background:color-mix(in srgb,var(--moon) 34%,transparent);clip-path:inset(var(--cut,0%) 0 0 0)}
+.tp-tip{position:absolute;left:var(--x);top:var(--ty);z-index:2;height:var(--th);transform:translate(calc(-50% + var(--dx,0px)),-50%);display:inline-flex;align-items:center;gap:9px;
+  padding:0 15px 0 10px;border-radius:var(--r-pill);white-space:nowrap;color:var(--moon);background:var(--glass-fill);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:0 14px 30px -14px #000000cc;clip-path:circle(var(--tr,200vmax) at 17px 50%)}
+/* a closed moment's ghost (live only): the tip's stadium as a hairline, no glass, no light, no words */
+.tp-gh{display:none}
+.il--tips.is-live .tp-gh{display:inline-flex;z-index:1;clip-path:none;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;color:transparent;
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--moon) 20%,transparent)}
+.tp-gh .tp-ico{visibility:hidden}
+/* two balanced lines when a small card has no room for both side by side (js/work-illus.js tips layout) */
+.tp-tip.is-wrap{height:auto;min-height:var(--th);padding-block:6px;white-space:normal;width:max-content;line-height:1.2;text-wrap:balance}
+.tp-ico{position:relative;width:14px;height:14px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px var(--line-night)}
+.tp-ico>.lit{position:absolute;inset:0;border-radius:50%;clip-path:circle(5.5px at 50% 50%)}
+.tp-lab{position:absolute;left:var(--x);top:calc(var(--py) + var(--ad) / 2 + clamp(10px, 3cqh, 16px));width:max-content;max-width:26cqw;
+  transform:translateX(-50%);text-align:center;color:var(--moon);text-wrap:balance}
+.il--tips .il-note--end{top:calc(var(--il-in) - 3px);bottom:auto}
+.tp-dot{position:absolute;left:0;top:var(--py);z-index:3;width:var(--td,11px);height:var(--td,11px);margin:calc(var(--td,11px) / -2) 0 0 calc(var(--td,11px) / -2);border-radius:50%;
+  opacity:0;transform:translateX(calc(var(--tx,7) * 1cqw));box-shadow:0 0 10px color-mix(in srgb,var(--iris) 55%,transparent)}
+.il--tips.is-live .tp-dot{opacity:var(--td-o,1)}
+@container (max-height:340px){
+  .il--tips{--td:9px;--ty:29.5%;--py:61.5%}
+  .tp-tip{gap:7px;padding:0 12px 0 8px;clip-path:circle(var(--tr,200vmax) at 14px 50%)}
+  .tp-ico{width:12px;height:12px}.tp-ico>.lit{clip-path:circle(4.5px at 50% 50%)}
+}
+html.is-static .tp-ap>.lit,html.is-static .sc-flow>.lit{animation:none}
