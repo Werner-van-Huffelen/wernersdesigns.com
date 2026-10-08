@@ -511,7 +511,7 @@
     for (let i = 0; i < Math.max(0, ...per.map((a) => a.length)); i++) per.forEach((a) => a[i] && order.push(a[i]));
     const W = (HOME.work = {
       order, filter: 'all',
-      pick: (f) => order.filter((c) => f === 'all' || c.dataset.kind === f),
+      pick: (f) => order.filter((c) => f === 'all' || (c.dataset.kind || '').split(' ').includes(f)),   /* a card can sit in several filters (2026-10-08: Recent work) */
       place(list) {
         const on = new Set(list), seq = cols.map(() => []);
         if (mobile()) seq[0].push(...order);   /* one column, 01 02 03 …; the empty right column hides (css/home.css) */

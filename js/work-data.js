@@ -262,7 +262,7 @@
        study"). The flow is his own: lead in and verified in the OS, picked up by a seller in the portal, offer back to the
        OS, signed contract checked in the OS. The rest is the two pages' fact-checked copy. */
     galvany: {
-      type: 'case', kind: 'recent', no: '01', hue: { h1: 'iris', h2: 'orchid', ax: '30%', ay: '24%' },
+      type: 'case', no: '01', hue: { h1: 'iris', h2: 'orchid', ax: '30%', ay: '24%' },   /* a case study; on the homepage also under Recent work */
       card: 'galvany/laptops', cardAlt: 'GALVANY OS and the GALVANY Sales Portal on two laptops, facing each other',
       order: ['context', 'what', 'system', 'decisions', 'research', 'final', 'outcome'],
       slug: 'galvany',

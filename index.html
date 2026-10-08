@@ -13,11 +13,11 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Fragment+Mono&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
 <!-- ?v=: bump on every change, so a plain reload never runs a cached script against new markup -->
-<link rel="stylesheet" href="css/system.css?v=r7m">
-<link rel="stylesheet" href="css/home.css?v=r7m">
-<link rel="stylesheet" href="css/handoff.css?v=r7m">
+<link rel="stylesheet" href="css/system.css?v=r7n">
+<link rel="stylesheet" href="css/home.css?v=r7n">
+<link rel="stylesheet" href="css/handoff.css?v=r7n">
 <!-- the scheme (round 4): picked before the first paint, shared with work.html (round 5 moved it into js/scheme.js) -->
-<script src="js/scheme.js?v=r7m"></script>
+<script src="js/scheme.js?v=r7n"></script>
 <script>
   /* the portrait is black and white in every scheme (round 4b): its two layers are preloaded here, homepage only */
   (function(d){
@@ -41,14 +41,14 @@
 </script>
 <!-- round 5, the iris to the work pages and back: a return from one (sessionStorage fs.back) turns the loader above
      into html.is-back, which lands its section instead; shared with work.html -->
-<script src="js/handoff.js?v=r7m"></script>
+<script src="js/handoff.js?v=r7n"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
 <script defer src="assets/logos/logos.js"></script>
-<script defer src="js/system.js?v=r7m"></script>
-<script defer src="js/home.js?v=r7m"></script>
-<script defer src="js/motion.js?v=r7m"></script>
+<script defer src="js/system.js?v=r7n"></script>
+<script defer src="js/home.js?v=r7n"></script>
+<script defer src="js/motion.js?v=r7n"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -202,17 +202,17 @@
     </div>
     <div class="work-tags" role="radiogroup" aria-label="Filter projects">
       <button class="tag" type="button" role="radio" aria-checked="true" data-filter="all"><i class="t-stop"><i class="lit"></i></i>All<span class="t-count">5</span></button>
-      <button class="tag" type="button" role="radio" aria-checked="false" data-filter="recent"><i class="t-stop"><i class="lit"></i></i>Recent work<span class="t-count">1</span></button>
-      <button class="tag" type="button" role="radio" aria-checked="false" data-filter="case"><i class="t-stop"><i class="lit"></i></i>Case studies<span class="t-count">3</span></button>
+      <button class="tag" type="button" role="radio" aria-checked="false" data-filter="recent"><i class="t-stop"><i class="lit"></i></i>Recent work<span class="t-count">2</span></button>
+      <button class="tag" type="button" role="radio" aria-checked="false" data-filter="case"><i class="t-stop"><i class="lit"></i></i>Case studies<span class="t-count">4</span></button>
       <button class="tag" type="button" role="radio" aria-checked="false" data-filter="shots"><i class="t-stop"><i class="lit"></i></i>Side quests<span class="t-count">1</span></button>
     </div>
   </div>
 
   <div class="work-grid">
     <div class="wcol">
-      <!-- 01 · GALVANY OS & Sales Portal (draft 2026-10-08, Werner: one case study for both; tools/galvany_merged.py) -->
-      <article class="work-card card on-night" data-tone="night" data-kind="recent" data-lit="track" style="--h1:var(--iris);--h2:var(--orchid);--ax:30%;--ay:24%">
-        <div class="wc-media" data-lens="media" data-src="assets/galvany-3200.webp" data-ring="RECENT WORK · GALVANY OS & SALES PORTAL · ">
+      <!-- 01 · GALVANY OS & Sales Portal (2026-10-08, Werner: one case study for both, also Recent work; tools/galvany_merged.py) -->
+      <article class="work-card card on-night" data-tone="night" data-kind="case recent" data-lit="track" style="--h1:var(--iris);--h2:var(--orchid);--ax:30%;--ay:24%">
+        <div class="wc-media" data-lens="media" data-src="assets/galvany-3200.webp" data-ring="CASE STUDY · GALVANY OS & SALES PORTAL · ">
           <div class="wc-zoom">
             <i class="wc-ap lit" aria-hidden="true"></i>
             <i class="wc-halo" style="-webkit-mask-image:url(assets/work/galvany-halo.png);mask-image:url(assets/work/galvany-halo.png)"></i>
@@ -222,11 +222,11 @@
         </div>
         <i class="tear tear--h"></i>
         <div class="wc-stub">
-          <p class="wc-label">Nº 01 · Recent work</p>
+          <p class="wc-label">Nº 01 · Case study</p>
           <p class="wc-name">GALVANY OS &amp; Sales Portal</p>
           <h3 class="wc-title">One flow from lead to installed heat pump, across two products<span class="stop">.</span></h3>
         </div>
-        <a class="wc-btn glass g-m" href="work.html?p=galvany" aria-label="GALVANY OS and Sales Portal, recent work"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="wc-btn glass g-m" href="work.html?p=galvany" aria-label="GALVANY OS and Sales Portal, case study"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </article>
       <!-- 03 -->
       <article class="work-card card on-night" data-tone="night" data-kind="case" data-lit="track" style="--h1:var(--iris);--h2:var(--glacier);--ax:74%;--ay:72%">
@@ -268,7 +268,7 @@
 
     <div class="wcol wcol--offset">
       <!-- 02 · Bandcamp (round 7: Werner's own player shots, and its own page) -->
-      <article class="work-card card on-night" data-tone="night" data-kind="shots" data-lit="track" style="--h1:var(--orchid);--h2:var(--iris);--ax:72%;--ay:26%">
+      <article class="work-card card on-night" data-tone="night" data-kind="shots recent" data-lit="track" style="--h1:var(--orchid);--h2:var(--iris);--ax:72%;--ay:26%">
         <div class="wc-media" data-lens="media" data-src="assets/bandcamp.webp" data-ring="SIDE QUEST · BANDCAMP · ">
           <div class="wc-zoom">
             <i class="wc-ap lit" aria-hidden="true"></i>
