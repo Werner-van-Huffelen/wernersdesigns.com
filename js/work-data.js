@@ -43,12 +43,10 @@
     '/projects/affinidi-phones.webp': dev('affinidi', 1600, 970, [231, 68, 1358, 859]),
     '/projects/goodworker-devices.webp': dev('goodworker', 1600, 934, [143, 62, 1492, 859]),
     '/projects/heycar-macbook.webp': dev('heycar', 1600, 1634, [110, 110, 1477, 1493]),
-    /* GALVANY Sales Portal: its leads board on a laptop render (tools/galvany_portal.py) */
-    'sales-portal/laptop': Object.assign(dev('sales-portal', 1600, 1352, [110, 93, 1490, 1259]), { x2: 'assets/sales-portal-3200.webp' }),
+    /* GALVANY OS & Sales Portal (draft, 2026-10-08): both laptop renders, facing each other (tools/galvany_merged.py) */
+    'galvany/laptops': Object.assign(dev('galvany', 1600, 1006, [110, 69, 1490, 937]), { x2: 'assets/galvany-3200.webp' }),
     '/projects/heycar.jpg': { kind: 'screen', src: 'assets/ext/heycar.jpg', w: 1024, h: 640 },
     /* round 7: Werner's own shot of his Bandcamp player, the two panels overlapping (his 8.webp, rebuilt on the light: tools/bandcamp.py) */
-    /* GALVANY OS: the leads board on a laptop render */
-    'galvany-os/laptop': Object.assign(dev('galvany-os', 1600, 1352, [110, 93, 1490, 1259]), { x2: 'assets/galvany-os-3200.webp' }),   /* x2: its 3200w twin */
     'bandcamp/panels': dev('bandcamp', 1600, 1787, [244, 272, 1356, 1515]),
   };
   /* the live site's images. Screens are flat and opaque (a glass frame on the light); boards are flat UI on
@@ -121,12 +119,10 @@
      certificate card; the candidate's photo and basic info. heycar's is its screen cropped to the three questions
      (tools/work.py questions). */
   WORK.decMedia = {
-    'galvany-os-1': L('galvany-os/orders'),
-    'galvany-os-2': L('galvany-os/order-review'),
-    'galvany-os-3': L('galvany-os/three-f'),
-    'sales-portal-1': L('sales-portal/board'),
-    'sales-portal-2': L('sales-portal/drawer'),
-    'sales-portal-3': L('sales-portal/attention'),
+    'galvany-1': L('sales-portal/drawer'),
+    'galvany-2': L('sales-portal/attention'),
+    'galvany-3': L('galvany-os/order-review'),
+    'galvany-4': L('galvany-os/three-f'),
     'affinidi-1': { kind: 'detail', of: '/projects/affinidi-phones.webp', cx: 760, cy: 370, mcx: 700, mcy: 345 },
     'goodworker-2': { kind: 'detail', of: '/projects/goodworker-devices.webp', cx: 915, cy: 350, mcx: 735, mcy: 310 },   /* r6: clear of the bezel (≈542–578) */
     'heycar-1': { kind: 'screen', src: 'assets/work/heycar-questions.webp', w: 1900, h: 670 },   /* r6: cut from the live idea-search screen */
@@ -138,7 +134,7 @@
   /* ── the projects ─────────────────────────────────────────────────────────── */
   WORK.projects = {
     affinidi: {
-      type: 'case', no: '04', hue: { h1: 'iris', h2: 'glacier', ax: '74%', ay: '72%' },
+      type: 'case', no: '03', hue: { h1: 'iris', h2: 'glacier', ax: '74%', ay: '72%' },
       card: '/projects/affinidi-phones.webp', cardAlt: 'Affinidi identity apps on four iPhones',
       /* concept: the page's sections after the Brief, and the live site's Link row */
       order: ['what', 'decisions', 'system', 'atomic', 'final', 'outcome'],   /* r6 review: the why before the deep-dive */
@@ -181,7 +177,7 @@
       nextSlug: 'goodworker',
     },
     goodworker: {
-      type: 'case', no: '05', hue: { h1: 'orchid', h2: 'glacier', ax: '50%', ay: '18%' },
+      type: 'case', no: '04', hue: { h1: 'orchid', h2: 'glacier', ax: '50%', ay: '18%' },
       card: '/projects/goodworker-devices.webp', cardAlt: 'GoodWorker platform on desktop, tablet and phone',
       /* concept. GoodWorker was sold in 2025 (Werner 2026-10-07: sold, not terminated), so its live link (goodworker.in) is left out */
       order: ['context', 'what', 'process', 'research', 'concept', 'wireframes', 'decisions', 'final', 'outcome'],
@@ -222,7 +218,7 @@
       nextSlug: 'heycar',
     },
     heycar: {
-      type: 'case', no: '06', hue: { h1: 'glacier', h2: 'iris', ax: '20%', ay: '46%' },
+      type: 'case', no: '05', hue: { h1: 'glacier', h2: 'iris', ax: '20%', ay: '46%' },
       card: '/projects/heycar-macbook.webp', cardAlt: 'heycar vehicle page on a MacBook',
       order: ['challenge', 'what', 'ideation', 'decisions', 'final', 'outcome'],
       links: [{ href: 'https://www.hey.car', text: 'hey.car' }, { href: 'https://www.heycar.co.uk', text: 'heycar.co.uk' }],
@@ -260,66 +256,40 @@
       ],
       outcome: 'heycar launched in Germany and quickly became one of the leading platforms for quality second-hand cars, and the UK pitch my team designed sold the project there. The platform has since expanded across multiple European markets.',
       stats: [],                                  /* no numbers in the outcome, so no stat row */
-      nextSlug: 'galvany-os',
+      nextSlug: 'galvany',
     },
-    /* 2026-10-05, Werner: "add another recent work project for the sales portal" (his zip, sales-portal-screens), replacing
-       the old portal page. Copy from what the screens show and from the portal's own project notes; drafted for his review */
-    'sales-portal': {
-      type: 'case', kind: 'recent', no: '02', hue: { h1: 'orchid', h2: 'pearl', ax: '28%', ay: '24%' },
-      card: 'sales-portal/laptop', cardAlt: 'The GALVANY Sales Portal leads board on a laptop',
-      order: ['what', 'decisions', 'final'],
-      slug: 'sales-portal',
-      name: 'GALVANY Sales Portal',
-      headline: 'What to do next, for sales partners and their teams.',
+    /* GALVANY OS & Sales Portal as one case study (2026-10-08, live; Werner: "merge the OS and Sales portal into 1 case
+       study"). The flow is his own: lead in and verified in the OS, picked up by a seller in the portal, offer back to the
+       OS, signed contract checked in the OS. The rest is the two pages' fact-checked copy. */
+    galvany: {
+      type: 'case', kind: 'recent', no: '01', hue: { h1: 'iris', h2: 'orchid', ax: '30%', ay: '24%' },
+      card: 'galvany/laptops', cardAlt: 'GALVANY OS and the GALVANY Sales Portal on two laptops, facing each other',
+      order: ['context', 'what', 'system', 'decisions', 'research', 'final', 'outcome'],
+      slug: 'galvany',
+      name: 'GALVANY OS & Sales Portal',
+      headline: 'One flow from lead to installed heat pump, across two products.',
       company: 'GALVANY',
       role: 'Lead Product Designer',
       year: '2026',
-      tags: ['Product design', 'UX design', 'UI design', 'Sales tools'],
-      brief: 'GALVANY’s sales partners sell its heat pumps and batteries. The Sales Portal is where they work: their leads and appointments, the offers about to expire and, for team and area leaders, what needs attention in the team.',
+      tags: ['Product design', 'Design in code', 'Design systems', 'User research', 'Internal tools', 'Sales tools'],
+      brief: 'GALVANY sells heat pumps through sales partners. GALVANY OS is meant to replace Airtable for its own teams, and the Sales Portal is where the partners work. Every customer passes from one to the other and back. I design both.',
       whatIDid: [
-        'Alongside GALVANY OS, I design the Sales Portal: a seller’s day with their leads and offers, and a team view for team and area leaders. I built it in code on my own design system, like the OS.',
-        'I scoped the portal to one question: what do I, or my team, do next, and how are we doing? Anything GALVANY runs internally stays in the OS, so the portal has no admin area.',
+        'I lead product design at GALVANY, and its design system started with me. Long before our developer built his version, I built the first one in code, from an existing UI kit skinned to our brand, and ran the OS and the Sales Portal prototypes on it. I own both prototypes: what each team and each seller sees, how a project moves between teams, and what the backend will be built against. For the OS, I also own the interviews.',
+        'I design in code with Claude Code: clickable prototypes on fictional, seeded data, with over two thousand mock projects in the OS. Claude asks, I decide. Even a sort order waits for my answer, which is logged in the code as a dated decision. When I let it run ahead, as in the overnight build of the first twelve OS work views, every guess is logged for my review.',
       ],
       decisions: [
-        { heading: 'Hot leads and expiring offers have their own filters', body: 'Both filters sit right above the board, which runs from leads without an appointment to signed orders on their way to installation, with a column each for appointment, offer, detailed planning and order.', image: 'sales-portal-1', imageAlt: 'The leads board: no appointment, appointment, offer, detailed planning and order, with the hot-lead and expiring-offer filters above' },
-        { heading: 'The lead opens beside the board', body: 'A lead opens in a drawer on the right, so the seller keeps their place on the board. Calling, the offer and the next steps sit at the top. On a phone, the drawer goes full screen.', image: 'sales-portal-2', imageAlt: 'A lead’s drawer over the board: call and e-mail, the offer, the next steps, the key facts and the appointments' },
-        { heading: 'Every exception starts with a lead', body: 'The team view lists what needs attention as open exceptions, each one triggered by a lead’s state, like a lead still waiting three days in a seller’s inbox. Sellers aren’t measured on speed or activity. One click opens the seller’s page, where a call can unblock it.', image: 'sales-portal-3', imageAlt: 'Needs attention in the team: open exceptions, each a lead a seller hasn’t accepted yet, with how long it has waited' },
+        { heading: 'The lead opens beside the board', body: 'In the portal, a lead opens in a drawer on the right, so the seller keeps their place on the board. Calling, the offer and the next steps sit at the top. On a phone, the drawer goes full screen.', image: 'galvany-1', imageAlt: 'A lead’s drawer over the seller’s board: call and e-mail, the offer, the next steps, the key facts and the appointments' },
+        { heading: 'Every exception starts with a lead', body: 'The portal’s team view lists what needs attention as open exceptions, each one triggered by a lead’s state, like a lead still waiting three days in a seller’s inbox. Sellers aren’t measured on speed or activity. One click opens the seller’s page, where a call can unblock it.', image: 'galvany-2', imageAlt: 'Needs attention in the team: open exceptions, each a lead a seller hasn’t accepted yet, with how long it has waited' },
+        { heading: 'A rejection names the page', body: "Back in the OS, order review sits beside the signed offer: a seven-point checklist, each point with its page, then release or reject with a reason. A rejection names the failed check and the page, like 'Cancellation policy not signed · p. 12', and the seller sees it in the portal, so whoever fixes it doesn’t have to guess.", image: 'galvany-3', imageAlt: 'Order review: the signed offer on the left, the seven-point checklist with its page numbers on the right' },
+        { heading: 'Gates before anyone installs', body: 'Nothing gets installed until its gates are clear: subsidy, detailed planning, financing and the customer’s own work. Pipeline cards show the first three as check circles (the electrics joined them later) and the customer’s own work as a tag. The project file shows all four, so what’s blocking is visible at a glance.', image: 'galvany-4', imageAlt: 'Three of the gates (subsidy, detailed planning and financing), each with its open, done and not-applicable count' },
       ],
+      outcome: 'GALVANY’s production design system is our developer’s version of mine. It took its brand colours from my OS prototype, and I made the ten design calls that were still open. The OS prototype itself is meant to become the spec the backend is built from.',
+      stats: [],
       nextSlug: 'bandcamp',
       nextType: 'side-quest',
     },
-    /* round 7 (Werner, 2026-10-02): his Chrome extension for listening on Bandcamp. Copy from his own words in the
-       session ("Minimum copy, role, year, company (self-employed)" and why it exists); the year (2026, his screenshots
-       show Bandcamp's September 2026 editorial) and the role are my reading of it, flagged to him. */
-    /* GALVANY OS (2026-10-05): drafted for Werner's review */
-    'galvany-os': {
-      type: 'case', kind: 'recent', no: '01', hue: { h1: 'iris', h2: 'orchid', ax: '30%', ay: '24%' },
-      card: 'galvany-os/laptop', cardAlt: "GALVANY OS's leads board on a laptop",
-      order: ['context', 'what', 'system', 'decisions', 'research', 'outcome'],
-      slug: 'galvany-os',
-      name: 'GALVANY OS',
-      headline: 'One system for every team, from lead to installed heat pump.',
-      company: 'GALVANY',
-      role: 'Lead Product Designer',
-      year: '2026',
-      tags: ['Product design', 'Design in code', 'Design systems', 'User research', 'Internal tools'],
-      brief: 'GALVANY sells heat pumps. Every team, from sales to legal, works out of Airtable, and the same project data is kept in several places. GALVANY OS is meant to replace Airtable, and I’m designing it as a clickable prototype first.',
-      whatIDid: [
-        'I lead product design at GALVANY, and its design system started with me. Long before our developer built his version, I built the first one in code, from an existing UI kit skinned to our brand, and ran the OS and the Sales Portal prototypes on it. For the OS itself I own the prototype and the interviews: what each team sees, how a project moves between teams, and what the backend will be built against.',
-        'I design it in code with Claude Code: a clickable prototype with over two thousand mock projects and a home view for every team. Claude asks, I decide. Even a sort order waits for my answer, which is logged in the code as a dated decision. When I let it run ahead, as in the overnight build of the first twelve work views, every guess is logged for my review.',
-      ],
-      decisions: [
-        { heading: 'A view is a pattern plus a config', body: 'The queues share one pattern, and each brings its own config: its tiles, its list, its filters and its actions. When a workshop changes how a team works, the change is a line in a config and doesn’t need a new screen.', image: 'galvany-os-1', imageAlt: 'The orders queue: four tiles above the list, the overdue reviews flagged on the first, then each order with its reviewer and status' },
-        { heading: 'A rejection names the page', body: "Order review sits beside the signed offer: a seven-point checklist, each point with its page, then release or reject with a reason. A rejection names the failed check and the page, like 'Cancellation policy not signed · p. 12', so whoever fixes it doesn’t have to guess.", image: 'galvany-os-2', imageAlt: 'Order review: the signed offer on the left, the seven-point checklist with its page numbers on the right' },
-        { heading: 'Gates before anyone installs', body: 'Nothing gets installed until its gates are clear: subsidy, detailed planning, financing and the customer’s own work. Pipeline cards show the first three as check circles (the electrics joined them later) and the customer’s own work as a tag. The project file shows all four, so what’s blocking is visible at a glance.', image: 'galvany-os-3', imageAlt: 'Three of the gates (subsidy, detailed planning and financing), each with its open, done and not-applicable count' },
-      ],
-      outcome: 'GALVANY’s production design system is our developer’s version of mine. It took its brand colours from my prototype, and I made the ten design calls that were still open. The prototype itself is meant to become the spec the backend is built from.',
-      stats: [],   /* Werner 2026-10-07: the design system is his work, so no disc that frames it as ten decisions */
-      nextSlug: 'sales-portal',
-      nextType: 'case',
-    },
     bandcamp: {
-      type: 'side-quest', no: '03', hue: { h1: 'orchid', h2: 'iris', ax: '72%', ay: '26%' },
+      type: 'side-quest', no: '02', hue: { h1: 'orchid', h2: 'iris', ax: '72%', ay: '26%' },
       card: 'bandcamp/panels', cardAlt: "The Bandcamp player's Collection and Discovery panels",
       order: ['player'],
       slug: 'bandcamp',
@@ -352,28 +322,34 @@
      Images carry alt text (what they show) and never a caption the brief does not give: unlabelled slots get a mono
      index ("01 / 03"). */
   WORK.sections = {
-    'galvany-os': {
-      context: { name: 'The challenge', h2: 'Five teams, one record.', blocks: [
+    galvany: {
+      context: { name: 'The flow', h2: 'Two products, one customer.', blocks: [
         { p: [
-          'Every team works off the same project record in Airtable. Mapping it field by field showed how much of it repeats: the date goods leave the warehouse alone turns up in four places.',
-          'The OS had to move the data and give every team its own place to work, without splitting the one record they all share.',
+          'The two need to work together and share a lot of information. They also speak the same language: the portal uses the OS’s words for every offer and order state.',
+          'Behind the OS sits the project record GALVANY’s own teams share in Airtable today. Mapping it field by field showed how much of it repeats: the date goods leave the warehouse alone turns up in four places.',
         ], cols: 2 },
+        { steps: [
+          { name: 'Lead', text: 'A lead comes in through the OS and gets verified.' },
+          { name: 'Seller', text: 'It’s shared with a seller, who picks up the customer in the Sales Portal.' },
+          { name: 'Offer', text: 'The seller creates an offer, and it’s shared back to the OS.' },
+          { name: 'Contract', text: 'The customer signs, and the signed contract is checked in the OS.' },
+        ] },
         { quote: 'One field, one place.' },
       ] },
-      system: { name: 'The system', h2: 'A lead board reads like an offer board.', blocks: [
+      system: { name: 'The system', h2: 'The OS borrowed the seller’s board.', blocks: [
         { p: [
-          'Sales follows four steps: lead, offer, order, project. Each step is its own queue, built on the same grammar, so the boards read the same way from the first call to the signature.',
-          'Behind it sits the status model, from order review through detailed planning, procurement and scheduling to installation, acceptance and close. Every status belongs to a station, so the system always knows whose move it is.',
+          'In the OS, sales runs through queues built on the same grammar: lead, offer, order and project. Its lead board took its look from the seller’s board in the portal: white cards, a coloured pill with the count on each column, and tags on the cards in the column’s colour. So a lead looks familiar to the team that verified it and to the seller who picks it up.',
+          'Behind the queues sits the status model, from order review through detailed planning, procurement and scheduling to installation, acceptance and close. Every status belongs to a station, so the system always knows whose move it is.',
         ], cols: 2 },
         { figs: [
-          { m: L('galvany-os/leads-board'), label: 'Leads', alt: 'Leads as a board: new, contacted, waitlist, scheduled', span: 6 },
-          { m: L('galvany-os/offers-board'), label: 'Offers', alt: 'Offers as a board in the same grammar: sent, opened, expiring, signed', span: 6 },
+          { m: L('galvany-os/leads-board'), label: 'GALVANY OS', alt: 'Leads in GALVANY OS as a board: new, contacted, waitlist, scheduled', span: 6 },
+          { m: L('sales-portal/board'), label: 'Sales Portal', alt: 'The seller’s leads board in the Sales Portal: no appointment, appointment, offer, detailed planning and order', span: 6 },
         ] },
-        { note: 'Every person, customer and record on these screens is fictional: the prototype runs on a seeded mock world. Only the product names are GALVANY’s own.' },
+        { note: 'Every person, customer and record on these screens is fictional: the prototypes run on seeded mock data. Only the product names are GALVANY’s own.' },
       ] },
       research: { name: 'Research', h2: 'Workarounds are findings, not mistakes.', size: 'statement', blocks: [
         { p: [
-          'I test the prototype with the people who will live in it, and every workaround they show me counts as a finding. In one session, two order managers spent thirty minutes on how they work today and thirty on the prototype. In a paired interview the biggest risk is false agreement, so on the main questions both wrote their answers down before saying them, and only one of them drove.',
+          'I test the OS prototype with the people who will live in it, and every workaround they show me counts as a finding. In one session, two order managers spent thirty minutes on how they work today and thirty on the prototype. In a paired interview the biggest risk is false agreement, so on the main questions both wrote their answers down before saying them, and only one of them drove.',
           'What the interviews showed changed the product. A ‘blocked’ badge became a named reason, the electrics got their own traffic light, and add-on orders got a record of their own. Next came installer matching, ‘best three’: three ranked installer teams with plain-language reasons. Assigning a team doesn’t fix the date: the installer accepts and picks the start day.',
         ], cols: 2 },
       ] },
@@ -520,8 +496,9 @@
      Its step labels quote the UI's own step tabs, which are real text in the images. ── */
   var P = WORK.projects;
   WORK.finals = {
-    'sales-portal': [
-      { m: L('sales-portal/calendar'), alt: 'The week view: on-site appointments, product demos and calls', title: 'The week', text: ['On-site visits, product demos and calls in one week view, with an export to iCal and Google.'] },
+    galvany: [
+      { m: L('galvany-os/offers-board'), alt: 'Offers in GALVANY OS as a board: sent, opened, expiring, signed', title: 'Offers in the OS', text: ['Every offer a seller sends shows up here, from sent to signed.'] },
+      { m: L('sales-portal/calendar'), alt: 'The seller’s week: on-site appointments, product demos and calls', title: 'The seller’s week', text: ['On-site visits, product demos and calls in one week view, with an export to iCal and Google.'] },
       { m: L('sales-portal/profile'), alt: 'A lead’s full profile: contact, home and system, financing and the contact history', title: 'The lead profile', text: ['Contact details, the home and the system, financing and every contact so far.'], caption: 'Every person and lead on these screens is fictional.' },
     ],
     affinidi: [
@@ -965,7 +942,11 @@
      The sections after the hero take their numbers (01 the Brief), tones (the Brief night, then alternating) and
      readout stops (2, 3, …; the hero 1.4) from their places; js/work.js hands the stops to the readout (WORK.stops). */
   WORK.render = function () {
-    var q = /[?&]p=([a-z0-9-]+)/.exec(location.search), slug = q ? q[1] : '', p = WORK.projects[slug] || null;
+    var q = /[?&]p=([a-z0-9-]+)/.exec(location.search), slug = q ? q[1] : '';
+    /* 2026-10-08: GALVANY OS and the Sales Portal had their own pages (live 2026-10-07); both are now the one case study */
+    var ALIAS = { 'galvany-os': 'galvany', 'sales-portal': 'galvany' };
+    if (ALIAS[slug]) { slug = ALIAS[slug]; try { history.replaceState(null, '', location.pathname + '?p=' + slug + location.hash); } catch (e) { /* file:// */ } }
+    var p = WORK.projects[slug] || null;
     var view = p && WORK.views[p.type];
     WORK.slug = p ? slug : null; WORK.p = p;
     var html = none();

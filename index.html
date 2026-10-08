@@ -13,11 +13,11 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Fragment+Mono&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
 <!-- ?v=: bump on every change, so a plain reload never runs a cached script against new markup -->
-<link rel="stylesheet" href="css/system.css?v=r7k">
-<link rel="stylesheet" href="css/home.css?v=r7k">
-<link rel="stylesheet" href="css/handoff.css?v=r7k">
+<link rel="stylesheet" href="css/system.css?v=r7m">
+<link rel="stylesheet" href="css/home.css?v=r7m">
+<link rel="stylesheet" href="css/handoff.css?v=r7m">
 <!-- the scheme (round 4): picked before the first paint, shared with work.html (round 5 moved it into js/scheme.js) -->
-<script src="js/scheme.js?v=r7k"></script>
+<script src="js/scheme.js?v=r7m"></script>
 <script>
   /* the portrait is black and white in every scheme (round 4b): its two layers are preloaded here, homepage only */
   (function(d){
@@ -41,14 +41,14 @@
 </script>
 <!-- round 5, the iris to the work pages and back: a return from one (sessionStorage fs.back) turns the loader above
      into html.is-back, which lands its section instead; shared with work.html -->
-<script src="js/handoff.js?v=r7k"></script>
+<script src="js/handoff.js?v=r7m"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
 <script defer src="assets/logos/logos.js"></script>
-<script defer src="js/system.js?v=r7k"></script>
-<script defer src="js/home.js?v=r7k"></script>
-<script defer src="js/motion.js?v=r7k"></script>
+<script defer src="js/system.js?v=r7m"></script>
+<script defer src="js/home.js?v=r7m"></script>
+<script defer src="js/motion.js?v=r7m"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -201,8 +201,8 @@
       <h2 class="h2" id="work-h" data-lens="text">Selected work<span class="stop">.</span></h2>
     </div>
     <div class="work-tags" role="radiogroup" aria-label="Filter projects">
-      <button class="tag" type="button" role="radio" aria-checked="true" data-filter="all"><i class="t-stop"><i class="lit"></i></i>All<span class="t-count">6</span></button>
-      <button class="tag" type="button" role="radio" aria-checked="false" data-filter="recent"><i class="t-stop"><i class="lit"></i></i>Recent work<span class="t-count">2</span></button>
+      <button class="tag" type="button" role="radio" aria-checked="true" data-filter="all"><i class="t-stop"><i class="lit"></i></i>All<span class="t-count">5</span></button>
+      <button class="tag" type="button" role="radio" aria-checked="false" data-filter="recent"><i class="t-stop"><i class="lit"></i></i>Recent work<span class="t-count">1</span></button>
       <button class="tag" type="button" role="radio" aria-checked="false" data-filter="case"><i class="t-stop"><i class="lit"></i></i>Case studies<span class="t-count">3</span></button>
       <button class="tag" type="button" role="radio" aria-checked="false" data-filter="shots"><i class="t-stop"><i class="lit"></i></i>Side quests<span class="t-count">1</span></button>
     </div>
@@ -210,82 +210,25 @@
 
   <div class="work-grid">
     <div class="wcol">
-      <!-- 01 · GALVANY OS (2026-10-05; Nº 01 and Recent work since 2026-10-05, Werner) -->
+      <!-- 01 · GALVANY OS & Sales Portal (draft 2026-10-08, Werner: one case study for both; tools/galvany_merged.py) -->
       <article class="work-card card on-night" data-tone="night" data-kind="recent" data-lit="track" style="--h1:var(--iris);--h2:var(--orchid);--ax:30%;--ay:24%">
-        <div class="wc-media" data-lens="media" data-src="assets/galvany-os-3200.webp" data-ring="RECENT WORK · GALVANY OS · ">
+        <div class="wc-media" data-lens="media" data-src="assets/galvany-3200.webp" data-ring="RECENT WORK · GALVANY OS & SALES PORTAL · ">
           <div class="wc-zoom">
             <i class="wc-ap lit" aria-hidden="true"></i>
-            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/galvany-os-halo.png);mask-image:url(assets/work/galvany-os-halo.png)"></i>
-            <img class="wc-soft" src="assets/galvany-os-soft-moon.webp" alt="" width="800" height="676" loading="lazy" decoding="async">
-            <img class="wc-sharp" src="assets/galvany-os.webp" srcset="assets/galvany-os.webp 1600w, assets/galvany-os-3200.webp 3200w" sizes="(max-width:767px) 100vw, 46vw" alt="GALVANY OS's leads board on a laptop" width="1600" height="1352" loading="lazy" decoding="async" data-loupe>
+            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/galvany-halo.png);mask-image:url(assets/work/galvany-halo.png)"></i>
+            <img class="wc-soft" src="assets/galvany-soft-moon.webp" alt="" width="800" height="503" loading="lazy" decoding="async">
+            <img class="wc-sharp" src="assets/galvany.webp" srcset="assets/galvany.webp 1600w, assets/galvany-3200.webp 3200w" sizes="(max-width:767px) 100vw, 46vw" alt="GALVANY OS and the GALVANY Sales Portal on two laptops, facing each other" width="1600" height="1006" loading="lazy" decoding="async" data-loupe>
           </div>
         </div>
         <i class="tear tear--h"></i>
         <div class="wc-stub">
           <p class="wc-label">Nº 01 · Recent work</p>
-          <p class="wc-name">GALVANY OS</p>
-          <h3 class="wc-title">One system for every team, from lead to installed heat pump<span class="stop">.</span></h3>
+          <p class="wc-name">GALVANY OS &amp; Sales Portal</p>
+          <h3 class="wc-title">One flow from lead to installed heat pump, across two products<span class="stop">.</span></h3>
         </div>
-        <a class="wc-btn glass g-m" href="work.html?p=galvany-os" aria-label="GALVANY OS, recent work"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="wc-btn glass g-m" href="work.html?p=galvany" aria-label="GALVANY OS and Sales Portal, recent work"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </article>
-      <!-- 03 · Bandcamp (round 7: Werner's own player shots, and its own page) -->
-      <article class="work-card card on-night" data-tone="night" data-kind="shots" data-lit="track" style="--h1:var(--orchid);--h2:var(--iris);--ax:72%;--ay:26%">
-        <div class="wc-media" data-lens="media" data-src="assets/bandcamp.webp" data-ring="SIDE QUEST · BANDCAMP · ">
-          <div class="wc-zoom">
-            <i class="wc-ap lit" aria-hidden="true"></i>
-            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/bandcamp-halo.png);mask-image:url(assets/work/bandcamp-halo.png)"></i>
-            <img class="wc-soft" src="assets/bandcamp-soft-moon.webp" alt="" width="800" height="894" loading="lazy" decoding="async">
-            <img class="wc-sharp" src="assets/bandcamp.webp" alt="The Bandcamp player's Collection and Discovery panels" width="1600" height="1787" loading="lazy" decoding="async" data-loupe>
-          </div>
-        </div>
-        <i class="tear tear--h"></i>
-        <div class="wc-stub">
-          <p class="wc-label">Nº 03 · Side quest</p>
-          <p class="wc-name">Bandcamp</p>
-          <h3 class="wc-title">Music player for Bandcamp<span class="stop">.</span></h3>
-        </div>
-        <a class="wc-btn glass g-m" href="work.html?p=bandcamp" aria-label="Bandcamp, side quest"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      </article>
-      <!-- 05 -->
-      <article class="work-card card on-night" data-tone="night" data-kind="case" data-lit="track" style="--h1:var(--orchid);--h2:var(--glacier);--ax:50%;--ay:18%">
-        <div class="wc-media" data-lens="media" data-src="assets/goodworker.webp" data-ring="CASE STUDY · GOODWORKER · ">
-          <div class="wc-zoom">
-            <i class="wc-ap lit" aria-hidden="true"></i>
-            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/goodworker-halo.png);mask-image:url(assets/work/goodworker-halo.png)"></i>
-            <img class="wc-soft" src="assets/goodworker-soft-moon.webp" alt="" width="800" height="467" loading="lazy" decoding="async">
-            <img class="wc-sharp" src="assets/goodworker.webp" alt="GoodWorker job marketplace on desktop, tablet and phone" width="1600" height="934" loading="lazy" decoding="async" data-loupe>
-          </div>
-        </div>
-        <i class="tear tear--h"></i>
-        <div class="wc-stub">
-          <p class="wc-label">Nº 05 · Case study</p>
-          <p class="wc-name">GoodWorker</p>
-          <h3 class="wc-title">GoodWorker set out to give millions of people in India control of their livelihoods<span class="stop">.</span></h3>
-        </div>
-        <a class="wc-btn glass g-m" href="work.html?p=goodworker" aria-label="GoodWorker, case study"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      </article>
-    </div>
-
-    <div class="wcol wcol--offset">
-      <!-- 02 · GALVANY Sales Portal (2026-10-05, Werner: replaces the old portal card; tools/galvany_portal.py) -->
-      <article class="work-card card on-night" data-tone="night" data-kind="recent" data-lit="track" style="--h1:var(--orchid);--h2:var(--pearl);--ax:28%;--ay:24%">
-        <div class="wc-media" data-lens="media" data-src="assets/sales-portal-3200.webp" data-ring="RECENT WORK · GALVANY SALES PORTAL · ">
-          <div class="wc-zoom">
-            <i class="wc-ap lit" aria-hidden="true"></i>
-            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/sales-portal-halo.png);mask-image:url(assets/work/sales-portal-halo.png)"></i>
-            <img class="wc-soft" src="assets/sales-portal-soft-moon.webp" alt="" width="800" height="676" loading="lazy" decoding="async">
-            <img class="wc-sharp" src="assets/sales-portal.webp" srcset="assets/sales-portal.webp 1600w, assets/sales-portal-3200.webp 3200w" sizes="(max-width:767px) 100vw, 46vw" alt="The GALVANY Sales Portal leads board on a laptop" width="1600" height="1352" loading="lazy" decoding="async" data-loupe>
-          </div>
-        </div>
-        <i class="tear tear--h"></i>
-        <div class="wc-stub">
-          <p class="wc-label">Nº 02 · Recent work</p>
-          <p class="wc-name">GALVANY Sales Portal</p>
-          <h3 class="wc-title">What to do next, for sales partners and their teams<span class="stop">.</span></h3>
-        </div>
-        <a class="wc-btn glass g-m" href="work.html?p=sales-portal" aria-label="GALVANY Sales Portal, recent work"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      </article>
-      <!-- 04 -->
+      <!-- 03 -->
       <article class="work-card card on-night" data-tone="night" data-kind="case" data-lit="track" style="--h1:var(--iris);--h2:var(--glacier);--ax:74%;--ay:72%">
         <div class="wc-media" data-lens="media" data-src="assets/affinidi.webp" data-ring="CASE STUDY · AFFINIDI · ">
           <div class="wc-zoom">
@@ -297,13 +240,13 @@
         </div>
         <i class="tear tear--h"></i>
         <div class="wc-stub">
-          <p class="wc-label">Nº 04 · Case study</p>
+          <p class="wc-label">Nº 03 · Case study</p>
           <p class="wc-name">Affinidi</p>
           <h3 class="wc-title">A design system for Affinidi's identity apps<span class="stop">.</span></h3>
         </div>
         <a class="wc-btn glass g-m" href="work.html?p=affinidi" aria-label="Affinidi, case study"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </article>
-      <!-- 06 -->
+      <!-- 05 -->
       <article class="work-card card on-night" data-tone="night" data-kind="case" data-lit="track" style="--h1:var(--glacier);--h2:var(--iris);--ax:20%;--ay:46%">
         <div class="wc-media" data-lens="media" data-src="assets/heycar.webp" data-ring="CASE STUDY · HEYCAR · ">
           <div class="wc-zoom">
@@ -315,11 +258,50 @@
         </div>
         <i class="tear tear--h"></i>
         <div class="wc-stub">
-          <p class="wc-label">Nº 06 · Case study</p>
+          <p class="wc-label">Nº 05 · Case study</p>
           <p class="wc-name">heycar</p>
           <h3 class="wc-title">heycar makes buying a second-hand car simple, fair and transparent<span class="stop">.</span></h3>
         </div>
         <a class="wc-btn glass g-m" href="work.html?p=heycar" aria-label="heycar, case study"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </article>
+    </div>
+
+    <div class="wcol wcol--offset">
+      <!-- 02 · Bandcamp (round 7: Werner's own player shots, and its own page) -->
+      <article class="work-card card on-night" data-tone="night" data-kind="shots" data-lit="track" style="--h1:var(--orchid);--h2:var(--iris);--ax:72%;--ay:26%">
+        <div class="wc-media" data-lens="media" data-src="assets/bandcamp.webp" data-ring="SIDE QUEST · BANDCAMP · ">
+          <div class="wc-zoom">
+            <i class="wc-ap lit" aria-hidden="true"></i>
+            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/bandcamp-halo.png);mask-image:url(assets/work/bandcamp-halo.png)"></i>
+            <img class="wc-soft" src="assets/bandcamp-soft-moon.webp" alt="" width="800" height="894" loading="lazy" decoding="async">
+            <img class="wc-sharp" src="assets/bandcamp.webp" alt="The Bandcamp player's Collection and Discovery panels" width="1600" height="1787" loading="lazy" decoding="async" data-loupe>
+          </div>
+        </div>
+        <i class="tear tear--h"></i>
+        <div class="wc-stub">
+          <p class="wc-label">Nº 02 · Side quest</p>
+          <p class="wc-name">Bandcamp</p>
+          <h3 class="wc-title">Music player for Bandcamp<span class="stop">.</span></h3>
+        </div>
+        <a class="wc-btn glass g-m" href="work.html?p=bandcamp" aria-label="Bandcamp, side quest"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </article>
+      <!-- 04 -->
+      <article class="work-card card on-night" data-tone="night" data-kind="case" data-lit="track" style="--h1:var(--orchid);--h2:var(--glacier);--ax:50%;--ay:18%">
+        <div class="wc-media" data-lens="media" data-src="assets/goodworker.webp" data-ring="CASE STUDY · GOODWORKER · ">
+          <div class="wc-zoom">
+            <i class="wc-ap lit" aria-hidden="true"></i>
+            <i class="wc-halo" style="-webkit-mask-image:url(assets/work/goodworker-halo.png);mask-image:url(assets/work/goodworker-halo.png)"></i>
+            <img class="wc-soft" src="assets/goodworker-soft-moon.webp" alt="" width="800" height="467" loading="lazy" decoding="async">
+            <img class="wc-sharp" src="assets/goodworker.webp" alt="GoodWorker job marketplace on desktop, tablet and phone" width="1600" height="934" loading="lazy" decoding="async" data-loupe>
+          </div>
+        </div>
+        <i class="tear tear--h"></i>
+        <div class="wc-stub">
+          <p class="wc-label">Nº 04 · Case study</p>
+          <p class="wc-name">GoodWorker</p>
+          <h3 class="wc-title">GoodWorker set out to give millions of people in India control of their livelihoods<span class="stop">.</span></h3>
+        </div>
+        <a class="wc-btn glass g-m" href="work.html?p=goodworker" aria-label="GoodWorker, case study"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </article>
     </div>
   </div>
