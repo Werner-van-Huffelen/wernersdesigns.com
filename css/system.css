@@ -179,9 +179,10 @@ html.no-ctr .ctr::before{display:none}
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
   mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
   transition:opacity var(--d-micro) linear}
+/* the inner light: a fixed sheen from the top on hover (2026-10-08 motion cut: it no longer follows the pointer) */
 .glass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:radial-gradient(circle at var(--px,50%) var(--py,0%),color-mix(in srgb,var(--pearl) 18%,transparent),#0000 60%);opacity:0;transition:opacity var(--d-short) var(--ease-focus)}
-.on-ice .glass::after{background:radial-gradient(circle at var(--px,50%) var(--py,0%),#FFFFFF8c,#0000 60%)}
+  background:radial-gradient(circle at 50% 0%,color-mix(in srgb,var(--pearl) 18%,transparent),#0000 60%);opacity:0;transition:opacity var(--d-short) var(--ease-focus)}
+.on-ice .glass::after{background:radial-gradient(circle at 50% 0%,#FFFFFF8c,#0000 60%)}
 .glass>*{position:relative;z-index:1}
 /* a ping inside glass stays a centred overlay: .glass>* (same specificity, later) made it a relative grid item for its
    900ms, which pushed the label to the disc's top and moved the disc's baseline (and the row beside it) by 4px */
@@ -334,16 +335,8 @@ html.has-cursor,html.has-cursor *{cursor:none!important}
 html.cursor-on .cursor{opacity:1}
 .cursor-dot{position:absolute;left:0;top:0;width:10px;height:10px;border-radius:50%;will-change:transform;box-shadow:0 0 8px color-mix(in srgb,var(--iris) 40%,transparent)}
 .cursor-lens{position:absolute;left:0;top:0;width:240px;height:240px;border-radius:50%;will-change:transform;clip-path:circle(0 at 50% 50%)}
-/* text lens: the same glass as the buttons. It brightens and saturates the words under it (backdrop on the lens
-   itself, since its clip makes it the backdrop root), with an inner light and a rim; no blend, no colour of its own */
-.cursor-lens[data-mode=text]{-webkit-backdrop-filter:saturate(1.5) brightness(1.32) contrast(1.04);backdrop-filter:saturate(1.5) brightness(1.32) contrast(1.04)}
-.cursor-lens .lens-fill{position:absolute;inset:60px;border-radius:50%;opacity:0;transition:opacity 160ms linear;
-  background:radial-gradient(circle at 36% 30%,color-mix(in srgb,var(--pearl) 20%,transparent),color-mix(in srgb,var(--pearl) 3.9%,transparent) 46%,#0000 64%),radial-gradient(circle at 50% 50%,#0000 70%,color-mix(in srgb,var(--iris) 12.2%,transparent) 100%)}
-.cursor-lens[data-tone=ice] .lens-fill{background:radial-gradient(circle at 36% 30%,#FFFFFFa6,#FFFFFF1f 46%,#0000 64%),radial-gradient(circle at 50% 50%,#0000 68%,color-mix(in srgb,var(--iris) 14.1%,transparent) 100%)}
-.cursor-lens[data-mode=text] .lens-fill{opacity:1}
-.cursor-lens[data-mode=text] .lens-rim{inset:60px;opacity:1;padding:1px}
-.cursor-lens[data-tone=ice] .lens-rim{background:var(--glass-rim-ice)}
-.cursor-lens[data-mode=media] .lens-fill,.cursor-lens[data-mode=portrait] .lens-fill{transition:none}
+/* 2026-10-08 motion cut: the text lens (the glass over headings and copy) is gone; the lens is the media loupe and the
+   portrait fill only */
 .cursor-lens .lens-media{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:var(--night-2);opacity:0;transition:opacity 160ms linear}
 .cursor-lens .lens-media img{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0}
 .cursor-lens[data-mode=media] .lens-media,.cursor-lens[data-mode=portrait] .lens-media{opacity:1}
@@ -351,12 +344,14 @@ html.cursor-on .cursor{opacity:1}
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
   mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 .cursor-lens[data-mode=media] .lens-rim,.cursor-lens[data-mode=portrait] .lens-rim{opacity:1}
-.cursor-lens .lens-ring{position:absolute;inset:0;width:240px;height:240px;color:var(--moon);opacity:0;animation:spin 12s linear infinite;
+/* the loupe's ring text turns only while the loupe is open (2026-10-08 motion cut: it spun on, unseen, while closed) */
+.cursor-lens .lens-ring{position:absolute;inset:0;width:240px;height:240px;color:var(--moon);opacity:0;animation:spin 12s linear infinite paused;
   filter:drop-shadow(0 0 2px #110D1C) drop-shadow(0 0 5px #110D1Ccc)}
-.cursor-lens[data-mode=media] .lens-ring,.cursor-lens[data-mode=portrait] .lens-ring{opacity:.9}
+.cursor-lens[data-mode=media] .lens-ring,.cursor-lens[data-mode=portrait] .lens-ring{opacity:.9;animation-play-state:running}
 /* round 4b · the portrait fill: the lens becomes the photo's own circle, so no ring text, no rim and no night behind
    the cut-out (the sky shows through, exactly as under the black-and-white layer) */
 .cursor-lens.is-fill .lens-ring,.cursor-lens.is-fill .lens-rim{opacity:0!important}
+.cursor-lens.is-fill .lens-ring{animation-play-state:paused}       /* hidden in the fill, so it holds too (2026-10-08) */
 .cursor-lens.is-fill .lens-media{background:transparent}
 @keyframes spin{to{transform:rotate(360deg)}}
 
@@ -413,9 +408,8 @@ html.field-still .menu .m-still{display:block}
 /* ── 16 · aurora field ──────────────────────────────────────────────────── */
 .field{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;background:var(--dusk);clip-path:circle(0 at 50% 50%)}
 .field[data-mode=menu]{z-index:59}
-.field--still{background:var(--still) center/cover no-repeat,var(--dusk);animation:still-drift 40s ease-in-out infinite alternate}
-@keyframes still-drift{from{background-position:40% 45%}to{background-position:60% 55%}}
-html.is-static .field--still,html.is-reduced .field--still{animation:none}
+/* the still holds, centred (2026-10-08 motion cut: no 40s pan) */
+.field--still{background:var(--still) center/cover no-repeat,var(--dusk)}
 html.is-static .field:not([data-mode=menu]),html.is-reduced .field[data-mode=aperture]{display:none}
 
 /* ── 17 · reduced motion + static ───────────────────────────────────────── */
@@ -432,18 +426,11 @@ html.is-static .cursor-lens .lens-ring{animation:none}
 .ld-read .roll{min-width:4ch}
 html.is-loading{cursor:progress}
 
-/* menu link lens: a glass rim ring opens from the stop, under the text; the lit stop hands over to the shader lens */
+/* 2026-10-08 motion cut: the menu link lens (a glass ring and the shader lens out of the stop) and the menu card's
+   iris are gone; a hovered link only dims the others (§15) */
 .menu-link{isolation:isolate}
-.menu-link .m-ring{position:absolute;left:var(--rx,0);top:var(--ry,0);width:1.3em;height:1.3em;margin:-.65em 0 0 -.65em;border-radius:50%;z-index:-1;pointer-events:none;
-  clip-path:circle(0 at 50% 50%);transition:clip-path 420ms var(--ease-glass);opacity:.55}
-.menu-link .m-ring::before{content:"";position:absolute;inset:0;border-radius:50%;padding:1px;background:var(--glass-rim);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
-  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
-.menu-link.is-lensed .m-ring{clip-path:circle(50% at 50% 50%)}
 
-.menu-card{will-change:clip-path}
 html:not(.f-ready) .ld-read .roll{opacity:0}
-.ln-w{display:inline-block}
 .cursor--lens{z-index:89}
 .menu:not(.is-open) :focus-visible{outline-color:transparent}
 main section[tabindex="-1"]:focus,footer[tabindex="-1"]:focus{outline:none}

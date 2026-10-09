@@ -28,10 +28,7 @@ html.is-static .aperture,html.is-reduced .aperture{position:absolute;height:100s
 html.is-static .ap-sky,html.is-reduced .ap-sky,html.field-borrowed .ap-sky{display:block}
 .portrait{position:absolute;width:calc(2.36 * var(--pr,var(--ar)));height:calc(2.36 * var(--pr,var(--ar)));
   left:calc(var(--acx) - 1.18 * var(--pr,var(--ar)));top:calc(var(--acy) - 1.2384 * var(--pr,var(--ar)))}
-.portrait .p-gl{position:absolute;inset:0;width:100%;height:100%;opacity:0}
-html.portrait-gl .portrait .p-gl{opacity:1}
-html.portrait-gl .portrait img{opacity:0!important}
-.portrait img{will-change:transform}
+/* 2026-10-08 motion cut: no depth parallax (and no WebGL portrait): the two layers crossfade on --focus */
 .portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .portrait .p-soft{opacity:calc(1 - var(--focus,1))}
 .portrait .p-moon{opacity:var(--focus,1)}
@@ -88,7 +85,8 @@ html:not(.kbd-mac) .k-mac,html:not(.kbd-pc) .k-pc,html:not(.kbd-touch) .k-touch,
   .eb-dots{gap:6px;margin-left:2px}.eb-dots i{width:6px;height:6px}}
 /* See the work: the portrait ring's small sibling, bottom-right (HOME.seeGeom writes --see-x/-y, the centre in hero px,
    --see-d, the outer-hairline diameter, --see-core, the glass disc, and the two hairline radii). The ring text is
-   FS.ring fit 'fill' with the portrait ring's tracking, spaces and colour; it spins in ringTick, 3× on hover/focus. */
+   FS.ring fit 'fill' with the portrait ring's tracking, spaces and colour. 2026-10-08 motion cut: it no longer spins
+   (nor speeds up on hover/focus), and the arrow no longer slides: the core lighting up is the hover. */
 .see{position:absolute;z-index:2;left:calc(var(--see-x,-999px) - var(--see-d,132px) / 2);top:calc(var(--see-y,-999px) - var(--see-d,132px) / 2);
   width:var(--see-d,132px);height:var(--see-d,132px);border-radius:50%;color:var(--moon);-webkit-tap-highlight-color:transparent}
 .see:focus-visible{outline:none}
@@ -100,9 +98,9 @@ html:not(.kbd-mac) .k-mac,html:not(.kbd-pc) .k-pc,html:not(.kbd-touch) .k-touch,
 .see-hair--out{width:var(--see-d,132px);height:var(--see-d,132px)}
 .see-core{width:var(--see-core,64px);height:var(--see-core,64px)}
 .see-core .b-light{--bl:0%;transition:clip-path 420ms var(--ease-glass)}
-.see-core .arr{width:var(--see-arr,18px);height:var(--see-arr,18px);vertical-align:0;transition:transform 320ms var(--ease-glass),color 240ms var(--ease-focus)}
-@media (hover:hover){.see:hover .b-light{--bl:50%}.see:hover .arr{transform:translateY(4px);color:var(--ink)}.see:hover .glass::after{opacity:1}}
-.see:focus-visible .b-light{--bl:50%}.see:focus-visible .arr{transform:translateY(4px);color:var(--ink)}
+.see-core .arr{width:var(--see-arr,18px);height:var(--see-arr,18px);vertical-align:0;transition:color 240ms var(--ease-focus)}
+@media (hover:hover){.see:hover .b-light{--bl:50%}.see:hover .arr{color:var(--ink)}.see:hover .glass::after{opacity:1}}
+.see:focus-visible .b-light{--bl:50%}.see:focus-visible .arr{color:var(--ink)}
 .see:focus-visible .see-core{outline:2px solid var(--glacier);outline-offset:3px}
 .see:active .see-in,.see.is-pressed .see-in{transform:scale(.96)}
 
@@ -138,16 +136,6 @@ html:not(.kbd-mac) .k-mac,html:not(.kbd-pc) .k-pc,html:not(.kbd-touch) .k-touch,
 /* whole letters only: HOME.knockPass fades a ring glyph out before the halo can slice it */
 .barrel .ring-svg text{transition:opacity 120ms linear}
 
-/* ── irises: a lit rim inside the clip, a hairline halo outside it ─────────── */
-.iris-rim{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;transition:opacity 200ms linear;border-radius:inherit;
-  background:radial-gradient(circle var(--ir,0px) at var(--iox,50%) var(--ioy,0px),#0000 calc(var(--ir,0px) - 40px),color-mix(in srgb,var(--iris) 12.2%,transparent) calc(var(--ir,0px) - 12px),color-mix(in srgb,var(--sky-1) 50.2%,transparent) calc(var(--ir,0px) - 2px),color-mix(in srgb,var(--dusk) 85.1%,transparent) calc(var(--ir,0px) - .5px),#0000 var(--ir,0px))}
-.iris-rim--field{background:radial-gradient(circle var(--ir,0px) at var(--iox,50%) var(--ioy,0px),#0000 calc(var(--ir,0px) - 40px),color-mix(in srgb,var(--iris) 20%,transparent) calc(var(--ir,0px) - 10px),color-mix(in srgb,var(--pearl) 80%,transparent) calc(var(--ir,0px) - 1.5px),#0000 var(--ir,0px))}
-.is-iris>.iris-rim{opacity:1}
-.iris-halo{position:fixed;left:0;top:0;z-index:4;width:0;height:0;border-radius:50%;pointer-events:none;opacity:0;will-change:transform;
-  box-shadow:inset 0 0 0 1px #F3F1F84d,0 0 18px color-mix(in srgb,var(--iris) 14.9%,transparent)}
-.iris-halo--ice{box-shadow:inset 0 0 0 1px #15111F38,0 0 18px color-mix(in srgb,var(--iris) 12.2%,transparent)}
-html.is-static .iris-rim,html.is-reduced .iris-rim,html.is-static .iris-halo,html.is-reduced .iris-halo{display:none}
-
 /* ── vision ───────────────────────────────────────────────────────── */
 .vision{background:var(--night);padding-top:var(--s8);padding-bottom:var(--s7)}
 .manifesto .stop{--sk:1.4}
@@ -175,9 +163,8 @@ html.is-static .iris-rim,html.is-reduced .iris-rim,html.is-static .iris-halo,htm
 .bio-eye{position:relative;display:block;width:clamp(168px, 15vw, 240px);height:clamp(168px, 15vw, 240px);border-radius:50%;overflow:hidden;flex:none;
   box-shadow:inset 0 3px 10px #0000008c,0 0 0 1px color-mix(in srgb, var(--ink) 12%, transparent);isolation:isolate}
 .bio-eye .lit{position:absolute;inset:0;border-radius:50%}
-.bio-eye img{position:absolute;left:-9%;top:-12%;width:118%;height:118%;max-width:none;object-fit:contain;transition:opacity 700ms var(--ease-focus)}
-.bio-eye .be-soft{opacity:0}
-.bio-card.is-soft .bio-eye .be-soft{opacity:1}.bio-card.is-soft .bio-eye .be-sharp{opacity:0}
+.bio-eye img{position:absolute;left:-9%;top:-12%;width:118%;height:118%;max-width:none;object-fit:contain}
+.bio-eye .be-soft{opacity:0}                         /* 2026-10-08 motion cut: the eye no longer pulls focus, it rests sharp */
 .bio-now{font:400 clamp(28px, 2.3vw, 40px)/1.2 var(--f-sans);letter-spacing:-.015em;max-width:13em;text-wrap:balance}
 .bio-now strong{font-weight:700;letter-spacing:.01em}
 .bio-facts{margin:auto 0 clamp(32px, 3.3vw, 48px);width:100%;border-top:1px solid var(--line-ice)}
@@ -220,10 +207,12 @@ html.is-static .logo-band::before,html.is-static .logo-band::after,html.is-reduc
 .work-card .tear--h{left:calc(var(--tear-in) + var(--hole) / 2 - var(--hole-pitch) / 2);right:calc(var(--tear-in) + var(--hole) / 2 - var(--hole-pitch) / 2);
   background-position:0 50%;background-repeat:round no-repeat}
 .wc-media{position:relative;height:var(--ty);overflow:hidden}
-.wc-zoom{position:absolute;inset:0;transform:scale(var(--rack-scale,1));transform-origin:50% 50%;clip-path:var(--win,none);transition:clip-path 260ms var(--ease-focus)}
+/* 2026-10-08 motion cut: no rack focus. --rack-scale, --win, --soft and --halo rest at their defaults: the media are
+   sharp, true colour and full rect wherever the card is */
+.wc-zoom{position:absolute;inset:0;transform:scale(var(--rack-scale,1));transform-origin:50% 50%;clip-path:var(--win,none)}
 /* the aperture: light reaches the device through one circle; the device breaks out of it when in focus */
 .wc-ap{position:absolute;left:50%;top:50%;aspect-ratio:1;height:auto;border-radius:50%;transform:translate(-50%,-50%);
-  width:calc(var(--ty) * .8);box-shadow:0 0 60px color-mix(in srgb,var(--iris) 25.1%,transparent);animation:breathe 7s ease-in-out infinite alternate;
+  width:calc(var(--ty) * .8);box-shadow:0 0 60px color-mix(in srgb,var(--iris) 25.1%,transparent);
   /* the aperture opens from its centre on hover (growth animates the clip radius, and the glow spills as it opens) */
   clip-path:circle(46% at 50% 50%);transition:clip-path 560ms var(--ease-glass)}
 /* each project casts its own light through the same aurora: a per-card hue pair, soft-lit into the disc */
@@ -233,7 +222,6 @@ html.is-static .logo-band::before,html.is-static .logo-band::after,html.is-reduc
 /* the fill: the second hue tints the opposite side, keeping the aurora's luminance */
 .wc-ap::after{background:radial-gradient(circle at calc(100% - var(--ax,30%)) calc(100% - var(--ay,26%)),var(--h2),#0000 66%);mix-blend-mode:color;opacity:.8}
 .work-card.is-hover .wc-ap{clip-path:circle(calc(50% + 56px) at 50% 50%)}
-@keyframes breathe{from{opacity:.86}to{opacity:1}}
 .wc-halo,.wc-media img{position:absolute;left:4%;top:5%;width:92%;height:90%}
 .wc-media img{object-fit:contain}
 .wc-halo{display:block;background:radial-gradient(circle at 35% 30%,var(--h1),var(--h2));opacity:calc(.5 * var(--halo,1));
@@ -248,38 +236,27 @@ html.is-static .logo-band::before,html.is-static .logo-band::after,html.is-reduc
 .wc-title{font:600 var(--t-card)/1.12 var(--f-display);letter-spacing:-.015em;margin-top:var(--s2);max-width:19em;text-wrap:balance}
 .wc-btn{position:absolute;z-index:3;left:calc(100% - 60px - 28px);top:calc(var(--ty) - 28px);color:var(--moon)}
 .wc-btn .arr{width:20px;height:20px;vertical-align:0;transition:color 240ms var(--ease-focus)}
-.wc-btn::after{background:radial-gradient(circle at var(--px,50%) var(--py,0%),color-mix(in srgb,var(--pearl) 20%,transparent),#0000 60%)}
+.wc-btn::after{background:radial-gradient(circle at 50% 0%,color-mix(in srgb,var(--pearl) 20%,transparent),#0000 60%)}   /* a fixed sheen (2026-10-08 motion cut: no pointer-following) */
 .wc-btn .lit{--bl:0%}
-.wc-btn .b-light{transition:none}                     /* driven by the stop-travel timeline */
-/* the traveller: a clone of the headline stop that runs up to the tear and along it into the button */
-.wc-trav{position:absolute;left:0;top:0;z-index:2;border-radius:50%;pointer-events:none;visibility:hidden;will-change:transform;box-shadow:0 0 5px color-mix(in srgb,var(--iris) 34.9%,transparent)}
-.wc-title .stop.is-unlit::before{background:var(--night);box-shadow:inset 0 0 0 1px #F3F1F833}
+/* the card's hover (or focus) lights its button with the disc (js/motion.js toggles .is-hover). 2026-10-08 motion cut:
+   the title's stop no longer travels into it first */
+.work-card.is-hover .wc-btn .b-light{--bl:50%}.work-card.is-hover .wc-btn .arr{color:var(--ink)}
 .work-card{cursor:pointer}   /* the whole card forwards to its button (js/home.js); round 7: Bandcamp's too */
-.wc-soft,.wc-sharp{transition:opacity 420ms var(--ease-focus)}
 
 /* ── services ──────────────────────────────────────────────────────── */
 .services{background:var(--night);padding-top:var(--s11);padding-bottom:var(--s8)}
 .services-head .h2{margin-top:var(--s4)}
 .svc-list{margin-top:var(--s9);border-bottom:1px solid var(--line-night)}
-.svc{position:relative;overflow:clip;border-top:1px solid var(--line-night);transition:background-color 640ms var(--ease-focus);--ix:calc(var(--margin) + 32px);--iy:88px}
+.svc{position:relative;overflow:clip;border-top:1px solid var(--line-night);transition:background-color 640ms var(--ease-focus)}
 .svc.is-open{background:var(--night-2)}
-.svc-leak{position:absolute;inset:0;pointer-events:none;opacity:.32;z-index:0;
-  -webkit-mask:radial-gradient(circle at var(--ix) var(--iy),#000,#0006 240px,#0000 900px);mask:radial-gradient(circle at var(--ix) var(--iy),#000,#0006 240px,#0000 900px);
-  clip-path:circle(var(--leak,0px) at var(--ix) var(--iy));transition:clip-path 560ms var(--ease-focus)}
-.svc.is-open{--leak:1000px}
-.svc.is-open .svc-leak{transition:clip-path 900ms var(--ease-iris)}
-/* hover: the aperture cracks open around the index glass, a soft pool of light, not a flat disc */
-.svc-crack{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.5;
-  -webkit-mask:radial-gradient(circle at var(--ix) var(--iy),#000 30px,#0008 56px,#0000 110px);mask:radial-gradient(circle at var(--ix) var(--iy),#000 30px,#0008 56px,#0000 110px);
-  clip-path:circle(var(--crack,0px) at var(--ix) var(--iy));transition:clip-path 520ms var(--ease-glass)}
-.svc.is-open .svc-crack{opacity:0}
+/* 2026-10-08 motion cut: no aurora leak across the open row, and no pool of light cracking open at the index on
+   hover; a closed row's hover is the glass sheen and the subtitle brightening */
 /* the open row's index glass is lit: light through its circle */
 .svc-idx .b-light{transition:clip-path 420ms var(--ease-glass)}
 .svc-idx>span{transition:color 240ms var(--ease-focus)}
 .svc.is-open .svc-idx .b-light{--bl:50%}
 .svc.is-open .svc-idx>span{color:var(--ink)}
 @media (hover:hover){
-  .svc:not(.is-open):hover{--crack:110px}
   .svc-head:hover .svc-idx::after,.svc-head:hover .svc-toggle::after{opacity:1}
   .svc-head:hover .svc-sub{color:#F3F1F8b3}
 }
@@ -346,9 +323,11 @@ html.is-static .logo-band::before,html.is-static .logo-band::after,html.is-reduc
   background:linear-gradient(#110D1C5c,#110D1C5c),var(--still) center/cover no-repeat,var(--dusk)}
 html.is-static .ft-sky,html.field-borrowed .ft-sky,html.field-still .ft-sky{display:block}
 .ft-band{height:240px;border-block:1px solid var(--line-night);display:flex;align-items:center;overflow:hidden}
-.ft-track{display:flex;flex:none;white-space:nowrap;animation:marquee 28s linear infinite;will-change:transform}
-.ft-item{font:600 var(--t-footer)/.86 var(--f-display);letter-spacing:-.05em;padding-right:.5em;flex:none}
-@keyframes marquee{to{transform:translateX(-50%)}}
+/* 2026-10-08 motion cut: no marquee. 'Let's connect.' is one still line on the margin, as ?static=1 always showed it;
+   the markup's repeats (here and on the case pages) stay hidden */
+.ft-track{display:flex;flex:none;white-space:nowrap;padding-left:var(--margin)}
+.ft-item{font:600 var(--t-footer)/.86 var(--f-display);letter-spacing:-.05em;padding-right:0;flex:none}
+.ft-item~.ft-item{display:none}
 .ft-main{flex:1;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center;padding-block:var(--s7)}
 .ft-copy{grid-column:1 / 7;display:flex;flex-direction:column;gap:var(--s7)}
 .ft-line{font:400 26px/1.35 var(--f-sans);letter-spacing:-.01em;max-width:520px}
@@ -364,7 +343,7 @@ html:not(.disc-js) .disc{transition:clip-path 520ms var(--ease-glass)}
 .disc-core{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 42% 38%,color-mix(in srgb,var(--pearl) 80%,transparent),#0000 55%)}
 .disc-label{position:relative;font:600 30px/1 var(--f-display);letter-spacing:-.02em;color:var(--ink)}
 .disc-ring{position:absolute;left:50%;top:50%;width:430px;height:430px;margin:-215px 0 0 -215px;color:var(--moon);pointer-events:none;
-  clip-path:circle(0 at 50% 50%);transition:clip-path 520ms var(--ease-focus);animation:spin 14s linear infinite}
+  clip-path:circle(0 at 50% 50%);transition:clip-path 520ms var(--ease-focus)}   /* 2026-10-08 motion cut: no spin */
 @media (hover:hover){html:not(.disc-js) .disc-wrap:hover .disc{--dr:180px}html:not(.disc-js) .disc-wrap:hover .disc-ring{clip-path:circle(71% at 50% 50%)}}
 html:not(.disc-js) .disc:focus-visible{--dr:180px}
 .disc:focus-visible{outline:none}
@@ -374,13 +353,6 @@ html:not(.disc-js) .disc:focus-visible{--dr:180px}
 .ft-bottom .fb-c{grid-column:1 / 5}.ft-bottom .fb-b{grid-column:8 / 10}
 /* the page ends on its full stop: the brand's lit disc, as a sign-off */
 .ft-dot{grid-column:12;justify-self:end;display:block;width:13px;height:13px;border-radius:50%;box-shadow:0 0 6px color-mix(in srgb,var(--iris) 40%,transparent)}
-
-/* ── static: no pins, no scrubs; everything at its end state ─────────────── */
-html.is-static .ft-track,html.marquee-js .ft-track{animation:none}
-/* still modes: one line on the margin, no frozen repeats */
-html.is-static .ft-track,html.is-reduced .ft-track{transform:none!important;padding-left:var(--margin)}
-html.is-static .ft-item~.ft-item,html.is-reduced .ft-item~.ft-item{display:none}
-html.is-static .ft-item,html.is-reduced .ft-item{padding-right:0}
 
 /* ── 390 ─────────────────────────────────────────────────────────────────── */
 @media (max-width:767px){
@@ -429,7 +401,6 @@ html.is-static .ft-item,html.is-reduced .ft-item{padding-right:0}
 
   .services{padding-top:var(--s9);padding-bottom:var(--s8)}
   .svc-list{margin-top:var(--s7)}
-  .svc{--ix:calc(var(--margin) + 22px);--iy:56px}
   .svc-head{height:auto;min-height:112px;padding:20px var(--margin);grid-template-columns:44px minmax(0,1fr) 44px;column-gap:14px;row-gap:4px}
   .svc-idx{width:44px;height:44px;font-size:11px;grid-row:1 / 3;align-self:center}
   .svc-title{font-size:30px;white-space:normal;text-wrap:balance;grid-column:2;grid-row:1;line-height:1.02}
@@ -463,7 +434,7 @@ html.is-static .ft-item,html.is-reduced .ft-item{padding-right:0}
 
   .footer{min-height:0;padding-top:88px}
   .ft-band{height:124px}
-  .ft-item{font-size:72px}
+  .ft-item{font-size:clamp(44px,15vw,72px)}
   .ft-main{display:flex;flex-direction:column;align-items:stretch;gap:var(--s8);padding-block:var(--s7) var(--s8)}
   .ft-line{font-size:20px}
   .ft-disc{align-self:center}
@@ -476,7 +447,6 @@ html.is-static .ft-item,html.is-reduced .ft-item{padding-right:0}
   .ft-bottom{grid-template-columns:minmax(0,1fr) auto;row-gap:14px;padding-bottom:var(--s6)}
   .ft-bottom .fb-c{grid-column:1;grid-row:1}.ft-dot{grid-column:2;grid-row:1;width:12px;height:12px}
   .ft-bottom .fb-b{grid-column:1;grid-row:2}
-  html.is-static .ft-item,html.is-reduced .ft-item{font-size:clamp(44px,15vw,72px)}
   html.is-static .logo-band,html.is-reduced .logo-band{height:256px}
 }
 

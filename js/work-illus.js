@@ -3,7 +3,9 @@
  * css/work.css keeps its 4:3 box, css/work-illus.css draws the diagrams). Deferred, after js/work.js: it builds at once
  * (the DOM is parsed and FS has not booted yet, so FS.lit.scan and FS.probe at boot see the new lights), then animates
  * from FS 'work:boot'. The finished diagram is the resting state; live (not static, not reduced) each one sets its own
- * start state and plays once its card is well in view, after the core has focused the card in.
+ * start state and plays once, when its card is well in view. 2026-10-08 motion cut: the diagrams' pings go (a ping now
+ * marks only a sentence landing), the white-label ring and the lit discs no longer spin or breathe (css/work-illus.css),
+ * and the heycar walk plays once.
  *
  *   affinidi-2   White-label as the proof of concept: one component, five duplicates, each re-lit by one of the site's
  *                five ⌘R schemes (the same idea: same system, different brand); the duplicates come out from under it
@@ -63,8 +65,7 @@
   const sr = (t) => '<p class="sr-only">' + esc(t) + '</p>';
 
   /* play once the card is well in view (its top past 62% of the viewport: a phone's card is then whole, a desktop
-     one shows its centre), after the core's own focus-in of the card (top 88%). Already past it (a restored scroll):
-     the end state at once. */
+     one shows its centre). Already past it (a restored scroll): the end state at once. */
   function onView(fig, play, finish) {
     const ST = window.ScrollTrigger;
     const r = fig.getBoundingClientRect();
@@ -147,11 +148,8 @@
             .to(els, { '--gl': 1, duration: .6, ease: E.focus, stagger: .11, clearProps: '--gl' }, 1.12)
             .to(notes, Object.assign({ opacity: 1, filter: 'blur(0px)', duration: .56, ease: E.focus, stagger: .12 }, clear), 1.5);
           if (rg) tl.to(rg, Object.assign({ opacity: 1, filter: 'blur(0px)', duration: .7, ease: E.focus }, clear), 1.3);
-          if (on) {
-            const t = 1.12 + .11 * els.indexOf(on) + .4;
-            tl.to(on, { '--on': 1, duration: .4, ease: E.focus, onComplete: () => on.style.removeProperty('--on') }, t)
-              .call(() => FS.ping(on, { size: on.offsetWidth / 4 }), null, t + .05);   /* 6× a quarter: just past its rim */
-          }
+          /* the current scheme's copy takes its ring (2026-10-08 motion cut: no ping) */
+          if (on) tl.to(on, { '--on': 1, duration: .4, ease: E.focus, onComplete: () => on.style.removeProperty('--on') }, 1.12 + .11 * els.indexOf(on) + .4);
         };
         onView(fig, play, () => {
           gsap.set([core, rg, ...notes].filter(Boolean), { clearProps: 'opacity,filter' });
@@ -211,8 +209,7 @@
             if (labs[i]) tl.to(labs[i], Object.assign({ opacity: 1, filter: 'blur(0px)', duration: .56, ease: E.focus }, clear), .56 + i * .32);
           });
           tl.to(line, { clipPath: 'inset(0 0% 0 0)', duration: 1.1, ease: E.iris, clearProps: 'clipPath' }, .36)
-            .to(notes, Object.assign({ opacity: 1, filter: 'blur(0px)', duration: .56, ease: E.focus, stagger: .14 }, clear), 1.3)
-            .call(() => FS.ping(fl[2], { size: fl[2].offsetWidth / 4 }), null, 1.3);
+            .to(notes, Object.assign({ opacity: 1, filter: 'blur(0px)', duration: .56, ease: E.focus, stagger: .14 }, clear), 1.3);   /* 2026-10-08 motion cut: no ping on the third */
         };
         onView(fig, play, () => {
           gsap.set([line, ...fl, ...labs, ...notes], { clearProps: 'opacity,filter,clipPath' });
@@ -315,12 +312,17 @@
         P.forEach((p) => { gsap.set(p.ap, { '--o': '0%' }); gsap.set(p.stem, { '--cut': '100%' }); gsap.set(p.tip, { '--tr': '0px' }); gsap.set(p.lab, { opacity: .5 }); });
         il.classList.add('is-live');
         gsap.set(dot, { '--tx': STEPS[0], '--td-o': 0 });
-        /* one walk, looped while the card is in view. At a tip's step the light irises open from the step, the stem
-           rises and the pill irises open from its own disc; as the walker moves on, all of it closes again */
-        /* polish review: no perpetual motion beside reading copy. The walk plays twice, then rests at the finished
-           diagram (both tips open, the css resting state); hovering the card walks it again */
-        const rest = () => { il.classList.remove('is-live'); P.forEach((p) => gsap.set([p.ap, p.stem, p.tip, p.lab], { clearProps: '--o,--cut,--tr,opacity' })); gsap.set(dot, { clearProps: '--tx,--td-o' }); };
-        const tl = gsap.timeline({ paused: true, repeat: 1, repeatDelay: .5, onComplete: rest });
+        /* one walk while the card is in view. At a tip's step the light irises open from the step, the stem rises and
+           the pill irises open from its own disc; as the walker moves on, all of it closes again */
+        /* polish review: no perpetual motion beside reading copy. 2026-10-08 motion cut: the walk plays once (it played
+           twice), then rests at the finished diagram (both tips open, the css resting state); hovering the card walks
+           it again */
+        /* the tracked lights inside a moment (its tip's disc) are put back on the sky as it opens and at rest: shut by
+           the tip's clip they were not followed, and since 2026-10-08 a tracked light holds still between scrolls (its
+           idle pass went with the drift, js/system.js), so one could stand open dark until the next scroll */
+        const relight = () => FS.lit.refresh();
+        const rest = () => { il.classList.remove('is-live'); P.forEach((p) => gsap.set([p.ap, p.stem, p.tip, p.lab], { clearProps: '--o,--cut,--tr,opacity' })); gsap.set(dot, { clearProps: '--tx,--td-o' }); relight(); };
+        const tl = gsap.timeline({ paused: true, onComplete: rest });
         let t = 0, openAt = 0;
         tl.to(dot, { '--td-o': 1, duration: .35, ease: 'none' }, t);
         t += .5;
@@ -332,7 +334,8 @@
             tl.to(p.ap, { '--o': '50%', duration: .62, ease: E.iris }, t - .14)
               .to(p.lab, { opacity: 1, duration: .4, ease: E.focus }, t)
               .to(p.stem, { '--cut': '0%', duration: .36, ease: E.focus }, t + .22)
-              .fromTo(p.tip, { '--tr': '0px' }, { '--tr': () => tipR(p), duration: .6, ease: E.iris }, t + .42);
+              .fromTo(p.tip, { '--tr': '0px' }, { '--tr': () => tipR(p), duration: .6, ease: E.iris }, t + .42)
+              .call(relight, null, t + .42);
             if (!openAt) openAt = t + 1.05;                        /* the first tip stands open */
             t += 2.8;
             tl.to(p.tip, { '--tr': '0px', duration: .38, ease: E.irisClose }, t)
@@ -350,7 +353,7 @@
         document.addEventListener('visibilitychange', sync);
         /* the first play starts where the first tip stands open: from the walk's own start, the card arrived as a
            dark box with a hairline (every moment closed) */
-        const play = () => { if (!started && openAt) tl.time(openAt); started = true; sync(); };
+        const play = () => { if (!started && openAt) { tl.time(openAt); relight(); } started = true; sync(); };
         onView(fig, play, play);
         fig.addEventListener('pointerenter', (e) => {
           if (e.pointerType !== 'mouse' || tl.isActive() || !started) return;

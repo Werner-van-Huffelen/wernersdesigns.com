@@ -1,16 +1,15 @@
 /* Full Stop · homepage
  * Stage 1 (this file today): geometry, rest states, the logo cut-outs, services, filters, section readout, field modes.
  * Stage 2 (choreography) plugs into HOME.stage2.* — every hook below is called once at boot with the shared context,
- * and the helpers it needs (setAperture, rest, stopDisc, clients.speed…) are already exposed on window.HOME.
+ * and the helpers it needs (setAperture, rest, stopDisc, knockPass…) are already exposed on window.HOME.
  *
  *   HOME.stage2.loader(ctx)     §8.1 pinhole loader  (html.is-loading, detents, FLIP to rest)
  *   HOME.stage2.stopDown(ctx)   §7 hero pin + scrub: aperture → the stop of "shipped."
- *   HOME.stage2.manifesto(ctx)  §7 pull focus (11 words, lens-sharpening)
- *   HOME.stage2.irises(ctx)     §3.8 the four irises (bio card, work, companies, footer)
- *   HOME.stage2.work(ctx)       rack focus, loupe, stop travel, filter pings
- *   HOME.stage2.companies(ctx)  count + clarity + punch
- *   HOME.stage2.footer(ctx)     disc spring, marquee velocity
- *   HOME.stage2.menu(ctx)       menu choreography (links focus-reveal, card iris, shader lens)
+ *   HOME.stage2.manifesto(ctx)  §7 pull focus (word by word)
+ *   HOME.stage2.irises(ctx)     the footer iris
+ *   HOME.stage2.work(ctx)       card hover, filter reflow
+ *   HOME.stage2.footer(ctx)     disc spring
+ *   HOME.stage2.menu(ctx)       the menu links' sibling dim
  */
 (function () {
   'use strict';
@@ -330,30 +329,16 @@
   let heroKey = '';
   HOME.relayoutHero = () => { if (html.clientWidth + 'x' + (hero ? hero.clientHeight : innerHeight) !== heroKey) layoutHero(); };
 
-  /* ring rotation: 6°/s plus |scroll velocity|·0.35, spring-smoothed (stage 2 may replace). The badge turns the same
-     way at the same angular speed, and its own spring eases it to 3× while it is hovered or focused (interruptible). */
-  let ringAngle = 0, ringRaf = 0, ringLast = 0, heroVisible = true, seeAngle = 0, seeHover = false, seeFocus = false;
-  const ringVel = FS.spring({ value: 6, response: .6, damping: 1 });
-  const seeVel = FS.spring({ value: 6, response: .6, damping: 1 });
-  if (seeEl) {
-    /* hover and keyboard focus are separate: leaving with the pointer keeps the speed-up while focus stays */
-    seeEl.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse' || e.pointerType === 'pen') { seeHover = true; ringPlay(); } });
-    seeEl.addEventListener('pointerleave', () => { seeHover = false; ringPlay(); });
-    seeEl.addEventListener('focus', () => { let fv = true; try { fv = seeEl.matches(':focus-visible'); } catch (e) {} if (fv) { seeFocus = true; ringPlay(); } });
-    seeEl.addEventListener('blur', () => { seeFocus = false; ringPlay(); });
-  }
+  /* ring rotation: a constant 6°/s while the hero is in view; every frame re-runs the whole-letter pass, so the glyphs
+     that cross the headline, the subline or the eyebrow fade out whole. 2026-10-08 motion cut: the scroll-velocity
+     speed-up is gone, and so is the See badge's spin (3× on hover/focus): its ring rests at 0°, the core lights. */
+  let ringAngle = 0, ringRaf = 0, ringLast = 0, heroVisible = true;
   function ringTick(now) {
     ringRaf = 0;
     const dt = ringLast ? Math.min(.05, (now - ringLast) / 1000) : 1 / 60; ringLast = now;
-    const v = window.lenis && window.lenis.velocity ? Math.abs(window.lenis.velocity) : 0;
-    ringVel.target = 6 + v * .35;
-    const rv = ringVel.step(dt);
-    ringAngle = (ringAngle + rv * dt) % 360;
+    ringAngle = (ringAngle + 6 * dt) % 360;
     if (ringSvg) ringSvg.style.transform = `translate(-50%,-50%) rotate(${ringAngle.toFixed(3)}deg)`;
     knockPass(ringAngle);
-    seeVel.target = ringVel.target * (seeHover || seeFocus ? 3 : 1);
-    seeAngle = (seeAngle + seeVel.step(dt) * dt) % 360;
-    if (seeSvg) seeSvg.style.transform = `translate(-50%,-50%) rotate(${seeAngle.toFixed(3)}deg)`;
     if (heroVisible && !document.hidden) ringRaf = requestAnimationFrame(ringTick);
   }
   function ringPlay() { if (F.still || ringRaf) return; ringLast = 0; ringRaf = requestAnimationFrame(ringTick); }
@@ -378,7 +363,7 @@
   HOME.fieldMode = fieldMode;
 
   /* ── clients: light through the logos (one canvas, one destination-in) ─── */
-  const clients = (HOME.clients = { speedMul: 1, target: 1, offset: 0, ready: false });
+  const clients = (HOME.clients = { offset: 0, ready: false });
   (function () {
     const band = $('.logo-band'), cv = $('#logo-canvas');
     const list = window.FS_LOGOS || [];
@@ -460,13 +445,13 @@
       ctx.drawImage(mask, 0, 0);
       ctx.globalCompositeOperation = 'source-over';
     }
+    /* the logos drift at their base speed (40px/s; phones: one sequence per 34s). 2026-10-08 motion cut: no
+       scroll-velocity boost, and no slow-down (with its heading ping) on hover */
     function tick(now) {
       raf = 0;
       const dt = last ? Math.min(.05, (now - last) / 1000) : 0; last = now;
-      clients.speedMul = FS.smooth(clients.speedMul, clients.target, dt, .2);
-      const v = window.lenis && window.lenis.velocity ? Math.abs(window.lenis.velocity) : 0;
       const base = mobile() ? seqW / dpr / 34 : 40;
-      clients.offset += (base * clients.speedMul + v * .6) * dt * dpr;
+      clients.offset += base * dt * dpr;
       draw(dt);
       if (visible && !document.hidden) raf = requestAnimationFrame(tick);
     }
@@ -476,8 +461,6 @@
     addEventListener('scroll', () => { if (F.still && visible) draw(0); }, { passive: true });
     addEventListener('resize', () => { size(); draw(0); });
     document.addEventListener('visibilitychange', () => { if (!document.hidden && visible) play(); });
-    band.addEventListener('pointerenter', () => { clients.target = .2; FS.ping($('#clients-stop')); });
-    band.addEventListener('pointerleave', () => { clients.target = 1; });
     clients.redraw = () => draw(0);
   })();
 
@@ -491,8 +474,7 @@
     rows.forEach((li) => $('.svc-head', li).addEventListener('click', () => {
       const open = !li.classList.contains('is-open');
       rows.forEach((o) => { if (o !== li) set(o, false); });
-      set(li, open);
-      if (open) FS.ping($('.svc-idx', li));
+      set(li, open);                                    /* 2026-10-08 motion cut: the index no longer pings */
       setTimeout(() => ScrollRefresh(), 700);
     }));
     if (rows[0]) set(rows[0], true);
@@ -543,8 +525,7 @@
       if (W.run) { W.run(list); return; }
       /* no choreography (reduced motion, ?static=1, no GSAP): the layout changes at once */
       const y0 = W.barY();
-      W.place(list);
-      list.forEach((c, k) => { const s = $('.wc-title .stop', c); setTimeout(() => FS.ping(s), 60 * k); });
+      W.place(list);                                   /* 2026-10-08 motion cut: the title stops no longer ping */
       ScrollRefresh(); W.hold(y0);
     };
     /* crossing the breakpoint switches between the two layouts at once */

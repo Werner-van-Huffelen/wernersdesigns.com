@@ -34,7 +34,7 @@
 .wl-orbit{width:calc(2 * var(--ro) * var(--k));height:calc(2 * var(--ro) * var(--k))}
 .wl-hair{width:calc(2 * var(--hr));height:calc(2 * var(--hr))}
 .wl-ring{position:absolute;left:0;top:0;width:0;height:0}
-.wl-ring .ring-svg{position:absolute;left:0;top:0;color:color-mix(in srgb,var(--haze) 80%,transparent);animation:spin 96s linear infinite}
+.wl-ring .ring-svg{position:absolute;left:0;top:0;color:color-mix(in srgb,var(--haze) 80%,transparent)}   /* 2026-10-08 motion cut: still (it spun, 96s) */
 .wl-copy,.wl-core{position:absolute;left:0;top:0;border-radius:50%;color:var(--moon);background:var(--glass-fill)}
 .wl-copy{width:var(--cd);height:var(--cd);margin:calc(var(--cd) / -2) 0 0 calc(var(--cd) / -2);
   transform:rotate(var(--a)) translateX(calc(var(--ro) * var(--k))) rotate(calc(-1 * var(--a)))}
@@ -69,7 +69,7 @@
 .sc-line{position:absolute;left:22%;right:22%;top:var(--sy);height:1px;margin-top:-.5px;background:color-mix(in srgb,var(--moon) 30%,transparent)}
 .sc-flow{position:absolute;left:var(--x);top:var(--sy);width:var(--fd);height:var(--fd);margin:calc(var(--fd) / -2) 0 0 calc(var(--fd) / -2);border-radius:50%;
   box-shadow:0 0 calc(var(--fd) * .5) color-mix(in srgb,var(--iris) 32%,transparent)}
-.sc-flow>.lit{position:absolute;inset:0;border-radius:50%;overflow:hidden;animation:breathe 7s ease-in-out infinite alternate}
+.sc-flow>.lit{position:absolute;inset:0;border-radius:50%;overflow:hidden}   /* 2026-10-08 motion cut: no breathing */
 /* the project's own light on its three (the hero disc's key and fill: --h1 from --ax/--ay, --h2 as colour) */
 .sc-flow>.lit::before,.sc-flow>.lit::after{content:"";position:absolute;inset:0;border-radius:50%}
 .sc-flow>.lit::before{background:radial-gradient(circle at var(--ax,30%) var(--ay,26%),var(--h1),#0000 62%);opacity:.7}
@@ -92,7 +92,7 @@
 /* the moment: a light disc on the step, the path continuing across it as an ink hairline, the step an ink ring */
 .tp-ap{position:absolute;left:var(--x);top:var(--py);width:var(--ad);height:var(--ad);margin:calc(var(--ad) / -2) 0 0 calc(var(--ad) / -2);border-radius:50%;
   clip-path:circle(var(--o,50%) at 50% 50%);box-shadow:0 0 50px color-mix(in srgb,var(--iris) 25%,transparent)}
-.tp-ap>.lit{position:absolute;inset:0;border-radius:50%;overflow:hidden;animation:breathe 7s ease-in-out infinite alternate}
+.tp-ap>.lit{position:absolute;inset:0;border-radius:50%;overflow:hidden}   /* 2026-10-08 motion cut: no breathing */
 .tp-ap>.lit::before,.tp-ap>.lit::after{content:"";position:absolute;inset:0;border-radius:50%}
 .tp-ap>.lit::before{background:radial-gradient(circle at var(--ax,30%) var(--ay,26%),var(--h1),#0000 60%);opacity:.9}
 .tp-ap>.lit::after{background:radial-gradient(circle at calc(100% - var(--ax,30%)) calc(100% - var(--ay,26%)),var(--h2),#0000 66%);mix-blend-mode:color;opacity:.8}
@@ -124,4 +124,3 @@
   .tp-tip{gap:7px;padding:0 12px 0 8px;clip-path:circle(var(--tr,200vmax) at 14px 50%)}
   .tp-ico{width:12px;height:12px}.tp-ico>.lit{clip-path:circle(4.5px at 50% 50%)}
 }
-html.is-static .tp-ap>.lit,html.is-static .sc-flow>.lit{animation:none}

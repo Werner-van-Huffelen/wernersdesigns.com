@@ -13,11 +13,11 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Fragment+Mono&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
 <!-- ?v=: bump on every change, so a plain reload never runs a cached script against new markup -->
-<link rel="stylesheet" href="css/system.css?v=r7n">
-<link rel="stylesheet" href="css/home.css?v=r7n">
-<link rel="stylesheet" href="css/handoff.css?v=r7n">
+<link rel="stylesheet" href="css/system.css?v=r7o">
+<link rel="stylesheet" href="css/home.css?v=r7o">
+<link rel="stylesheet" href="css/handoff.css?v=r7o">
 <!-- the scheme (round 4): picked before the first paint, shared with work.html (round 5 moved it into js/scheme.js) -->
-<script src="js/scheme.js?v=r7n"></script>
+<script src="js/scheme.js?v=r7o"></script>
 <script>
   /* the portrait is black and white in every scheme (round 4b): its two layers are preloaded here, homepage only */
   (function(d){
@@ -36,19 +36,19 @@
     /* the loader (round 7: the bleed, js/handoff.js + js/motion.js); this guard lifts it if scripts never arrive */
     if(!c.contains('is-static')&&!c.contains('menu-open')&&!c.contains('is-reduced')){c.add('is-loading');
       setTimeout(function(){if(c.contains('is-loading')){c.remove('is-loading');c.add('loader-bailed');}},7000);}
-    c.add('marquee-js','disc-js');
+    c.add('disc-js');
   })(document);
 </script>
 <!-- round 5, the iris to the work pages and back: a return from one (sessionStorage fs.back) turns the loader above
      into html.is-back, which lands its section instead; shared with work.html -->
-<script src="js/handoff.js?v=r7n"></script>
+<script src="js/handoff.js?v=r7o"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
 <script defer src="assets/logos/logos.js"></script>
-<script defer src="js/system.js?v=r7n"></script>
-<script defer src="js/home.js?v=r7n"></script>
-<script defer src="js/motion.js?v=r7n"></script>
+<script defer src="js/system.js?v=r7o"></script>
+<script defer src="js/home.js?v=r7o"></script>
+<script defer src="js/motion.js?v=r7o"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -142,9 +142,10 @@
 <section id="vision" class="vision wrap" data-tone="night" data-name="Vision" data-f="2.8" aria-labelledby="vision-l">
   <p class="label" id="vision-l">02 · Vision</p>
   <div class="manifesto" data-lens="text">
-    <p class="m-line"><span class="w">Make</span> <span class="w">it</span> <span class="w">real<span class="stop">.</span></span></p>
-    <p class="m-line"><span class="w">Put</span> <span class="w">it</span> <span class="w">in</span><br class="m-br"> <span class="w">someone’s</span> <span class="w">hands<span class="stop">.</span></span></p>
-    <p class="m-line"><span class="w">Watch</span><br class="m-br"> <span class="w">what</span> <span class="w">happens<span class="stop" id="vision-stop">.</span></span></p>
+    <p class="m-line"><span class="w">Build</span> <span class="w">something</span> <span class="w">real,</span></p>
+    <p class="m-line"><span class="w">put</span> <span class="w">it</span> <span class="w">in</span><br class="m-br"> <span class="w">people’s</span> <span class="w">hands,</span></p>
+    <p class="m-line"><span class="w">and</span> <span class="w">let</span> <span class="w">them</span><br class="m-br"> <span class="w">show</span> <span class="w">you</span></p>
+    <p class="m-line"><span class="w">what</span> <span class="w">to</span><br class="m-br"> <span class="w">build</span> <span class="w">next<span class="stop" id="vision-stop">.</span></span></p>
   </div>
 </section>
 
@@ -153,13 +154,13 @@
   <article class="bio-card on-ice" data-tone="ice">
     <div class="bio-body">
       <p class="label">03 · About</p>
-      <h2 class="bio-h" id="about-h" data-lens="text">Getting sh*t done since 2015</h2>
-      <p class="bio-text">I ask a lot of questions. Your users, your constraints, the reasons nobody wrote down. Not to poke holes, your context usually holds the better answer. Sometimes that ends in a no. Far more often it ends in, what if we do this instead. From there I design straight into the code, so there's no handover and no big reveal. And I build with AI because it's faster.</p>
+      <h2 class="bio-h" id="about-h" data-lens="text">Turning ‘what if’ into ‘shipped’ since 2015</h2>
+      <p class="bio-text">I love the moment a rough idea becomes something people actually use. To get there, I start with them: their work, their workarounds, the reasons nobody wrote down. With AI in the loop I design straight into the code, so they can try something real within days. I’m Dutch, so I’ll tell you what I think. Nicely.</p>
     </div>
     <div class="bio-stub">
       <div class="bio-top">
       <span class="bio-eye" aria-hidden="true"><i class="lit"></i><img class="be-soft" src="assets/portrait-moon-soft.webp" alt="" width="700" height="700" loading="lazy" decoding="async"><img class="be-sharp" src="assets/portrait-moon.webp" alt="" width="1400" height="1400" loading="lazy" decoding="async"></span>
-      <p class="bio-now">Currently designing the tools <strong>GALVANY</strong> runs on</p>
+      <p class="bio-now">Currently helping more homes switch to heat pumps at <strong>GALVANY</strong></p>
       </div>
       <dl class="bio-facts">
         <div><dt>Based</dt><dd>Berlin</dd></div>
@@ -315,7 +316,6 @@
   </div>
   <ol class="svc-list">
     <li class="svc" data-i="1">
-      <i class="svc-leak lit" aria-hidden="true"></i><i class="svc-crack lit" aria-hidden="true"></i>
       <h3 class="svc-h">
         <button class="svc-head" type="button" aria-expanded="false" aria-controls="svc-p1" id="svc-b1">
           <span class="svc-idx glass g-l"><i class="b-light lit"></i><span>01</span></span>
@@ -335,7 +335,6 @@
       </div>
     </li>
     <li class="svc" data-i="2">
-      <i class="svc-leak lit" aria-hidden="true"></i><i class="svc-crack lit" aria-hidden="true"></i>
       <h3 class="svc-h">
         <button class="svc-head" type="button" aria-expanded="false" aria-controls="svc-p2" id="svc-b2">
           <span class="svc-idx glass g-l"><i class="b-light lit"></i><span>02</span></span>
@@ -355,7 +354,6 @@
       </div>
     </li>
     <li class="svc" data-i="3">
-      <i class="svc-leak lit" aria-hidden="true"></i><i class="svc-crack lit" aria-hidden="true"></i>
       <h3 class="svc-h">
         <button class="svc-head" type="button" aria-expanded="false" aria-controls="svc-p3" id="svc-b3">
           <span class="svc-idx glass g-l"><i class="b-light lit"></i><span>03</span></span>
@@ -375,7 +373,6 @@
       </div>
     </li>
     <li class="svc" data-i="4">
-      <i class="svc-leak lit" aria-hidden="true"></i><i class="svc-crack lit" aria-hidden="true"></i>
       <h3 class="svc-h">
         <button class="svc-head" type="button" aria-expanded="false" aria-controls="svc-p4" id="svc-b4">
           <span class="svc-idx glass g-l" id="svc-idx-4"><i class="b-light lit"></i><span>04</span></span>

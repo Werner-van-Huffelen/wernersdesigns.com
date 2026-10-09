@@ -114,53 +114,38 @@
   };
   FS.smooth = (x, t, dt, tau) => x + (t - x) * (1 - Math.exp(-dt / tau));
 
-  /* ── drift: one 72 s loop through six waypoints (percent of free space) ─ */
-  const WAY = [[0, 0], [100, 35], [62, 100], [20, 70], [0, 45], [40, 0], [0, 0]];
-  const DRIFT_MS = 72000;
-  FS.drift = function (tMs) {
-    if (F.still) return { x: 0, y: 0 };
-    const seg = WAY.length - 1;
-    const u = (((tMs % DRIFT_MS) + DRIFT_MS) % DRIFT_MS) / DRIFT_MS * seg;
-    const i = Math.floor(u), f = u - i;
-    return { x: lerp(WAY[i][0], WAY[i + 1][0], f), y: lerp(WAY[i][1], WAY[i + 1][1], f) };
-  };
+  /* ── drift: the sky's offset behind every light (percent of free space) ─ */
+  /* 2026-10-08 motion cut: the sky no longer drifts (a 72 s loop through six waypoints on every light). Every light
+     holds its resting slice, drift 0, as ?static=1 always did; FS.driftPx stays the one source, so the handoff's cover
+     and the tracked lights still agree with the fixed ones */
+  FS.drift = function () { return { x: 0, y: 0 }; };
   /* drift in px for a 130vw × 130vh image (free space is negative) */
   FS.driftPx = function (tMs) {
     const d = FS.drift(tMs), w = innerWidth, h = innerHeight;
     return { x: (d.x / 100) * (w - 1.3 * w), y: (d.y / 100) * (h - 1.3 * h) };
   };
 
-  /* ── light: fixed mode (WAAPI on background-position) or track mode ──── */
+  /* ── light: fixed mode (background-attachment: fixed) or track mode ──── */
   const LIT_SEL = '.lit, .stop, .ctr';
   FS.lit = (function () {
     const tracked = new Set(), visible = new Set();
-    let io = null, raf = 0, allTrack = F.touch || F.ios, idleT = 0, lastAct = performance.now();
-    /* fixed-mode lights pause offscreen and rejoin the shared phase (startTime 0) when they come back */
-    const fio = 'IntersectionObserver' in window ? new IntersectionObserver((es) => es.forEach((e) => {
-      const a = e.target.__litAnim; if (!a) return;
-      if (e.isIntersecting) { if (a.playState !== 'running') a.startTime = 0; } else if (a.playState === 'running') a.pause();
-    }), { rootMargin: '96px' }) : null;
+    let io = null, raf = 0, allTrack = F.touch || F.ios, lastAct = performance.now();
     if (allTrack) html.classList.add('lit-track');
-    const keyframes = WAY.map(([x, y]) => ({ backgroundPosition: `${x}% ${y}%` }));
-    function pseudoOf(el) { return el.classList.contains('stop') || el.classList.contains('ctr') ? '::before' : null; }
-    function fixed(el) {
-      if (F.still || el.__litAnim) return;
-      try {
-        const opts = { duration: DRIFT_MS, iterations: Infinity, easing: 'linear' };
-        const p = pseudoOf(el); if (p) opts.pseudoElement = p;
-        const a = el.animate(keyframes, opts);
-        a.startTime = 0;                                   // every light in phase on the document timeline
-        el.__litAnim = a;
-        if (fio) fio.observe(el);
-      } catch (e) { /* pseudoElement unsupported: the light simply holds still */ }
-    }
+    /* 2026-10-08 motion cut: a fixed-mode light no longer runs its own 72 s drift (WAAPI on background-position). The
+       CSS alone holds it on the sky's resting slice, so there is nothing to start */
+    function fixed() {}
     function track(el) {
       if (tracked.has(el)) return;
       el.setAttribute('data-lit', 'track');
-      if (el.__litAnim) { el.__litAnim.cancel(); el.__litAnim = null; }
       tracked.add(el);
+      /* a light that comes into view with nothing scrolling (the menu opening, an accordion panel) gets one pass: it was
+         last written where it sat hidden, and the 20 fps idle pass that used to catch it is gone (2026-10-08 motion cut) */
       if (!io && 'IntersectionObserver' in window) {
-        io = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? visible.add(e.target) : visible.delete(e.target))), { rootMargin: '64px' });
+        io = new IntersectionObserver((es) => {
+          let entered = false;
+          es.forEach((e) => { if (e.isIntersecting) { visible.add(e.target); entered = true; } else visible.delete(e.target); });
+          if (entered) loop();
+        }, { rootMargin: '64px' });
       }
       io ? io.observe(el) : visible.add(el);
       write(el); loop();
@@ -171,17 +156,18 @@
       el.style.setProperty('--lx', (-r.left + dp.x).toFixed(1) + 'px');
       el.style.setProperty('--ly', (-r.top + dp.y).toFixed(1) + 'px');
     }
-    /* the drift is a 72 s loop: while nothing scrolls or moves, 20 fps is plenty; activity brings back rAF */
+    /* a tracked light only has to follow its own box: every frame while something scrolls or moves (and 400ms after),
+       one pass when it comes into view (track()), nothing at rest (2026-10-08 motion cut: the 20 fps idle pass went with
+       the drift) */
     function frame() {
       raf = 0;
       if (!visible.size) return;
       const now = performance.now(), dp = FS.driftPx(now), cur = html.classList.contains('cursor-on');
       visible.forEach((el) => { if (el.__cursor && !cur) return; write(el, dp); });
       if (now - lastAct < 400) loop();
-      else if (!idleT) idleT = setTimeout(() => { idleT = 0; loop(); }, 50);
     }
     function loop() { if (!raf) raf = requestAnimationFrame(frame); }
-    function kick() { lastAct = performance.now(); if (idleT) { clearTimeout(idleT); idleT = 0; } loop(); }
+    function kick() { lastAct = performance.now(); loop(); }
     function scan(root) {
       (root || document).querySelectorAll(LIT_SEL).forEach((el) => {
         if (allTrack || el.getAttribute('data-lit') === 'track' || el.closest('[data-lit=track]')) track(el);
@@ -191,6 +177,9 @@
     addEventListener('scroll', kick, { passive: true });
     addEventListener('pointermove', kick, { passive: true });
     addEventListener('resize', () => tracked.forEach((el) => write(el)));
+    /* the page can still settle under a light that nothing scrolls (the webfonts, the load event): one more pass each */
+    addEventListener('load', () => tracked.forEach((el) => write(el)));
+    FS.on('fonts', () => tracked.forEach((el) => write(el)));
     return { scan, track, fixed, kick, refresh: () => tracked.forEach((el) => write(el)), get allTrack() { return allTrack; } };
   })();
 
@@ -329,9 +318,11 @@
   };
 
   /* ── aurora field: one raw-WebGL canvas, or the still ────────────────── */
+  /* 2026-10-08 motion cut: the field's own light is unchanged, but the grain holds still (it re-seeded every frame),
+     the pointer no longer bulges it (uPtr) and the menu links' shader lens is gone (uLens) */
   const VERT = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
   const FRAG = `precision mediump float;
-uniform vec2 uRes;uniform float uT;uniform vec2 uPtr;uniform float uDim;uniform vec3 uLens;uniform float uSat;uniform float uGrain;
+uniform vec2 uRes;uniform float uT;uniform float uDim;uniform float uSat;uniform float uGrain;
 uniform vec3 uBase,uC1,uC2,uC3,uC4;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);
@@ -340,11 +331,6 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<3;i++){v+=a*noise(p);p*=2.;a*=.5
 void main(){
  vec2 uv=gl_FragCoord.xy/uRes;uv.y=1.-uv.y;
  float a=uRes.x/uRes.y;vec2 p=uv*vec2(a,1.);
- float rim=0.;
- if(uLens.z>0.){float ld=distance(p,uLens.xy);
-  if(ld<uLens.z){p=uLens.xy+(p-uLens.xy)/1.6;}
-  rim=1.-smoothstep(0.,.004,abs(ld-uLens.z));}
- vec2 c=uPtr*vec2(a,1.);float d=distance(p,c);float k=1.-smoothstep(0.,.22,d);p=c+(p-c)*(1.-.25*k*k);
  vec2 q=p+.35*vec2(fbm(1.3*p+.021*uT)-.45,fbm(1.3*p-.017*uT+7.1)-.45);
  float T=6.2831853;
  vec2 c1=vec2(.30*a+.18*a*sin(T*uT/55.),.35+.12*cos(T*uT/55.));
@@ -358,13 +344,12 @@ void main(){
  col=mix(col,uC3,exp(-dot(q-c3,q-c3)/s)*.70);
  col=mix(col,uC4,exp(-dot(q-c4,q-c4)/s)*.55);
  float l=dot(col,vec3(.299,.587,.114));col=mix(vec3(l),col,uSat);
- col=mix(col,uC4,rim*.4);
- col+=(hash(gl_FragCoord.xy+fract(uT)*100.)-.5)*uGrain;
+ col+=(hash(gl_FragCoord.xy)-.5)*uGrain;
  col*=1.-uDim;
  gl_FragColor=vec4(col,1.);
 }`;
   FS.field = (function () {
-    const api = { ok: false, el: null, mode: null, dim: 0, sat: .82, t0: performance.now(), lens: [0, 0, 0], ptr: [-9, -9], clip: null };
+    const api = { ok: false, el: null, mode: null, dim: 0, sat: .82, t0: performance.now(), clip: null };
     let gl, prog, U = {}, raf = 0, running = false, firstFrame = false, scale = .5;
     api.shader = { VERT, FRAG };
 
@@ -375,8 +360,8 @@ void main(){
       const pr = build(g); g.useProgram(pr);
       const u = (n) => g.getUniformLocation(pr, n);
       g.viewport(0, 0, canvas.width, canvas.height);
-      g.uniform2f(u('uRes'), canvas.width, canvas.height); g.uniform1f(u('uT'), t); g.uniform2f(u('uPtr'), -9, -9);
-      g.uniform1f(u('uDim'), dim || 0); g.uniform3f(u('uLens'), 0, 0, 0); g.uniform1f(u('uSat'), .82); g.uniform1f(u('uGrain'), .06);
+      g.uniform2f(u('uRes'), canvas.width, canvas.height); g.uniform1f(u('uT'), t);
+      g.uniform1f(u('uDim'), dim || 0); g.uniform1f(u('uSat'), .82); g.uniform1f(u('uGrain'), .06);
       palette(g, u);
       g.drawArrays(g.TRIANGLES, 0, 3);
     };
@@ -414,12 +399,9 @@ void main(){
       const t = (performance.now() - api.t0) / 1000 + 12;
       gl.uniform2f(U.uRes, api.el.width, api.el.height);
       gl.uniform1f(U.uT, F.reduced ? 12 : t);
-      gl.uniform2f(U.uPtr, api.ptr[0], api.ptr[1]);
       gl.uniform1f(U.uDim, api.dim);
       gl.uniform1f(U.uSat, api.sat);
       gl.uniform1f(U.uGrain, F.touch ? .04 : .06);            /* ±2% on coarse pointers, where the grain reads larger */
-      const a = innerWidth / innerHeight;
-      gl.uniform3f(U.uLens, api.lens[0] * a, api.lens[1], api.lens[2]);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       if (!firstFrame) { firstFrame = true; api.ready = true; FS.emit('field:ready', { gl: true }); }
     }
@@ -433,7 +415,7 @@ void main(){
         gl = el.getContext('webgl', { alpha: false, antialias: false, powerPreference: 'low-power', premultipliedAlpha: false });
         if (!gl) return fallback('no-webgl');
         prog = build(gl); gl.useProgram(prog);
-        ['uRes', 'uT', 'uPtr', 'uDim', 'uLens', 'uSat', 'uGrain'].forEach((n) => (U[n] = gl.getUniformLocation(prog, n)));
+        ['uRes', 'uT', 'uDim', 'uSat', 'uGrain'].forEach((n) => (U[n] = gl.getUniformLocation(prog, n)));
         palette(gl, (n) => gl.getUniformLocation(prog, n));
         api.ok = true;
         el.addEventListener('webglcontextlost', (e) => { e.preventDefault(); fallback('lost'); });
@@ -441,7 +423,6 @@ void main(){
         api.play();
         setTimeout(() => { if (!firstFrame) fallback('timeout'); }, 1500);
         document.addEventListener('visibilitychange', () => (document.hidden ? api.pause() : api.play()));
-        addEventListener('pointermove', (e) => { api.ptr = [e.clientX / innerWidth, e.clientY / innerHeight]; }, { passive: true });
       } catch (e) { fallback('error'); }
     };
     api.play = function () { if (!api.ok || running || document.hidden) return; running = true; if (!raf) raf = requestAnimationFrame(tick); };
@@ -556,24 +537,20 @@ void main(){
     return { init, update, toneAt };
   })();
 
-  /* ── glass: inner light follows the pointer on that element only; press ─ */
+  /* ── glass: press (its inner light is a fixed sheen on hover, css/system.css §9) ─ */
+  /* 2026-10-08 motion cut: the inner light no longer follows the pointer (--px/--py are not written any more) */
   function glass() {
-    document.addEventListener('pointermove', (e) => {
-      const g = e.target.closest && e.target.closest('.glass');
-      if (!g) return;
-      const r = g.getBoundingClientRect();
-      g.style.setProperty('--px', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
-      g.style.setProperty('--py', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
-    }, { passive: true });
     document.addEventListener('pointerdown', (e) => { const g = e.target.closest && e.target.closest('.glass'); if (g) g.classList.add('is-pressed'); });
     const up = () => document.querySelectorAll('.glass.is-pressed').forEach((g) => g.classList.remove('is-pressed'));
     document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
   }
 
-  /* ── cursor: stop dot + lens (text / media loupe / portrait) ─────────── */
+  /* ── cursor: stop dot + lens (media loupe / portrait) ─────────── */
+  /* 2026-10-08 motion cut: no text lens. Over headings and copy the dot stays a dot; the lens opens only over images,
+     screenshots and device renders ([data-lens=media]) and fills the portrait. [data-lens=text] is inert now */
   FS.cursor = (function () {
     const api = { enabled: false, mode: 'default' };
-    let dot, lens, lensMedia, lensImg, lensRing, ringSvg, raf = 0, last = 0, lensLayer = null, diff = false;
+    let dot, lens, lensMedia, lensImg, lensRing, ringSvg, raf = 0, last = 0, lensLayer = null;
     const pos = { x: -100, y: -100, tx: -100, ty: -100 };
     const r = FS.spring({ value: 0, response: .35, damping: .85 });
     const dr = FS.spring({ value: 0, response: .35, damping: .85 });
@@ -591,11 +568,10 @@ void main(){
       const wrap = document.createElement('div');
       wrap.className = 'cursor'; wrap.setAttribute('aria-hidden', 'true');
       wrap.innerHTML = '<i class="cursor-dot lit" data-lit="track"></i>';
-      /* the lens lives in its own fixed layer: a stacking context isolates blending, so the text lens
-         (difference) must be the layer that blends with the page, not a child inside it */
+      /* the lens lives in its own fixed layer, under the dot's */
       lensLayer = document.createElement('div');
       lensLayer.className = 'cursor cursor--lens'; lensLayer.setAttribute('aria-hidden', 'true');
-      lensLayer.innerHTML = '<div class="cursor-lens"><div class="lens-fill"></div><div class="lens-media"><img alt="" decoding="async"></div>' +
+      lensLayer.innerHTML = '<div class="cursor-lens"><div class="lens-media"><img alt="" decoding="async"></div>' +
         '<svg class="lens-ring" id="lens-ring"></svg><i class="lens-rim"></i></div>';
       document.body.appendChild(wrap); document.body.appendChild(lensLayer);
       dot = wrap.querySelector('.cursor-dot'); lens = lensLayer.querySelector('.cursor-lens');
@@ -615,7 +591,7 @@ void main(){
       dr.target = 5;
     };
     function target(el) {
-      const t = el && el.closest ? el.closest('[data-lens]') : null;
+      const t = el && el.closest ? el.closest('[data-lens=media], [data-lens=portrait]') : null;
       let m = 'default';
       if (t) m = t.getAttribute('data-lens');
       if (el && el.closest && el.closest('[data-cursor=hide]')) m = 'hide';
@@ -625,12 +601,6 @@ void main(){
       if (m === api.mode && t === media) return;
       api.mode = m; media = t;
       lens.dataset.mode = m;
-      if (m === 'text') {
-        r.target = 60; dr.target = 0; setDiff(false);
-        /* glass on ice gets the ice rim and a white inner light; a night card nested in ice stays night */
-        const n = t && t.closest('.on-night, .on-ice'), tone = n && n.classList.contains('on-ice') ? 'ice' : 'night';
-        if (lens.dataset.tone !== tone) lens.dataset.tone = tone;
-      }
       const fsel = (m === 'portrait' && t && t.getAttribute('data-lens-circle')) || '';
       const was = !!fillEl;
       fillEl = fsel ? document.querySelector(fsel) : null;
@@ -639,12 +609,12 @@ void main(){
       fillInset = fillEl ? parseFloat(t.getAttribute('data-lens-inset')) || 0 : 0;
       k.target = fillEl ? 1 : 0;
       if (m === 'portrait' && fillEl) {
-        dr.target = 5; setDiff(false);                     /* the pointer's own dot stays: the lens is no longer under it */
+        dr.target = 5;                                     /* the pointer's own dot stays: the lens is no longer under it */
         const src = t.getAttribute('data-src');
         if (src && lensImg.getAttribute('src') !== src) lensImg.src = src;
       }
       else if (m === 'media' || m === 'portrait') {
-        r.target = 120; dr.target = 0; setDiff(false);
+        r.target = 120; dr.target = 0;
         const src = t.getAttribute('data-src');
         if (src && lensImg.getAttribute('src') !== src) lensImg.src = src;
         const txt = t.getAttribute('data-ring') || '';
@@ -654,7 +624,6 @@ void main(){
       else { r.target = 0; dr.target = 5; }
       FS.emit('cursor:mode', { mode: m, el: t });
     }
-    function setDiff(v) { if (diff === v || !lensLayer) return; diff = v; lensLayer.classList.toggle('is-diff', v); }
     function placeMedia() {
       if (!media || (api.mode !== 'media' && api.mode !== 'portrait')) return;
       const sel = media.getAttribute('data-loupe-for');
@@ -701,8 +670,9 @@ void main(){
       dot.style.transform = `translate(${(pos.x - 5).toFixed(2)}px, ${(pos.y - 5).toFixed(2)}px)`;
       dot.style.clipPath = `circle(${Math.max(0, dv).toFixed(2)}px at 50% 50%)`;
       placeMedia();
-      if (diff && api.mode !== 'text' && rv < .5) setDiff(false);      /* keep blending until the text lens has closed */
-      if (Math.abs(pos.x - pos.tx) > .1 || Math.abs(pos.y - pos.ty) > .1 || !r.settled() || !rf.settled() || !dr.settled() || !k.settled() || fillEl) loop();
+      /* rf only steps while there is a fill (fillEl, which loops anyway): a fill left mid-spring kept rf unsettled for
+         good and the dot's loop ran at rest forever (2026-10-08, found in the motion-cut smoke test) */
+      if (Math.abs(pos.x - pos.tx) > .1 || Math.abs(pos.y - pos.ty) > .1 || !r.settled() || !dr.settled() || !k.settled() || fillEl) loop();
     }
     function loop() { if (!raf) raf = requestAnimationFrame(frame); }
     api.setMode = setMode;
@@ -831,7 +801,6 @@ void main(){
         menu.hidden = true; menu.setAttribute('aria-hidden', 'true'); menu.style.opacity = '';
         setInert(false);
         html.classList.remove('menu-open', 'field-borrowed');
-        FS.field.lens = [0, 0, 0];
         /* re-derive mode, clip and opacity from where the page is now, not from a snapshot taken at open */
         if (window.HOME && window.HOME.fieldMode) window.HOME.fieldMode(); else FS.field.setMode(prevMode || 'aperture', prevClip);
         if (window.lenis) window.lenis.start();
@@ -844,8 +813,9 @@ void main(){
       FS.emit('menu:closing');
       if (F.static || !window.gsap) { setIris(0); done(); return; }
       if (F.reduced) { fadeTo(0, () => { setIris(0); done(); }); return; }
-      irisTo(0, 620, FS.ease.irisClose, 120);
-      closeT = setTimeout(done, 740);
+      /* 2026-10-08 motion cut: the iris closes at once (it waited 120ms for the links' blur-out, which is gone) */
+      irisTo(0, 620, FS.ease.irisClose);
+      closeT = setTimeout(done, 620);
     }
     api.init = function () {
       menu = document.getElementById('menu'); btn = document.querySelector('.menu-btn');

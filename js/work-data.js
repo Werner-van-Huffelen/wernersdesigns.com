@@ -137,7 +137,7 @@
       type: 'case', no: '03', hue: { h1: 'iris', h2: 'glacier', ax: '74%', ay: '72%' },
       card: '/projects/affinidi-phones.webp', cardAlt: 'Affinidi identity apps on four iPhones',
       /* concept: the page's sections after the Brief, and the live site's Link row */
-      order: ['what', 'decisions', 'system', 'atomic', 'final', 'outcome'],   /* r6 review: the why before the deep-dive */
+      order: ['outcome', 'what', 'decisions', 'system', 'atomic', 'final'],   /* r6 review: the why before the deep-dive; 2026-10-08 (Werner): outcome first */
       links: [{ href: 'https://www.affinidi.com', text: 'affinidi.com' }],
       slug: 'affinidi',
       name: 'Affinidi',
@@ -168,7 +168,7 @@
         },
       ],
       finalDesigns: [
-        { src: '/projects/affinidi.png', alt: 'Affinidi developer console', caption: 'Developer console: the primary application built on the design system' },
+        { src: '/projects/affinidi.png', alt: 'Affinidi developer console', caption: 'The primary application built on the design system' },
         { src: '/projects/affinidi-phones.webp', alt: 'White-label credential applications across four phones', caption: 'White-label credential apps: the same system with a different brand, built in a fraction of the time' },
       ],
       outcome: 'The design system was adopted across 3 product teams and used as the foundation for 4 white-label credential applications. Design-to-dev handover went from weeks to days.',
@@ -180,7 +180,7 @@
       type: 'case', no: '04', hue: { h1: 'orchid', h2: 'glacier', ax: '50%', ay: '18%' },
       card: '/projects/goodworker-devices.webp', cardAlt: 'GoodWorker platform on desktop, tablet and phone',
       /* concept. GoodWorker was sold in 2025 (Werner 2026-10-07: sold, not terminated), so its live link (goodworker.in) is left out */
-      order: ['context', 'what', 'process', 'research', 'concept', 'wireframes', 'decisions', 'final', 'outcome'],
+      order: ['outcome', 'context', 'what', 'process', 'research', 'concept', 'wireframes', 'decisions', 'final'],   /* 2026-10-08 (Werner): outcome first */
       slug: 'goodworker',
       name: 'GoodWorker',
       headline: 'GoodWorker set out to give millions of people in India control of their livelihoods.',
@@ -191,7 +191,7 @@
       tags: ['UX design', 'UI design', 'Design leadership', 'User research', 'Usability testing'],
       heroImage: '/projects/goodworker-hero.png',
       heroImageAlt: 'GoodWorker platform on multiple devices',
-      brief: 'There are four hundred and fifty million blue-collar workers in India. Most are hired through middlemen and have no formal record of their skills or employment history. GoodWorker set out to fix that and needed three products to do it.',
+      brief: 'There are four hundred and fifty million blue-collar workers in India. Most are hired through middlemen and have no formal record of their skills or employment history. GoodWorker wanted to fix that and needed three products to do it.',
       whatIDid: [
         'I joined halfway through the project to lead the product team: one junior designer, one researcher, one PM. My focus was end-to-end design of the employer portal, plus overseeing and mentoring the rest of the team.',
         'I ran research interviews with employers, set the information architecture, and took the employer portal from wireframes through a tested high-fidelity prototype. I also made the call on what went into the MVP.',
@@ -199,7 +199,7 @@
       decisions: [
         {
           heading: 'Scope the MVP to three screens',
-          body: 'Of the three products, the employer portal had the clearest success metric: does an employer hire someone? We scoped the MVP to three flows (create a job posting, review candidates, contact one) and deferred everything else, so we could stay focused and learn faster.',
+          body: 'Of the three products, the employer portal had the clearest success metric: does an employer hire someone? I scoped the MVP to three flows (create a job posting, review candidates, contact one) and deferred everything else, so we could stay focused and learn faster.',
         },
         {
           heading: 'Test wireframes before going high-fidelity',
@@ -213,14 +213,14 @@
         { src: '/projects/goodworker.png', alt: 'GoodWorker employer portal overview', caption: 'Job postings board: status at a glance, one click to the detail view' },
         { src: '/projects/goodworker-devices.webp', alt: 'GoodWorker across desktop, tablet and phone', caption: 'Responsive across all breakpoints, since employers work from desktops and phones' },
       ],
-      outcome: "The employer portal shipped as the MVP for Temasek's GoodWorker platform. Usability testing with 10 employers caught issues that we fixed before launch. GoodWorker reached 1 million users in its first year, but we couldn't find enough employers to place them, and the company was sold in 2025.",
+      outcome: "The employer portal shipped as the MVP for Temasek's GoodWorker platform. Usability testing with 10 employers caught issues that we fixed before launch. GoodWorker reached 1 million users in its first year but couldn't find enough employers to place them. It was sold in 2025.",
       stats: [{ n: '1M', label: 'Users in the first year' }, { n: '10', label: 'Employers in usability testing' }],
       nextSlug: 'heycar',
     },
     heycar: {
       type: 'case', no: '05', hue: { h1: 'glacier', h2: 'iris', ax: '20%', ay: '46%' },
       card: '/projects/heycar-macbook.webp', cardAlt: 'heycar vehicle page on a MacBook',
-      order: ['challenge', 'what', 'ideation', 'decisions', 'final', 'outcome'],
+      order: ['outcome', 'challenge', 'what', 'ideation', 'decisions', 'final'],   /* 2026-10-08 (Werner): outcome first */
       links: [{ href: 'https://www.hey.car', text: 'hey.car' }, { href: 'https://www.heycar.co.uk', text: 'heycar.co.uk' }],
       slug: 'heycar',
       name: 'heycar',
@@ -235,7 +235,7 @@
       brief: 'Buying a second-hand car feels like a minefield: opaque dealers, no way to judge quality, and financing that only gets harder. heycar started as a pitch concept and became two years of shipping product.',
       whatIDid: [
         'I was involved from day one and designed the concept that won the pitch with Volkswagen Financial Services. After that, I delivered the financing calculator and the dealer portal for the Germany launch.',
-        'After heycar Germany, I led the design team on the UK pitch, and that pitch sold the project. The audience and the regulations were different, but the goal was the same: make buying a second-hand car feel trustworthy.',
+        'After heycar Germany, I led the design team on the UK pitch. The audience and the regulations were different, but the goal was the same: make buying a second-hand car feel trustworthy.',
       ],
       decisions: [
         {
@@ -247,14 +247,14 @@
         },
         {
           heading: 'Contextual tips over permanent tooltips',
-          body: 'Buyers felt inadequate judging car quality, and permanent help text gets ignored. So we surfaced specific tips based on context: a financing tip on the financing step, a quality check tip on the car detail page. That way each tip is relevant at the right moment and invisible otherwise.',
+          body: 'Buyers felt inadequate judging car quality, and permanent help text gets ignored. So we surfaced specific tips based on context: a quality check tip on the car detail page, a financing tip on the financing step. That way each tip is relevant at the right moment and invisible otherwise.',
         },
       ],
       finalDesigns: [
         { src: '/projects/heycar.jpg', alt: 'heycar car search', caption: 'Simplified search: adaptive questions guide the buyer to the right car' },
         { src: '/projects/heycar-macbook.webp', alt: 'heycar vehicle detail page on a MacBook', caption: 'Vehicle detail page: quality signals, contextual tips and dealer connection' },
       ],
-      outcome: 'heycar launched in Germany and quickly became one of the leading platforms for quality second-hand cars, and the UK pitch my team designed sold the project there. The platform has since expanded across multiple European markets.',
+      outcome: 'heycar launched in Germany and quickly became one of the leading platforms for quality second-hand cars. In the UK, the pitch we designed sold the project. The platform has since expanded across multiple European markets.',
       stats: [],                                  /* no numbers in the outcome, so no stat row */
       nextSlug: 'galvany',
     },
@@ -264,7 +264,7 @@
     galvany: {
       type: 'case', no: '01', hue: { h1: 'iris', h2: 'orchid', ax: '30%', ay: '24%' },   /* a case study; on the homepage also under Recent work */
       card: 'galvany/laptops', cardAlt: 'GALVANY OS and the GALVANY Sales Portal on two laptops, facing each other',
-      order: ['context', 'what', 'system', 'decisions', 'research', 'final', 'outcome'],
+      order: ['outcome', 'context', 'what', 'system', 'decisions', 'research', 'final'],   /* 2026-10-08 (Werner): outcome first */
       slug: 'galvany',
       name: 'GALVANY OS & Sales Portal',
       headline: 'One flow from lead to installed heat pump, across two products.',
@@ -272,7 +272,7 @@
       role: 'Lead Product Designer',
       year: '2026',
       tags: ['Product design', 'Design in code', 'Design systems', 'User research', 'Internal tools', 'Sales tools'],
-      brief: 'GALVANY sells heat pumps through sales partners. GALVANY OS is meant to replace Airtable for its own teams, and the Sales Portal is where the partners work. Every customer passes from one to the other and back. I design both.',
+      brief: 'GALVANY sells heat pumps through sales partners. GALVANY OS is meant to replace Airtable for its own teams, the partners work in the Sales Portal, and every customer passes from one to the other and back. I design both.',
       whatIDid: [
         'I lead product design at GALVANY, and its design system started with me. Long before our developer built his version, I built the first one in code, from an existing UI kit skinned to our brand, and ran the OS and the Sales Portal prototypes on it. I own both prototypes: what each team and each seller sees, how a project moves between teams, and what the backend will be built against. For the OS, I also own the interviews.',
         'I design in code with Claude Code: clickable prototypes on fictional, seeded data, with over two thousand mock projects in the OS. Claude asks, I decide. Even a sort order waits for my answer, which is logged in the code as a dated decision. When I let it run ahead, as in the overnight build of the first twelve OS work views, every guess is logged for my review.',
@@ -326,7 +326,7 @@
       context: { name: 'The flow', h2: 'Two products, one customer.', blocks: [
         { p: [
           'The two need to work together and share a lot of information. They also speak the same language: the portal uses the OS’s words for every offer and order state.',
-          'Behind the OS sits the project record GALVANY’s own teams share in Airtable today. Mapping it field by field showed how much of it repeats: the date goods leave the warehouse alone turns up in four places.',
+          'Behind the OS sits the project record GALVANY’s own teams share in Airtable today. Mapping it field by field showed how much of it repeats: the date goods leave the warehouse, for one, turns up in four places.',
         ], cols: 2 },
         { steps: [
           { name: 'Lead', text: 'A lead comes in through the OS and gets verified.' },
@@ -347,10 +347,10 @@
         ] },
         { note: 'Every person, customer and record on these screens is fictional: the prototypes run on seeded mock data. Only the product names are GALVANY’s own.' },
       ] },
-      research: { name: 'Research', h2: 'Workarounds are findings, not mistakes.', size: 'statement', blocks: [
+      research: { name: 'Research', h2: 'Every workaround counts as a finding.', size: 'statement', blocks: [
         { p: [
-          'I test the OS prototype with the people who will live in it, and every workaround they show me counts as a finding. In one session, two order managers spent thirty minutes on how they work today and thirty on the prototype. In a paired interview the biggest risk is false agreement, so on the main questions both wrote their answers down before saying them, and only one of them drove.',
-          'What the interviews showed changed the product. A ‘blocked’ badge became a named reason, the electrics got their own traffic light, and add-on orders got a record of their own. Next came installer matching, ‘best three’: three ranked installer teams with plain-language reasons. Assigning a team doesn’t fix the date: the installer accepts and picks the start day.',
+          'I test the OS prototype with the people who will live in it. In one session, two order managers spent thirty minutes on how they work today and thirty on the prototype. In a paired interview the biggest risk is false agreement, so on the main questions both wrote their answers down before saying them, and only one of them drove.',
+          'The interviews changed the product. A ‘blocked’ badge became a named reason, the electrics got their own traffic light, and add-on orders got a record of their own. Next came installer matching, ‘best three’: three ranked installer teams with plain-language reasons. Assigning a team doesn’t fix the date: the installer accepts and picks the start day.',
         ], cols: 2 },
       ] },
     },
@@ -371,7 +371,7 @@
         { p: [
           'A design system gives every team the same reusable components and guidelines, so all platforms and products look and feel consistent. It also makes products faster to build and easier to scale.',
           'Design and development get simpler, with less duplicate work and fewer errors, and teams find it easier to work together.',
-          'A solid design system lets organisations innovate faster and ship high-quality products that give users what they need and expect.',
+          'With a design system in place, organisations can try new ideas sooner and ship good products that give users what they need and expect.',
         ], cols: 2 },
       ] },
       atomic: { name: 'Atomic design', blocks: [
@@ -420,7 +420,7 @@
             ['The 450 million blue-collar workers in India include security guards, delivery staff, construction labourers, housekeepers, maids, assembly line workers, plumbers, electricians and more. They work hard every day, but their situation is becoming unstable.',
               'Inflation is threatening their already meagre earnings. Applying for jobs through middlemen or agencies gives them little transparency. Recruitment agencies can exploit them, and employers can pay them late or unfairly. They might not get adequate training either, which could later cost them the job they rely on.'],
             ['Contract employers struggle with workforce management too: a high risk of improper background checks, workers who are hard to find and match on skills, and a time-consuming recruitment process.',
-              'GoodWorker gives workers in India a digital, verified biodata through our platform. With it they can find jobs more easily, secure their livelihood and establish a formal career. And employers can hire the right worker more efficiently and at lower cost.'],
+              'GoodWorker gives workers in India a digital, verified biodata on its platform. With it they can find jobs more easily, secure their livelihood and establish a formal career. And employers can hire the right worker more efficiently and at lower cost.'],
           ] } },
       ] },
       process: { name: 'My process', blocks: [
@@ -465,7 +465,7 @@
     },
     heycar: {
       challenge: { name: 'The challenge', blocks: [
-        { lead: 'A lot of people feel lost when it comes to buying a second-hand car. During our research we identified 4 major pain points in the buying process:' },
+        { lead: 'During our research we identified 4 major pain points in the buying process:' },
         { list: [
           'Buyers often feel overwhelmed when buying a second-hand car',
           'They often feel inadequate to judge whether a car is a good buy',
@@ -503,12 +503,12 @@
     ],
     affinidi: [
       Object.assign({}, P.affinidi.finalDesigns[0], { m: L('affinidi/console-macbook'), title: 'Developer console',
-        text: ['We first built this design system for our developer console, which gives our customers tools to improve data privacy and portability in their own applications.'] }),
+        text: ['We first built the design system for the developer console, which gives Affinidi’s customers tools to improve data privacy and portability in their own applications.'] }),
       /* r6 review: phones-b was the hero's four phones again; a 1:1 detail on the white-label Home app instead
          (Decision 01 already frames StudID beside GameID) */
       Object.assign({}, P.affinidi.finalDesigns[1], { m: { kind: 'detail', of: '/projects/affinidi-phones.webp', cx: 1150, cy: 540, mcx: 1150, mcy: 560 },
         text: ['The design system was flexible enough to reuse across different applications.',
-          'We duplicated it and updated the style guide to give each new application its own look and feel, which made them much faster to build.'] }),
+          'We duplicated it and updated the style guide to give each new application its own look and feel.'] }),
     ],
     goodworker: [
       { m: L('goodworker/final-job-postings'), alt: P.goodworker.finalDesigns[0].alt, caption: P.goodworker.finalDesigns[0].caption, title: 'Job postings',

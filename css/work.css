@@ -21,11 +21,11 @@
 .pl-lt{position:absolute;inset:0;z-index:0;border-radius:inherit;pointer-events:none;
   background-image:var(--aurora-lit);background-size:100% 100%;background-repeat:no-repeat}
 .pl-lt::before,.pl-lt::after{content:"";position:absolute;inset:0;border-radius:inherit}
-.pl-lt::before{background:radial-gradient(circle at var(--ax,30%) var(--ay,26%),var(--h1),#0000 60%);opacity:.92;transition:opacity 480ms var(--ease-focus)}
+.pl-lt::before{background:radial-gradient(circle at var(--ax,30%) var(--ay,26%),var(--h1),#0000 60%);opacity:.92}
 .pl-lt::after{background:radial-gradient(circle at calc(100% - var(--ax,30%)) calc(100% - var(--ay,26%)),var(--h2),#0000 66%);mix-blend-mode:color;opacity:.8}
 .pl--fit{container-type:size}
 .pl--hug{padding:clamp(16px, 5%, 64px)}
-@media (hover:hover){.rack.is-hover .pl-lt::before,.pl[data-lens]:hover .pl-lt::before{opacity:1}}
+/* 2026-10-08 motion cut: the key light no longer rises on hover (a plate does nothing when clicked) */
 
 /* a device: a zero box at the stage's centre; the render is placed from its fit (js/work-data.js WORK.fit): its content
    box (not its padding) as wide as --fw of the stage and as tall as --fh at most (--bar its aspect), --bwf its share of
@@ -37,7 +37,7 @@
 .st-dev>.st-img,.st-dev>.st-sh{position:absolute;left:calc(var(--cxf) * var(--rw) * -1);top:calc(var(--cyf) * var(--ar) * var(--rw) * -1);width:var(--rw);max-width:none}
 .st-img{height:auto}
 .st-sh{display:block;height:calc(var(--ar) * var(--rw));background:var(--night);opacity:calc(.5 * var(--halo,1));transform:translateY(3.5%) scale(.95);
-  -webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;transition:opacity 320ms var(--ease-focus)}
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .st-soft{opacity:var(--soft,0)}
 .st-sharp{opacity:calc(1 - var(--soft,0))}
 .st-soft,.st-sharp{transition:opacity 420ms var(--ease-focus)}
@@ -51,7 +51,8 @@
    most. In a fit plate it is centred within --sfw × --sfh of it (container units); in a hug plate it fills it. Out of
    focus the screen blurs and takes the project's hue pair (only the out-of-focus layers carry the light's tint); the
    frame stays sharp, like glass in front of it. No backdrop blur: over the smooth gradient a translucent bezel reads
-   the same, and a page of forty frames stays cheap. */
+   the same, and a page of forty frames stays cheap. 2026-10-08 motion cut: no rack focus, so a screen rests in focus
+   (--soft 0): its blur and tint are inert. */
 .scr{--bz:clamp(6px, 1.1cqh, 12px);position:relative;z-index:1;display:block;padding:var(--bz);border-radius:calc(var(--bz) + 10px);
   background:color-mix(in srgb,var(--moon) 16%,transparent);box-shadow:0 40px 80px -32px #000000b3,0 0 0 .5px #F3F1F814}
 .scr::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--glass-rim);pointer-events:none;
@@ -78,8 +79,7 @@
 /* the back pill: the chip leads, its arrow points back */
 .pill--back{padding:0 18px 0 5px}
 .arr--back{transform:scaleX(-1)}
-.pill--back .chip .arr{transition:color 240ms var(--ease-focus),transform 320ms var(--ease-glass)}
-@media (hover:hover){.pill--back:hover .chip .arr--back{transform:scaleX(-1) translateX(2px)}}
+.pill--back .chip .arr{transition:color 240ms var(--ease-focus)}   /* 2026-10-08 motion cut: the chip lights, the arrow no longer nudges */
 
 /* ── 2 · the lit bands: the hero and the Next band, filled edge to edge ─────────────────────────────────────────
    Transparent, so the live aurora field shows through them (js/work.js light(): the one fixed canvas, in the mode the
@@ -185,15 +185,16 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 .on-ice .w-lead .stop::before{box-shadow:inset 0 .06em .12em #0000008c,inset 0 0 0 1px #15111F33}
 /* a lead-in line: Sans, dimmed, before what it introduces */
 .w-note{font:400 clamp(17px, 1.3vw, 20px)/1.5 var(--f-sans);color:var(--fg-dim)}
-/* lit-stop bullets: each point a row between hairlines, its bullet the site's stop, lit in turn as the list enters */
+/* lit-stop bullets: each point a row between hairlines, its bullet the site's stop, lit (2026-10-08 motion cut: no longer
+   in turn as the list enters) */
 .w-b .w-list{margin-top:calc(var(--s5) - var(--s8))}
 .w-list{border-top:1px solid var(--line)}
 .w-list li{display:flex;align-items:baseline;gap:20px;padding:22px 0 23px;border-bottom:1px solid var(--line);
   font:500 clamp(20px, 1.8vw, 28px)/1.3 var(--f-sans);letter-spacing:-.012em;color:var(--fg);text-wrap:pretty}
 .li-stop{position:relative;flex:none;width:.36em;height:.36em;border-radius:50%;box-shadow:inset 0 0 0 1px var(--fg-dim);transform:translateY(-.02em)}
-.li-stop .lit{position:absolute;inset:0;border-radius:50%;clip-path:circle(var(--bl,50%) at 50% 50%);transition:clip-path 480ms var(--ease-glass)}
+.li-stop .lit{position:absolute;inset:0;border-radius:50%;clip-path:circle(var(--bl,50%) at 50% 50%)}
 .on-night .li-stop .lit{box-shadow:0 0 .3em color-mix(in srgb,var(--iris) 40%,transparent)}
-/* a quote (the solution statement) and heycar's aim: the manifesto's size, word by word into focus, its stop last */
+/* a quote (the solution statement) and heycar's aim: the manifesto's size, its stop lit */
 .w-b--full>.w-quote{grid-column:1 / 12}
 .w-qt{font:600 clamp(36px, 5vw, 76px)/.98 var(--f-display);letter-spacing:-.042em;color:var(--fg);max-width:15em;text-wrap:balance}
 .w-note+.w-b--full,.w-b+.w-b--full:has(.w-quote){margin-top:var(--s7)}
@@ -206,17 +207,15 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 .pf-grid>.pf{display:flex;flex-direction:column}
 .pf-grid>.pf>.pl--hug{flex:1;display:flex;flex-direction:column;justify-content:center}
 .pf-cap{margin-top:var(--s3)}
-/* the process: four glass index discs on one hairline (each segment runs from its disc to the next), lit in turn */
+/* the process: four glass index discs on one hairline (each segment runs from its disc to the next), lit (2026-10-08
+   motion cut: they no longer light in turn as the row comes in, the hairlines no longer draw) */
 .stp-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:var(--gutter)}
 .stp{position:relative;min-width:0}
 .stp:not(:last-child)::before{content:"";position:absolute;left:calc(var(--btn-l) + 14px);top:calc(var(--btn-l) / 2);width:calc(100% + var(--gutter) - var(--btn-l) - 28px);height:1px;
-  background:var(--line);transform-origin:0 50%;transition:transform 720ms var(--ease-iris)}
-html.stp-live .stp:not(.is-lit):not(:last-child)::before{transform:scaleX(0)}
+  background:var(--line)}
 .stp-idx,.dec-idx{font:400 13px/1 var(--f-mono);letter-spacing:.02em}
-.stp-idx .b-light,.dec-idx .b-light{transition:clip-path 420ms var(--ease-glass)}
-.stp-idx>span,.dec-idx>span{transition:color 240ms var(--ease-focus)}
-.stp.is-lit .b-light,html.is-static .stp .b-light,html.is-reduced .stp .b-light{--bl:50%}
-.stp.is-lit .stp-idx>span,html.is-static .stp-idx>span,html.is-reduced .stp-idx>span{color:var(--ink)}
+.stp-idx .b-light{--bl:50%}
+.stp-idx>span{color:var(--ink)}
 .stp-h{margin-top:var(--s6);font:500 clamp(28px, 2.6vw, 42px)/1.04 var(--f-display);letter-spacing:-.03em;color:var(--fg)}
 .stp-p{margin-top:var(--s4);font:400 clamp(16px, 1.2vw, 18px)/1.6 var(--f-sans);color:color-mix(in srgb,var(--fg) 82%,transparent);max-width:24em;text-wrap:pretty}
 /* the photo band: full bleed, full colour; its lead on a night veil over the photo's foot; the columns beside it */
@@ -303,9 +302,9 @@ html.stp-live .stp:not(.is-lit):not(:last-child)::before{transform:scaleX(0)}
 .dec[data-side=right] .dec-fig,.dec[data-side=right] .dec-illus{grid-column:7 / 13}
 .dec[data-side=left] .dec-text{grid-column:8 / 13}
 .dec[data-side=left] .dec-fig,.dec[data-side=left] .dec-illus{grid-column:1 / 7}
-/* the index: the services' glass disc, lit while its row is in view (static: always lit) */
-.dec.is-lit .dec-idx .b-light,html.is-static .dec-idx .b-light{--bl:50%}
-.dec.is-lit .dec-idx>span,html.is-static .dec-idx>span{color:var(--ink)}
+/* the index: the services' glass disc, lit (2026-10-08 motion cut: no longer only while its row is in view) */
+.dec-idx .b-light{--bl:50%}
+.dec-idx>span{color:var(--ink)}
 .dec-h{margin-top:var(--s6);font:500 clamp(32px, 3.4vw, 52px)/1.04 var(--f-display);letter-spacing:-.03em;color:var(--fg);max-width:12em;text-wrap:balance}
 .dec-body{margin-top:var(--s5);font:400 clamp(17px, 1.3vw, 20px)/1.6 var(--f-sans);color:color-mix(in srgb,var(--fg) 82%,transparent);max-width:30em;text-wrap:pretty}
 /* the media card: a 4:3 plate, the light filled edge to edge; a device fitted in it, a framed screen, or a detail */
@@ -369,18 +368,15 @@ h3.fd-title{margin:0}
 .stats{display:flex;flex-wrap:wrap;gap:var(--s6) var(--s7);margin-top:var(--s8)}
 .stat{display:flex;flex-direction:column;align-items:center;gap:var(--s4);width:var(--sd)}
 .st-disc{width:var(--sd);height:var(--sd)}
-/* the light opens slowly from each disc's centre as the row comes into view (static: open) */
-.st-disc .b-light{transition:clip-path 900ms var(--ease-iris)}
-.st-n{font:600 clamp(64px, 6.6vw, 104px)/1 var(--f-display);letter-spacing:-.045em;color:var(--fg);font-variant-numeric:tabular-nums;transition:color 480ms var(--ease-focus)}
+/* lit, the numbers in ink on the light (2026-10-08 motion cut: the light no longer opens from each disc's centre as
+   the row comes into view, nor do the numbers count up) */
+.st-disc .b-light{--bl:50%}
+.st-n{font:600 clamp(64px, 6.6vw, 104px)/1 var(--f-display);letter-spacing:-.045em;color:var(--ink);font-variant-numeric:tabular-nums}
 /* the word pair (Affinidi's weeks → days) stacks, the arrow turned down, and scales with its disc like the numerals do:
-   .stat .st-n--w outranks the phone .st-n size, which set it at 47px in a 109px disc. Its ink waits for the light to
-   open past its ends (the iris takes 900ms from the centre, the numerals' 480ms ink was early on a wide word) */
-.stat .st-n--w{display:inline-flex;flex-direction:column;align-items:center;gap:0;font-size:calc(var(--sd) * .17);line-height:.92;letter-spacing:-.03em;
-  transition:color 480ms var(--ease-focus) 380ms}
+   .stat .st-n--w outranks the phone .st-n size, which set it at 47px in a 109px disc */
+.stat .st-n--w{display:inline-flex;flex-direction:column;align-items:center;gap:0;font-size:calc(var(--sd) * .17);line-height:.92;letter-spacing:-.03em}
 .st-n--w .to{display:block;margin:.1em 0 .04em;line-height:0}
 .st-n--w .to .arr{width:.62em;height:.62em;vertical-align:0;transform:rotate(90deg)}
-.stat.is-lit .b-light,html.is-static .stat .b-light,html.is-reduced .stat .b-light{--bl:50%}
-.stat.is-lit .st-n,html.is-static .st-n,html.is-reduced .st-n{color:var(--ink)}
 .st-l{font:400 var(--t-micro)/1.4 var(--f-mono);letter-spacing:.02em;color:var(--fg-dim);text-align:center;max-width:100%;text-wrap:balance}
 .w-outcome{margin-top:var(--s8);font:600 clamp(36px, 4.6vw, 80px)/1.02 var(--f-display);letter-spacing:-.038em;color:var(--fg);max-width:17em;text-wrap:pretty}
 .w-out .label+.w-outcome{margin-top:var(--s7)}
@@ -396,8 +392,9 @@ h3.fd-title{margin:0}
 
 /* ── 12 · next project: one link, the next hero in miniature. Filled edge to edge with the light like the hero, the
    next device large on it (right), the number and headline top left, the name across the bottom as large as the width
-   allows (--nfs, js/work.js), the arrow disc at its end; the veil under the words. Hover racks the device into focus,
-   lifts the veil a little and lights the arrow; a click grows the band's light to the whole viewport (js/handoff.js). */
+   allows (--nfs, js/work.js), the arrow disc at its end; the veil under the words. Hover lifts the veil a little and
+   lights the arrow (2026-10-08 motion cut: the device no longer racks into focus, the arrow no longer slides); a click
+   grows the band's light to the whole viewport (js/handoff.js). */
 /* the name is display type (3:1 is its bar, it measured 6.6–8 under the full veil), so its veil is lighter: the band's
    foot meets the footer's light without a dark ledge */
 .w-next{position:relative;overflow:clip;z-index:3;border-top:1px solid var(--line-night);--nb:clamp(40px, 7svh, 72px);--wv-name:.34}
@@ -419,15 +416,15 @@ h3.fd-title{margin:0}
   font:600 var(--nfs,clamp(96px, 15.5vw, 224px))/.8 var(--f-display);letter-spacing:-.05em;color:var(--moon);padding-right:.04em}
 /* the arrow: a glass disc that lights (the card's button), on the name's line at the right margin */
 .nx-go{position:absolute;right:var(--margin);bottom:var(--nb);color:var(--moon)}
-.nx-go .arr{width:22px;height:22px;vertical-align:0;transition:color 240ms var(--ease-focus),transform 320ms var(--ease-glass)}
+.nx-go .arr{width:22px;height:22px;vertical-align:0;transition:color 240ms var(--ease-focus)}
 .nx-go .b-light{transition:clip-path 420ms var(--ease-glass)}
 .w-next.is-hover .nx-go .b-light,.nx-link:focus-visible .nx-go .b-light{--bl:50%}
-.w-next.is-hover .nx-go .arr,.nx-link:focus-visible .nx-go .arr{color:var(--ink);transform:translateX(3px)}
+.w-next.is-hover .nx-go .arr,.nx-link:focus-visible .nx-go .arr{color:var(--ink)}
 .nx-label{position:absolute;z-index:3;left:var(--margin);top:calc(var(--header-h) + 40px);pointer-events:none}
 .nx-back{position:absolute;z-index:3;right:var(--margin);top:calc(var(--header-h) + 28px)}
 
 /* ── 13 · the hero's pre-intro state (html.hero-pre, set before the first paint; js/work.js lifts it) ────────────
-   The copy, device and meta wait out of focus; the light waits closed (js/work.js keeps the field's clip at 0 until
+   The copy, device and meta wait hidden; the light waits closed (js/work.js keeps the field's clip at 0 until
    the intro irises it open, or an arrival cover already holds the light, html.is-arriving). */
 html.hero-pre .wh-back,html.hero-pre .wh-label,html.hero-pre .wh-name,html.hero-pre .wh-title .w,html.hero-pre .wh-tags .tag,
 html.hero-pre .wm,html.hero-pre .wh-stage .st-dev{opacity:0}
@@ -436,17 +433,18 @@ html.hero-pre .wh-title .stop{--sr:0%}
 @keyframes w-bail{from{opacity:0;filter:blur(10px)}}
 html.hero-bailed .wh-stack,html.hero-bailed .wh-meta,html.hero-bailed .wh-stage .st-dev{animation:w-bail 460ms var(--ease-focus)}
 
-/* ── 14 · wide screens, live: the sticky stages (js/work.js sequences and features set html.seq-live / feat-live) ──
+/* ── 14 · wide screens, live: the sticky stages (js/work.js sequences sets html.seq-live) ──
    A sequence is a sticky stage the scroll steps through, one step per --step of scroll: its steps share one place and
-   the current one is in focus (the others out of focus, underneath), the step dots and the "03 / 07" readout under
-   it. The features ride sideways on a sticky track (--fx, the scroll's share of --travel). */
+   the current one is shown (the others faded out, underneath), the step dots and the "03 / 07" readout under it.
+   2026-10-08 motion cut: the steps crossfade without the blur, and the features no longer ride sideways on a sticky
+   track (they are the stack of rows, §7). */
 @media (min-width:1024px) and (min-height:620px){
   html.seq-live .seq{--step:var(--seq-step,52svh);height:calc(100svh - var(--header-h) + (var(--n) - 1) * var(--step))}
   html.seq-live .seq-stage{position:sticky;top:var(--header-h);height:calc(100svh - var(--header-h));display:flex;flex-direction:column;justify-content:center;
     padding-block:var(--s4) var(--s5)}
   html.seq-live .seq-list{display:grid;gap:0}
-  html.seq-live .seq-step{grid-area:1 / 1;opacity:0;filter:blur(10px);transition:opacity 420ms var(--ease-focus),filter 420ms var(--ease-focus);pointer-events:none}
-  html.seq-live .seq-step.is-on{opacity:1;filter:none;pointer-events:auto}
+  html.seq-live .seq-step{grid-area:1 / 1;opacity:0;transition:opacity 420ms var(--ease-focus);pointer-events:none}
+  html.seq-live .seq-step.is-on{opacity:1;pointer-events:auto}
   html.seq-live .seq-step .pf{width:min(100%, (100svh - var(--header-h) - 150px) * var(--sa) * 1.02)}
   html.seq-live .seq-cap{display:none}
   html.seq-live .seq-bar{display:flex;align-items:center;gap:var(--s5);margin-top:var(--s5)}
@@ -466,15 +464,6 @@ html.hero-bailed .wh-stack,html.hero-bailed .wh-meta,html.hero-bailed .wh-stage 
     html.seq-live .seq-read{flex-direction:column;align-items:flex-start;gap:6px;font-size:13px}
     html.seq-live .seq-rt:not(:empty)::before{content:none}
   }
-  html.feat-live .feat{height:calc(100svh + var(--travel,2000px))}
-  html.feat-live .feat-pin{position:sticky;top:0;height:100svh;overflow:hidden;display:flex;align-items:center}
-  html.feat-live .feat-track{flex-direction:row;gap:var(--s7);padding-top:var(--header-h);transform:translate3d(calc(var(--fx,0) * -1px),0,0);will-change:transform}
-  html.feat-live .feat-it{flex:none;width:min(46vw, (100svh - var(--header-h) - 260px) * 1.406);display:flex;flex-direction:column;align-items:stretch;gap:0}
-  html.feat-live .feat-it>.pl{width:100%}
-  html.feat-live .feat-no,html.feat-live .feat-h,html.feat-live .feat-p{align-self:auto}
-  html.feat-live .feat-no{margin-top:var(--s5)}
-  html.feat-live .feat-h{margin-top:var(--s3)}
-  html.feat-live .feat-p{margin-top:var(--s3);max-width:28em}
 }
 
 /* ── 15 · stacked: under 768, and portrait tablets (taller than wide) ─────────── */
@@ -551,9 +540,8 @@ html.hero-bailed .wh-stack,html.hero-bailed .wh-meta,html.hero-bailed .wh-stage 
   .stp-list{display:flex;flex-direction:column;gap:var(--s7)}
   .stp{padding-left:calc(48px + 20px)}
   .stp-idx{position:absolute;left:0;top:0;width:48px;height:48px;font-size:11px}
-  .stp:not(:last-child)::before{display:block;left:24px;top:calc(48px + 10px);width:1px;height:calc(100% + var(--s7) - 48px - 20px);transform-origin:50% 0}
+  .stp:not(:last-child)::before{display:block;left:24px;top:calc(48px + 10px);width:1px;height:calc(100% + var(--s7) - 48px - 20px)}
   .stp:nth-child(2)::before{display:block}
-  html.stp-live .stp:not(.is-lit):not(:last-child)::before{transform:scaleY(0)}
   .stp-h{margin-top:6px;font-size:28px}
   .stp-p{font-size:17px;margin-top:var(--s3)}
   .ph{margin-top:var(--s8)}
@@ -693,14 +681,9 @@ html.seq-live .seq-dots{gap:20px}
 /* press: the pills answer a tap at the system's .96, like the homepage's See-the-work badge */
 .work-page .pill{transition:scale 150ms ease-out}
 .work-page .pill:active{scale:.96}
-/* staged entrance: the numerals turn ink once the light has opened past them, not before (the iris starts slow) */
-.stat .st-n:not(.st-n--w){transition-delay:300ms}   /* the word pair keeps its own wait (§11) */
-html.is-static .st-n,html.is-reduced .st-n{transition-delay:0ms}
 /* the meta strip's rule waits for its cells instead of standing alone on the night before the intro */
 html.hero-pre .wh-meta{border-top-color:transparent}
 .wh-meta{transition:border-top-color 480ms var(--ease-focus) 600ms}
 /* icons: one stroke for the one icon set, the burger's 1.75px at every size; heavier beside the 600 display stat */
 .work-page .arr path{vector-effect:non-scaling-stroke;stroke-width:var(--arr-sw,1.75px)}
 .work-page .st-n--w .to .arr{--arr-sw:max(1.5px, .06em)}
-/* the back arrow nudges for keyboard focus as it does for hover */
-.pill--back:focus-visible .chip .arr--back{transform:scaleX(-1) translateX(2px)}
