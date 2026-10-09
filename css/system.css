@@ -377,7 +377,9 @@ html.field-still .menu .m-still{display:block}
 .menu-link .mi{position:absolute;left:-2.9em;top:50%;transform:translateY(-50%);font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:#F3F1F8b3;display:none}
 .menu-links.has-hover .menu-link:not(.is-hover){filter:blur(2px);opacity:.28}
 .menu-card{grid-column:9 / 13;justify-self:end;width:min(400px,100%);height:460px;--ground:transparent;--mc-ty:300px;
-  --nx1:0px;--ny1:var(--mc-ty);--nx2:-100px;--ny2:-100px;--notch:var(--notch-menu);background:var(--ice);color:var(--ink);display:flex;flex-direction:column}
+  -webkit-mask:none;mask:none;background:var(--ice);color:var(--ink);display:flex;flex-direction:column}
+/* 2026-10-09 (Werner): no half-disc notch on the menu card either, like the work and Companies cards; the tear stays,
+   inset evenly now there is no notch to clear */
 .menu-card .mc-top{padding:36px 36px 0;display:flex;flex-direction:column;gap:0;flex:0 0 var(--mc-ty)}
 .menu-card .mc-name{font:600 32px/1.05 var(--f-display);letter-spacing:-.02em}
 .menu-card .mc-role{font:400 17px/1.4 var(--f-sans);color:var(--haze-ink);margin-top:10px}
@@ -385,7 +387,9 @@ html.field-still .menu .m-still{display:block}
 .menu-card .mc-social{display:flex;gap:8px;margin:20px 0 36px}
 .menu-card .mc-stub{flex:1;background:var(--ice-2);padding:0 36px;display:flex;align-items:center;justify-content:space-between}
 .menu-card .mc-stub .label{color:var(--haze-ink)}
-.menu-card .tear--h{--ty:var(--mc-ty);left:calc(var(--notch-menu) + 12px);right:24px;--ground:#0000}
+.menu-card .tear--h{--ty:var(--mc-ty);--ground:#0000;   /* first and last holes on the card's 36px padding (as .work-card) */
+  left:calc(36px + var(--hole) / 2 - var(--hole-pitch) / 2);right:calc(36px + var(--hole) / 2 - var(--hole-pitch) / 2);
+  background-position:0 50%;background-repeat:round no-repeat}
 .menu-card .tear--h{--hole-c:#15111F2e}
 .menu-foot{position:absolute;left:var(--margin);right:var(--margin);bottom:28px;display:flex;justify-content:flex-end;font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:#F3F1F8b3}
 @media (max-width:767px){
