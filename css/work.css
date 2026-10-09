@@ -157,9 +157,8 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 .h2--statement{font-size:clamp(40px, 5vw, 84px);line-height:.98;letter-spacing:-.036em;max-width:15em}
 /* the blocks: text in the editorial column (5–12 of 12, like What I did), media on the whole grid */
 .w-b{padding-inline:var(--margin);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);margin-top:var(--s8)}
-.w-b>*{grid-column:5 / 13;min-width:0}
+.w-b>*{grid-column:1 / 9;min-width:0}   /* 2026-10-09 (Werner): story blocks start on their title's edge; same 8-column measure as before (was 5 / 13) */
 .w-b--full>*{grid-column:1 / -1}
-#ideation .w-b>.w-lead{grid-column:1 / -1}   /* 2026-10-09 (Werner): heycar's ideation intro lines up with its title */
 .w-head+.w-b{margin-top:var(--s9)}
 
 /* ── 5 · brief: one statement, focus-revealed word by word as it passes the reading line (js/work.js) ── */
@@ -173,8 +172,8 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 /* ── 6 · what I did: two columns under the head, offset like an editorial spread ── */
 .what-cols{margin-top:var(--s9);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter)}
 .what-cols p,.w-p p,.ph-col p,.w-ia-p p{font:400 clamp(18px, 1.5vw, 22px)/1.55 var(--f-sans);letter-spacing:-.005em;color:color-mix(in srgb,var(--fg) 88%,transparent);text-wrap:pretty}
-.what-cols p:nth-child(1){grid-column:5 / 9}
-.what-cols p:nth-child(2){grid-column:9 / 13}
+.what-cols p:nth-child(1){grid-column:1 / 5}
+.what-cols p:nth-child(2){grid-column:5 / 9}
 .w-p--2{columns:2;column-gap:var(--gutter)}
 .w-p p{break-inside:avoid}
 .w-p p+p,.ph-col p+p,.w-ia-p p+p{margin-top:1em}
@@ -228,12 +227,12 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 .ph-lead{position:absolute;left:0;right:0;bottom:clamp(40px, 7svh, 80px);z-index:1;font:500 clamp(28px, 3.2vw, 52px)/1.1 var(--f-display);letter-spacing:-.028em;
   color:var(--moon);max-width:min(24em, 100%);text-wrap:pretty}
 .ph-cols{margin-top:var(--s9)}
-.ph-cols>.ph-col:nth-child(1){grid-column:5 / 9}
-.ph-cols>.ph-col:nth-child(2){grid-column:9 / 13}
+.ph-cols>.ph-col:nth-child(1){grid-column:1 / 5}
+.ph-cols>.ph-col:nth-child(2){grid-column:5 / 9}
 /* the information architecture: its lead-in in the column, then the diagram (light on its night board) beside the
    three paragraphs that walk it */
 .w-ia{row-gap:var(--s6);align-items:center}
-.w-ia>.w-note{grid-column:5 / 13;grid-row:1}
+.w-ia>.w-note{grid-column:1 / 9;grid-row:1}
 .w-ia>.pf{grid-column:1 / 7;grid-row:2}
 .w-ia>.w-ia-p{grid-column:8 / 13;grid-row:2}
 /* the stepped sequence: a stack of its steps (phones, static, reduced: js/work.js turns it into a stage) */
@@ -493,7 +492,7 @@ html.hero-bailed .wh-stack,html.hero-bailed .wh-meta,html.hero-bailed .wh-stage 
 @media (min-width:768px) and (max-width:1099px){
   .what-cols p:nth-child(1),.ph-cols>.ph-col:nth-child(1){grid-column:1 / 7}
   .what-cols p:nth-child(2),.ph-cols>.ph-col:nth-child(2){grid-column:7 / 13}
-  .w-b>*{grid-column:3 / 13}
+  .w-b>*{grid-column:1 / 11}
   .w-b--full>*,.w-ia>.pf{grid-column:1 / -1}
   .w-ia>.w-note{grid-column:1 / -1}
   .w-ia>.pf{grid-column:1 / 8}
