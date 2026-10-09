@@ -10,7 +10,7 @@
  *   affinidi-2   White-label as the proof of concept: one component, five duplicates, each re-lit by one of the site's
  *                five ⌘R schemes (the same idea: same system, different brand); the duplicates come out from under it
  *                and their lights iris open. Ring text: ADAPT WITHOUT FORKING.
- *   goodworker-1 Scope the MVP to three screens: three flows racked into focus on one hairline, everything else the same
+ *   goodworker-1 Scope the MVP to three flows: three flows racked into focus on one hairline, everything else the same
  *                light out of focus behind them.
  *   heycar-2     Contextual tips over permanent tooltips: a path of five steps; the header's own readout pill opens as a
  *                tip on its step only, as a lit disc walks the path (live), both standing open at rest.

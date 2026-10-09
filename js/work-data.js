@@ -149,10 +149,10 @@
       tags: ['Design system', 'Design leadership', 'Responsive design', 'UX/UI', 'Web 3.0'],
       heroImage: '/projects/affinidi-hero.png',
       heroImageAlt: 'Affinidi identity apps on multiple devices',
-      brief: "Multiple product teams had spent years on what was supposed to be one product, and each had drifted into its own visual language. Over about six months in 2022 and 2023, we built one design system to pull them together under a single developer portal.",
+      brief: "Multiple product teams had spent years on what was supposed to be one product, and each had drifted into its own visual language. Over about six months in 2022 and 2023, we built one design system to pull them together under a single developer console.",
       whatIDid: [
-        'As Lead Designer, I was the link between the Berlin and Singapore teams. I had worked on most of these products at some point, so I could see exactly where the experiences had fragmented.',
-        'I led the team in designing and building the design system components using an atomic design approach, and managed the handover to the developers building it out. I was also responsible for the final product: the developer portal that brought everything together.',
+        'As Lead Product Designer, I was the link between the Berlin and Singapore teams. I had worked on most of these products at some point, so I could see exactly where the experiences had fragmented.',
+        'I led the team in designing and building the design system components using an atomic design approach, and managed the handover to the developers building it out. I was also responsible for the final product: the developer console that brought everything together.',
       ],
       decisions: [
         {
@@ -198,7 +198,7 @@
       ],
       decisions: [
         {
-          heading: 'Scope the MVP to three screens',
+          heading: 'Scope the MVP to three flows',
           body: 'Of the three products, the employer portal had the clearest success metric: does an employer hire someone? I scoped the MVP to three flows (create a job posting, review candidates, contact one) and deferred everything else, so we could stay focused and learn faster.',
         },
         {
@@ -234,7 +234,7 @@
       heroImageAlt: 'heycar car search interface on a laptop',
       brief: 'Buying a second-hand car feels like a minefield: opaque dealers, no way to judge quality, and financing that only gets harder. heycar started as a pitch concept and became two years of shipping product.',
       whatIDid: [
-        'I was involved from day one and designed the concept that won the pitch with Volkswagen Financial Services. After that, I delivered the financing calculator and the dealer portal for the Germany launch.',
+        'I was involved from day one. The concept that won the pitch with Volkswagen Financial Services was a team effort, and I pitched its design. After that, I delivered the financing calculator and the dealer portal for the Germany launch.',
         'After heycar Germany, I led the design team on the UK pitch. The audience and the regulations were different, but the goal was the same: make buying a second-hand car feel trustworthy.',
       ],
       decisions: [
@@ -243,7 +243,7 @@
           body: 'Every other car site leads with an overwhelming filter panel: make, model, year, price, mileage. We replaced it with three adaptive questions based on how much the buyer already knows. That reduced the cognitive load significantly in testing and got buyers to the right cars faster.',
           image: '/projects/heycar.jpg',
           imageAlt: 'heycar simplified search interface',
-          imageCaption: 'Three questions instead of twenty filters',
+          imageCaption: 'Three questions instead of five filters',
         },
         {
           heading: 'Contextual tips over permanent tooltips',
@@ -281,7 +281,7 @@
         { heading: 'The lead opens beside the board', body: 'In the portal, a lead opens in a drawer on the right, so the seller keeps their place on the board. Calling, the offer and the next steps sit at the top. On a phone, the drawer goes full screen.', image: 'galvany-1', imageAlt: 'A lead’s drawer over the seller’s board: call and e-mail, the offer, the next steps, the key facts and the appointments' },
         { heading: 'Every exception starts with a lead', body: 'The portal’s team view lists what needs attention as open exceptions, each one triggered by a lead’s state, like a lead still waiting three days in a seller’s inbox. Sellers aren’t measured on speed or activity. One click opens the seller’s page, where a call can unblock it.', image: 'galvany-2', imageAlt: 'Needs attention in the team: open exceptions, each a lead a seller hasn’t accepted yet, with how long it has waited' },
         { heading: 'A rejection names the page', body: "Back in the OS, order review sits beside the signed offer: a seven-point checklist, each point with its page, then release or reject with a reason. A rejection names the failed check and the page, like 'Cancellation policy not signed · p. 12', and the seller sees it in the portal, so whoever fixes it doesn’t have to guess.", image: 'galvany-3', imageAlt: 'Order review: the signed offer on the left, the seven-point checklist with its page numbers on the right' },
-        { heading: 'Gates before anyone installs', body: 'Nothing gets installed until its gates are clear: subsidy, detailed planning, financing and the customer’s own work. Pipeline cards show the first three as check circles (the electrics joined them later) and the customer’s own work as a tag. The project file shows all four, so what’s blocking is visible at a glance.', image: 'galvany-4', imageAlt: 'Three of the gates (subsidy, detailed planning and financing), each with its open, done and not-applicable count' },
+        { heading: 'Gates before anyone installs', body: 'Nothing gets installed until its four gates are clear: subsidy, detailed planning, financing and the electrics. Every pipeline card shows them as check circles (the electrics joined later), so what’s blocking is visible at a glance.', image: 'galvany-4', imageAlt: 'Three of the gates (subsidy, detailed planning and financing), each with its open, done and not-applicable count' },
       ],
       outcome: 'GALVANY’s production design system is our developer’s version of mine. It took its brand colours from my OS prototype, and I made the ten design calls that were still open. The OS prototype itself is meant to become the spec the backend is built from.',
       stats: [],
@@ -399,14 +399,14 @@
                 { m: L('affinidi/template-drawer'), alt: 'A page template with a drawer', index: true, span: 6 },
                 { m: L('affinidi/template-tabs'), alt: 'A page template with tabs', index: true, span: 6 },
               ] },
-            { name: 'Pages', text: 'The highest level of hierarchy in an atomic design system is the actual pages that make up a product. Below is a selection of the pages of our developer portal.',
+            { name: 'Pages', text: 'The highest level of hierarchy in an atomic design system is the actual pages that make up a product. Below is a selection of the pages of our developer console.',
               seq: { ring: 'PAGES', steps: [
-                { m: L('affinidi/page-login'), alt: 'Developer portal page: log in' },
-                { m: L('affinidi/page-projects'), alt: 'Developer portal page: my projects' },
-                { m: L('affinidi/page-bulk-issuance'), alt: 'Developer portal page: bulk issuance' },
-                { m: L('affinidi/page-analytics'), alt: 'Developer portal page: analytics' },
-                { m: L('affinidi/page-schemas'), alt: 'Developer portal page: schema manager' },
-                { m: L('affinidi/page-qualification'), alt: 'Developer portal page: qualification criteria' },
+                { m: L('affinidi/page-login'), alt: 'Developer console page: log in' },
+                { m: L('affinidi/page-projects'), alt: 'Developer console page: my projects' },
+                { m: L('affinidi/page-bulk-issuance'), alt: 'Developer console page: bulk issuance' },
+                { m: L('affinidi/page-analytics'), alt: 'Developer console page: analytics' },
+                { m: L('affinidi/page-schemas'), alt: 'Developer console page: schema manager' },
+                { m: L('affinidi/page-qualification'), alt: 'Developer console page: qualification criteria' },
               ] } },
           ],
         } },

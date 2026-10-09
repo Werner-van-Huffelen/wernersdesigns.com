@@ -159,6 +159,7 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 .w-b{padding-inline:var(--margin);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);margin-top:var(--s8)}
 .w-b>*{grid-column:5 / 13;min-width:0}
 .w-b--full>*{grid-column:1 / -1}
+#ideation .w-b>.w-lead{grid-column:1 / -1}   /* 2026-10-09 (Werner): heycar's ideation intro lines up with its title */
 .w-head+.w-b{margin-top:var(--s9)}
 
 /* ── 5 · brief: one statement, focus-revealed word by word as it passes the reading line (js/work.js) ── */
@@ -250,11 +251,12 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 /* the features: a stack, each a row (the wireframe on the light, its index, title and line beside it) */
 .feat{margin-top:var(--s9)}
 .feat-track{display:flex;flex-direction:column;gap:var(--s9);padding-inline:var(--margin)}
-.feat-it{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center;row-gap:var(--s3)}
-.feat-it>.pl{grid-column:1 / 9;grid-row:1 / 4}
-.feat-no{grid-column:9 / 13;align-self:end}
-.feat-h{grid-column:9 / 13;font:500 clamp(26px, 2.4vw, 38px)/1.06 var(--f-display);letter-spacing:-.028em;color:var(--fg);text-wrap:balance}
-.feat-p{grid-column:9 / 13;align-self:start;font:400 clamp(16px, 1.2vw, 19px)/1.55 var(--f-sans);color:color-mix(in srgb,var(--fg) 84%,transparent);text-wrap:pretty}
+.feat-it{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:1fr auto auto auto 1fr;column-gap:var(--gutter);row-gap:0}
+/* 2026-10-09 (Werner): index, title and line sit together, centred beside the image (they were spread over its height) */
+.feat-it>.pl{grid-column:1 / 9;grid-row:1 / 6}
+.feat-no{grid-column:9 / 13;grid-row:2}
+.feat-h{grid-column:9 / 13;grid-row:3;margin-top:var(--s4);font:500 clamp(26px, 2.4vw, 38px)/1.06 var(--f-display);letter-spacing:-.028em;color:var(--fg);text-wrap:balance}
+.feat-p{grid-column:9 / 13;grid-row:4;margin-top:var(--s4);font:400 clamp(16px, 1.2vw, 19px)/1.55 var(--f-sans);color:color-mix(in srgb,var(--fg) 84%,transparent);text-wrap:pretty}
 
 /* the index and stat discs on ice light with the lit aurora, the light their ink numbers are set on (the ice's own
    sky sample, --aurora-sky, is the night's dusk: ink on it was unreadable, in GoodWorker's ice Process and Outcome) */
