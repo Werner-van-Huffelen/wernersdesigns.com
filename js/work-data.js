@@ -110,6 +110,9 @@
   WORK.live['galvany-os/leads-board'] = scr('galvany-os/leads-board', 2320, 1688);
   WORK.live['galvany-os/offers-board'] = scr('galvany-os/offers-board', 2320, 1688);
   WORK.live['galvany-os/three-f'] = scr('galvany-os/three-f', 2240, 910);
+  /* 2026-10-14 (Werner): views people describe themselves, from his zip at 1x (tools/galvany_views.py) */
+  WORK.live['galvany-os/views-prompt'] = scr('galvany-os/views-prompt', 855, 332);
+  WORK.live['galvany-os/views-refine'] = scr('galvany-os/views-refine', 1274, 728);
   /* GALVANY Sales Portal: Werner's screenshots at 2x (tools/galvany_portal.py) */
   ['board', 'drawer', 'profile', 'calendar'].forEach(function (k) { WORK.live['sales-portal/' + k] = scr('sales-portal/' + k, 4348, 2269); });
   WORK.live['sales-portal/attention'] = scr('sales-portal/attention', 1931, 1280);
@@ -128,6 +131,7 @@
     'galvany-2': L('sales-portal/attention'),
     'galvany-3': L('galvany-os/order-review'),
     'galvany-4': L('galvany-os/three-f'),
+    'galvany-5': L('galvany-os/views-prompt'),
     'affinidi-1': { kind: 'detail', of: '/projects/affinidi-phones.webp', cx: 760, cy: 370, mcx: 700, mcy: 345 },
     'goodworker-2': { kind: 'detail', of: '/projects/goodworker-devices.webp', cx: 915, cy: 350, mcx: 735, mcy: 310 },   /* r6: clear of the bezel (≈542–578) */
     'heycar-1': { kind: 'screen', src: 'assets/work/heycar-questions.webp', w: 1900, h: 670 },   /* r6: cut from the live idea-search screen */
@@ -291,6 +295,7 @@
         { heading: 'Every exception starts with a lead', body: 'The portal’s team view lists what needs attention as open exceptions, each one triggered by a lead’s state, like a lead still waiting three days in a seller’s inbox. Sellers aren’t measured on speed or activity. One click opens the seller’s page, where a call can unblock it.', image: 'galvany-2', imageAlt: 'Needs attention in the team: open exceptions, each a lead a seller hasn’t accepted yet, with how long it has waited' },
         { heading: 'A rejection names the page', body: "Back in the OS, order review sits beside the signed offer: a seven-point checklist, each point with its page, then release or reject with a reason. A rejection names the failed check and the page, like 'Cancellation policy not signed · p. 12', and the seller sees it in the portal, so whoever fixes it doesn’t have to guess.", image: 'galvany-3', imageAlt: 'Order review: the signed offer on the left, the seven-point checklist with its page numbers on the right' },
         { heading: 'Gates before anyone installs', body: 'Nothing gets installed until its four gates are clear: subsidy, detailed planning, financing and the electrics. Every pipeline card shows them as check circles (the electrics joined later), so what’s blocking is visible at a glance.', image: 'galvany-4', imageAlt: 'Three of the gates (subsidy, detailed planning and financing), each with its open, done and not-applicable count' },
+        { heading: 'A view starts with a sentence', body: 'In the OS, people describe the view they need in their own words: region, amount, period, team. It becomes a list or a dashboard on the live data, saved with their other views. To change it, they tell the AI what should change, or edit each part of the view directly.', image: 'galvany-5', imageAlt: 'Views in GALVANY OS: “Which view do you need?” above a box to describe it in your own words' },
       ],
       outcome: 'GALVANY’s production design system is our developer’s version of mine. It took its brand colours from my OS prototype, and I made the ten design calls that were still open. The OS prototype itself is meant to become the spec the backend is built from.',
       stats: [],
@@ -507,6 +512,7 @@
   var P = WORK.projects;
   WORK.finals = {
     galvany: [
+      { m: L('galvany-os/views-refine'), alt: 'Refining a view in GALVANY OS: a chat on the left, the view’s preview on the right, a dashboard and the orders behind it', title: 'Refine a view with AI', text: ['Tell the OS what should change and see it in the preview, or edit the view’s filters and grouping directly. Changes stay a draft until you apply them.'] },
       { m: L('galvany-os/offers-board'), alt: 'Offers in GALVANY OS as a board: sent, opened, expiring, signed', title: 'Offers in the OS', text: ['Every offer a seller sends shows up here, from sent to signed.'] },
       { m: L('sales-portal/calendar'), alt: 'The seller’s week: on-site appointments, product demos and calls', title: 'The seller’s week', text: ['On-site visits, product demos and calls in one week view, with an export to iCal and Google.'] },
       { m: L('sales-portal/profile'), alt: 'A lead’s full profile: contact, home and system, financing and the contact history', title: 'The lead profile', text: ['Contact details, the home and the system, financing and every contact so far.'], caption: 'Every person and lead on these screens is fictional.' },
