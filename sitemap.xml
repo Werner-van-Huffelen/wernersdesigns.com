@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://www.wernersdesigns.com/</loc></url>
-  <url><loc>https://www.wernersdesigns.com/work.html?p=galvany</loc></url>
-  <url><loc>https://www.wernersdesigns.com/work.html?p=bandcamp</loc></url>
-  <url><loc>https://www.wernersdesigns.com/work.html?p=affinidi</loc></url>
-  <url><loc>https://www.wernersdesigns.com/work.html?p=goodworker</loc></url>
-  <url><loc>https://www.wernersdesigns.com/work.html?p=heycar</loc></url>
+  <url><loc>https://www.wernersdesigns.com/galvany</loc></url>
+  <url><loc>https://www.wernersdesigns.com/bandcamp</loc></url>
+  <url><loc>https://www.wernersdesigns.com/affinidi</loc></url>
+  <url><loc>https://www.wernersdesigns.com/goodworker</loc></url>
+  <url><loc>https://www.wernersdesigns.com/heycar</loc></url>
 </urlset>

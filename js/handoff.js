@@ -66,7 +66,6 @@
   const drop = (k) => { try { if (ss) ss.removeItem(k); } catch (e) {} };
   const lerp = (a, b, t) => a + (b - a) * t;
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-  const slugOf = (href) => { const m = /[?&]p=([a-z0-9-]+)/.exec(href || ''); return m ? m[1] : null; };
   /* the layers are aria-hidden and hide the cursor lens (its target test reads data-cursor) */
   const layer = (cls, inner) => {
     const el = d.createElement('div');
@@ -98,7 +97,7 @@
     let h = null;
     try { h = JSON.parse(get(KEY) || 'null'); } catch (e) {}
     drop(KEY);
-    const slug = slugOf(location.search), p = slug && W.WORK.projects[slug], age = h && h.t ? Date.now() - h.t : -1;
+    const slug = W.WORK.here, p = slug && W.WORK.projects[slug], age = h && h.t ? Date.now() - h.t : -1;
     if (p && h && h.slug === slug && age >= 0 && age < FRESH && cl.contains('hero-pre')) {
       const field = h.paint === 'field';
       cl.add('is-arriving'); note('cover ' + (field ? 'field' : 'disc'));
@@ -167,7 +166,7 @@
 
   /* ── 3 · clicks (capture, so a card's own forwarder never sees the ones taken here) ───────────────────────── */
   const mod = (e) => e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button > 0;
-  const cardBtn = (card) => card && card.querySelector('a.wc-btn[href*="work.html?p="]');
+  const cardBtn = (card) => card && card.querySelector('a.wc-btn[data-case]');   /* 2026-10-14: the deploy links /<slug> */
   function onClick(e) {
     if (e.defaultPrevented || !e.target || !e.target.closest) return;
     const a = e.target.closest('a[href]');
@@ -236,7 +235,7 @@
     return { x: at(+m[2], m[3], b.left, b.width), y: at(+m[4], m[5], b.top, b.height), R: +m[1] * k };
   }
   function leaveCard(card, btn) {
-    const ap = card.querySelector('.wc-ap'), media = card.querySelector('.wc-media'), slug = slugOf(btn.getAttribute('href'));
+    const ap = card.querySelector('.wc-ap'), media = card.querySelector('.wc-media'), slug = btn.getAttribute('data-case');
     if (!ap || !media || !slug) { location.assign(btn.href); return; }
     const cs = getComputedStyle(card);
     leave({ href: btn.href, slug, host: card, keep: card, disc: ap, r: apR(ap), tone: card,

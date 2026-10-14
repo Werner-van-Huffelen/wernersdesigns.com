@@ -34,6 +34,11 @@
 (function () {
   'use strict';
   var WORK = (window.WORK = window.WORK || {});
+  /* 2026-10-14 SEO: the deploy gives every case its own page at a clean URL (/affinidi, from tools/build_site.py), with
+     the slug on <html data-slug>; the source keeps work.html?p=<slug>. WORK.caseHref is the one place a case link is
+     made; the build rewrites it to the clean form. */
+  WORK.here = document.documentElement.getAttribute('data-slug') || ((/[?&]p=([a-z0-9-]+)/.exec(location.search) || [])[1] || '');
+  WORK.caseHref = function (slug) { return slug; };   /* the deploy's clean URLs (tools/build_site.py) */
 
   /* ── media: the data's paths → the concept's own assets ──────────────────── */
   var dev = function (id, w, h, box) {
@@ -150,6 +155,7 @@
       heroImage: '/projects/affinidi-hero.png',
       heroImageAlt: 'Affinidi identity apps on multiple devices',
       brief: "Multiple product teams had spent years on what was supposed to be one product, and each had drifted into its own visual language. Over about six months in 2022 and 2023, we built one design system to pull them together under a single developer console.",
+      seo: { title: "Affinidi design system case study · Werner van Huffelen", description: "How we pulled years of drifting product teams into one design system and one developer console at Affinidi, in about six months across 2022 and 2023." },
       whatIDid: [
         'As Lead Product Designer, I was the link between the Berlin and Singapore teams. I had worked on most of these products at some point, so I could see exactly where the experiences had fragmented.',
         'I led the team in designing and building the design system components using an atomic design approach, and managed the handover to the developers building it out. I was also responsible for the final product: the developer console that brought everything together.',
@@ -192,6 +198,7 @@
       heroImage: '/projects/goodworker-hero.png',
       heroImageAlt: 'GoodWorker platform on multiple devices',
       brief: 'There are four hundred and fifty million blue-collar workers in India. Most are hired through middlemen and have no formal record of their skills or employment history. GoodWorker wanted to fix that and needed three products to do it.',
+      seo: { title: "GoodWorker hiring platform case study · Werner van Huffelen", description: "450 million blue-collar workers in India are hired through middlemen. How we designed GoodWorker's employer portal MVP: three flows, tested with employers." },
       whatIDid: [
         'I joined halfway through the project to lead the product team: one junior designer, one researcher, one PM. My focus was end-to-end design of the employer portal, plus overseeing and mentoring the rest of the team.',
         'I ran research interviews with employers, set the information architecture, and took the employer portal from wireframes through a tested high-fidelity prototype. I also made the call on what went into the MVP.',
@@ -221,7 +228,7 @@
       type: 'case', no: '05', hue: { h1: 'glacier', h2: 'iris', ax: '20%', ay: '46%' },
       card: '/projects/heycar-macbook.webp', cardAlt: 'heycar vehicle page on a MacBook',
       order: ['outcome', 'challenge', 'what', 'ideation', 'decisions', 'final'],   /* 2026-10-08 (Werner): outcome first */
-      links: [{ href: 'https://www.hey.car', text: 'hey.car' }, { href: 'https://www.heycar.co.uk', text: 'heycar.co.uk' }],
+      /* links: dropped 2026-10-14 (Werner): hey.car and heycar.co.uk now redirect to drive.co.uk */
       slug: 'heycar',
       name: 'heycar',
       headline: 'heycar makes buying a second-hand car simple, fair and transparent.',
@@ -233,6 +240,7 @@
       heroImage: '/projects/heycar-hero.png',
       heroImageAlt: 'heycar car search interface on a laptop',
       brief: 'Buying a second-hand car feels like a minefield: opaque dealers, no way to judge quality, and financing that only gets harder. heycar started as a pitch concept and became two years of shipping product.',
+      seo: { title: "heycar used car platform case study · Werner van Huffelen", description: "How a pitch concept for Volkswagen Financial Services became heycar: two years of shipping a simple, fair way to buy a second-hand car." },
       whatIDid: [
         'I was involved from day one. The concept that won the pitch with Volkswagen Financial Services was a team effort, and I pitched its design. After that, I delivered the financing calculator and the dealer portal for the Germany launch.',
         'After heycar Germany, I led the design team on the UK pitch. The audience and the regulations were different, but the goal was the same: make buying a second-hand car feel trustworthy.',
@@ -273,6 +281,7 @@
       year: '2026',
       tags: ['Product design', 'Design in code', 'Design systems', 'User research', 'Internal tools', 'Sales tools'],
       brief: 'GALVANY sells heat pumps through sales partners. GALVANY OS is meant to replace Airtable for its own teams, the partners work in the Sales Portal, and every customer passes from one to the other and back. I design both.',
+      seo: { title: "GALVANY OS & Sales Portal case study · Werner van Huffelen", description: "How I design GALVANY OS and the Sales Portal in code: one flow from lead to installed heat pump, shared by GALVANY's teams and its sales partners." },
       whatIDid: [
         'I lead product design at GALVANY, and its design system started with me. Long before our developer built his version, I built the first one in code, from an existing UI kit skinned to our brand, and ran the OS and the Sales Portal prototypes on it. I own both prototypes: what each team and each seller sees, how a project moves between teams, and what the backend will be built against. For the OS, I also own the interviews.',
         'I design in code with Claude Code: clickable prototypes on fictional, seeded data, with over two thousand mock projects in the OS. Claude asks, I decide. Even a sort order waits for my answer, which is logged in the code as a dated decision. When I let it run ahead, as in the overnight build of the first twelve OS work views, every guess is logged for my review.',
@@ -300,6 +309,7 @@
       year: '2026',
       tags: ['Chrome extension', 'Product design', 'UI design'],
       brief: "Bandcamp is where my music lives, but listening there never worked the way I like. So I wanted to see if I could build it: a Chrome extension that makes it easy to discover new music, and plays my own library at work without downloading all of it.",
+      seo: { title: "Bandcamp player Chrome extension · Werner van Huffelen", description: "A side quest: I designed and built a Chrome extension that makes discovering new music on Bandcamp easier, and plays my library without downloading it." },
       nextSlug: 'affinidi',
       nextType: 'case',
     },
@@ -755,7 +765,7 @@
   function next(p, c) {
     var n = WORK.projects[p.nextSlug];
     if (!n) return '';
-    var m = WORK.media[n.card], href = 'work.html?p=' + n.slug;
+    var m = WORK.media[n.card], href = WORK.caseHref(n.slug);
     return '<section id="next" class="w-next w-lit" data-tone="night" data-name="Next project" data-f="' + c.f + '" aria-labelledby="next-h" style="' + hue(n.hue) + '">' + SKY +
       /* the heading before the link it introduces (reading and heading order); both are placed absolutely */
       '<h2 class="label nx-label" id="next-h">Next project</h2>' +
@@ -942,10 +952,10 @@
      The sections after the hero take their numbers (01 the Brief), tones (the Brief night, then alternating) and
      readout stops (2, 3, …; the hero 1.4) from their places; js/work.js hands the stops to the readout (WORK.stops). */
   WORK.render = function () {
-    var q = /[?&]p=([a-z0-9-]+)/.exec(location.search), slug = q ? q[1] : '';
+    var slug = WORK.here;
     /* 2026-10-08: GALVANY OS and the Sales Portal had their own pages (live 2026-10-07); both are now the one case study */
     var ALIAS = { 'galvany-os': 'galvany', 'sales-portal': 'galvany' };
-    if (ALIAS[slug]) { slug = ALIAS[slug]; try { history.replaceState(null, '', location.pathname + '?p=' + slug + location.hash); } catch (e) { /* file:// */ } }
+    if (ALIAS[slug]) { slug = ALIAS[slug]; WORK.here = slug; try { history.replaceState(null, '', location.pathname + '?p=' + slug + location.hash); } catch (e) { /* file:// */ } }
     var p = WORK.projects[slug] || null;
     var view = p && WORK.views[p.type];
     WORK.slug = p ? slug : null; WORK.p = p;
@@ -961,14 +971,16 @@
       html = hero(p) + parts.join('') + next(p, { f: keys.length + 2 });
     }
     var s = document.currentScript, main = (s && s.parentNode) || document.getElementById('main');
-    if (s) s.insertAdjacentHTML('beforebegin', html); else main.insertAdjacentHTML('afterbegin', html);
+    /* a deployed case page arrives prerendered (tools/build_site.py): keep its markup, set only the state */
+    if (main && main.querySelector('#top')) { /* prerendered */ } else if (s) s.insertAdjacentHTML('beforebegin', html); else main.insertAdjacentHTML('afterbegin', html);
     /* the project's hue pair lights every plate on the page (the Next band sets its own) */
     if (p && main) main.setAttribute('style', hue(p.hue));
     var d = document, h = d.documentElement;
     h.classList.add(p ? 'is-' + p.type : 'is-none');
     if (p) {
-      d.title = p.name + ' · ' + p.headline.replace(/\.$/, '') + ' · Werner van Huffelen';
-      var md = d.querySelector('meta[name=description]'); if (md) md.setAttribute('content', p.brief);
+      /* search titles and descriptions (p.seo, 2026-10-14) are short enough for Google; the brief is the fallback */
+      d.title = p.seo ? p.seo.title : p.name + ' · ' + p.headline.replace(/\.$/, '') + ' · Werner van Huffelen';
+      var md = d.querySelector('meta[name=description]'); if (md) md.setAttribute('content', p.seo ? p.seo.description : p.brief);
     } else d.title = 'Project not found · Werner van Huffelen';
     var pill = d.querySelector('[data-readout] .roll > span'); if (pill) pill.textContent = p ? p.name : 'Work';
   };

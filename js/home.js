@@ -152,6 +152,7 @@
     const boxes = [], tw = document.createTreeWalker(h1, NodeFilter.SHOW_TEXT);
     for (let n = tw.nextNode(); n; n = tw.nextNode()) {
       if (n.parentNode.closest('.stop')) continue;                 /* the transparent '.': the disc stands in for it */
+      if (n.parentNode.closest('.sr-only')) continue;              /* text for search and screen readers only (2026-10-14) */
       for (let i = 0; i < n.data.length; i++) {
         if (!n.data[i].trim()) continue;
         const rg = document.createRange(); rg.setStart(n, i); rg.setEnd(n, i + 1);
@@ -166,7 +167,7 @@
     if (sub) {
       const cs2 = getComputedStyle(sub), f2 = parseFloat(cs2.fontSize), sw = document.createTreeWalker(sub, NodeFilter.SHOW_TEXT);
       inkCtx.font = `${cs2.fontWeight} ${f2}px ${cs2.fontFamily}`;
-      for (let n = sw.nextNode(); n; n = sw.nextNode()) for (let i = 0; i < n.data.length; i++) {
+      for (let n = sw.nextNode(); n; n = sw.nextNode()) if (!n.parentNode.closest('.sr-only')) for (let i = 0; i < n.data.length; i++) {
         if (!n.data[i].trim()) continue;
         const rg = document.createRange(); rg.setStart(n, i); rg.setEnd(n, i + 1);
         const gr = rg.getBoundingClientRect(), m = inkCtx.measureText(n.data[i]), by = gr.top + m.fontBoundingBoxAscent;

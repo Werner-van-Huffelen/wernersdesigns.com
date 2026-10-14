@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en" class="no-js" data-slug="bandcamp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bandcamp player Chrome extension · Werner van Huffelen</title>
+<meta name="description" content="A side quest: I designed and built a Chrome extension that makes discovering new music on Bandcamp easier, and plays my library without downloading it.">
+<link rel="canonical" href="https://www.wernersdesigns.com/bandcamp">
+<!-- link previews (2026-10-09, Werner's LinkedIn launch post showed "Zer o" and a pixelated crop): scrapers run no
+     scripts, so the shared title and image are set here. assets/og/share.jpg is the violet hero at 1200×627. -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.wernersdesigns.com/bandcamp">
+<meta property="og:site_name" content="Werner van Huffelen">
+<meta property="og:title" content="Music player for Bandcamp">
+<meta property="og:description" content="A side quest: I designed and built a Chrome extension that makes discovering new music on Bandcamp easier, and plays my library without downloading it.">
+<meta property="og:image" content="https://www.wernersdesigns.com/assets/og/bandcamp.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Music player for Bandcamp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Music player for Bandcamp">
+<meta name="twitter:image" content="https://www.wernersdesigns.com/assets/og/bandcamp.jpg">
+<meta name="theme-color" content="#110D1C">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" data-scheme href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Cdefs%3E%3CradialGradient%20id='g'%20cx='.4'%20cy='.36'%20r='.72'%3E%3Cstop%20offset='0'%20stop-color='%23F7F4FF'/%3E%3Cstop%20offset='.42'%20stop-color='%23B3A8FF'/%3E%3Cstop%20offset='1'%20stop-color='%237C6BFF'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle%20cx='16'%20cy='16'%20r='14'%20fill='url(%23g)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Fragment+Mono&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+<!-- ?v=: bump on every change, so a plain reload never runs a cached script against new markup -->
+<link rel="stylesheet" href="css/system.css?v=r8">
+<link rel="stylesheet" href="css/home.css?v=r8">
+<link rel="stylesheet" href="css/work.css?v=r8">
+<link rel="stylesheet" href="css/work-illus.css?v=r8">
+<link rel="stylesheet" href="css/handoff.css?v=r8">
+<!-- the scheme (round 4), shared with index.html: picked before the first paint -->
+<script src="js/scheme.js?v=r8"></script>
+<script src="js/track.js?v=r8"></script>
+<script>
+  /* pre-paint flags: static / menu / reduced, so nothing flashes before system.js runs. hero-pre: the hero waits for its
+     intro (js/work.js WORK.hero): its copy and device are out of focus and, unless an arrival cover is up
+     (html.is-arriving, js/handoff.js), its light waits closed for the intro's iris. The guard lifts it if the scripts
+     have not brought it in by 2.5s (a slow connection: at 5s the headline sat parsed but hidden for seconds), as a
+     focus-in with the scheme's still for its light (css/work.css). */
+  (function(d){var q=location.search,c=d.documentElement.classList;c.remove('no-js');c.add('js');
+    if(/[?&]static(=|&|$)/.test(q))c.add('is-static');
+    if(/[?&]menu(=|&|$)/.test(q))c.add('menu-open','field-borrowed');
+    try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)c.add('is-reduced');}catch(e){}
+    if(!c.contains('is-static')&&!c.contains('menu-open')&&!c.contains('is-reduced')){c.add('hero-pre');
+      setTimeout(function(){if(c.contains('hero-pre')){c.remove('hero-pre');c.add('hero-bailed');}},2500);}
+    c.add('disc-js');
+  })(document);
+</script>
+<!-- the five projects and the template: classic and blocking, so <main> is written before the first paint -->
+<script src="js/work-data.js?v=r8"></script>
+<script src="js/handoff.js?v=r8"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+<script defer src="js/system.js?v=r8"></script>
+<script defer src="js/work.js?v=r8"></script>
+<script defer src="js/work-illus.js?v=r8"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "CreativeWork", "@id": "https://www.wernersdesigns.com/bandcamp#case", "url": "https://www.wernersdesigns.com/bandcamp", "name": "Bandcamp", "headline": "Music player for Bandcamp.", "description": "A side quest: I designed and built a Chrome extension that makes discovering new music on Bandcamp easier, and plays my library without downloading it.", "inLanguage": "en", "image": "https://www.wernersdesigns.com/assets/og/bandcamp.jpg", "keywords": "Chrome extension, Product design, UI design", "creator": {"@type": "Person", "@id": "https://www.wernersdesigns.com/#werner", "name": "Werner van Huffelen", "url": "https://www.wernersdesigns.com/"}, "isPartOf": {"@id": "https://www.wernersdesigns.com/#website"}}</script>
+</head>
+<body class="work-page">
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- the light: one aurora field (canvas, or the still as a fallback). Round 6: it fills the hero and the Next band edge to
+     edge, lights the footer through its iris and the menu (js/work.js light) -->
+<canvas id="field" class="field" aria-hidden="true"></canvas>
+
+<!-- ─────────────────────────────── header ─────────────────────────────── -->
+<header class="site-header" data-tone="night">
+  <!-- the brand is the full stop itself: a small lit disc, home -->
+  <a class="brand" href="index.html" aria-label="Werner van Huffelen, home"><i class="brand-dot lit" data-lit="track" aria-hidden="true"></i></a>
+  <!-- the section you are in, in plain words -->
+  <div class="f-pill glass stadium" data-readout aria-hidden="true">
+    <i class="ap-icon"><i class="lit"></i></i>
+    <span class="roll"><span>Work</span></span>
+  </div>
+  <div class="nav-r">
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+      <span class="glass g-menu"><span class="burger" aria-hidden="true"><i></i><i></i></span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<section id="top" class="w-hero w-lit" data-tone="night" data-name="Bandcamp" data-f="1.4" aria-labelledby="w-title" style="--h1:var(--orchid);--h2:var(--iris);--ax:72%;--ay:26%"><i class="w-sky" aria-hidden="true"></i><i class="w-veil" aria-hidden="true"></i><div class="wh-stage rack"><span class="st-dev" style="--bwf:0.6950;--bar:0.8946;--cxf:0.5000;--cyf:0.5000;--ar:1.1169"><i class="st-sh" aria-hidden="true" style="-webkit-mask-image:url(assets/work/bandcamp-halo.png);mask-image:url(assets/work/bandcamp-halo.png)"></i><img class="st-img st-soft" src="assets/bandcamp-soft-moon.webp" alt="" width="800" height="894" decoding="async" fetchpriority="high"><img class="st-img st-sharp" src="assets/bandcamp.webp" alt="The Bandcamp player's Collection and Discovery panels" width="1600" height="1787" decoding="async" fetchpriority="high" data-loupe></span></div><div class="wh-stack"><a class="pill pill--sm pill--back wh-back" href="index.html#work" data-back><span class="chip"><i class="b-light lit"></i><svg class="arr arr--back" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Selected work</span></a><p class="label wh-label">Nº 02 · Side quest</p><p class="wh-name">Bandcamp</p><h1 class="wh-title" id="w-title" data-lens="text"><span class="w">Music</span> <span class="w">player</span> <span class="w">for</span> <span class="w">Bandcamp<span class="stop">.</span></span></h1><ul class="wh-tags" aria-label="Disciplines"><li class="tag"><i class="t-stop"><i class="lit"></i></i>Chrome extension</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>Product design</li><li class="tag"><i class="t-stop"><i class="lit"></i></i>UI design</li></ul></div><dl class="wh-meta wh-meta--3"><div class="wm"><dt>Company</dt><dd>Self-employed</dd></div><div class="wm"><dt>Role</dt><dd>Designer &amp; developer</dd></div><div class="wm"><dt>Year</dt><dd>2026</dd></div></dl></section><section id="brief" class="w-sec w-brief wrap on-night" data-tone="night" data-name="Brief" data-f="2" aria-labelledby="brief-h"><h2 class="label" id="brief-h">01 · Brief</h2><p class="w-statement" data-lens="text"><span class="w">Bandcamp</span> <span class="w">is</span> <span class="w">where</span> <span class="w">my</span> <span class="w">music</span> <span class="w">lives,</span> <span class="w">but</span> <span class="w">listening</span> <span class="w">there</span> <span class="w">never</span> <span class="w">worked</span> <span class="w">the</span> <span class="w">way</span> <span class="w">I</span> <span class="w">like.</span> <span class="w">So</span> <span class="w">I</span> <span class="w">wanted</span> <span class="w">to</span> <span class="w">see</span> <span class="w">if</span> <span class="w">I</span> <span class="w">could</span> <span class="w">build</span> <span class="w">it:</span> <span class="w">a</span> <span class="w">Chrome</span> <span class="w">extension</span> <span class="w">that</span> <span class="w">makes</span> <span class="w">it</span> <span class="w">easy</span> <span class="w">to</span> <span class="w">discover</span> <span class="w">new</span> <span class="w">music,</span> <span class="w">and</span> <span class="w">plays</span> <span class="w">my</span> <span class="w">own</span> <span class="w">library</span> <span class="w">at</span> <span class="w">work</span> <span class="w">without</span> <span class="nw"><span class="w">downloading</span> <span class="w">all</span> <span class="w">of</span> <span class="w">it<span class="stop">.</span></span></span></p></section><section id="player" class="w-sec w-story w-story--player on-ice" data-tone="ice" data-name="Gallery" data-f="3" aria-labelledby="player-h"><div class="w-head wrap"><p class="label">02 · Gallery</p><h2 class="h2" id="player-h" data-lens="text">Gallery<span class="stop">.</span></h2></div><div class="w-b w-b--full"><div class="pf-grid"><figure class="pf" style="--span:12" data-kind="screen"><div class="pl pl--hug on-night" data-kind="screen" data-lens="media" data-src="assets/work/bandcamp/browser.webp" data-ring="GALLERY · IN THE BROWSER · "><i class="pl-lt" aria-hidden="true"></i><span class="scr" style="--nw:1482;--nh:812"><img src="assets/work/bandcamp/browser.webp" alt="bandcamp.com with the player docked on the right: the Discovery queue over the player" width="1482" height="812" decoding="async" loading="lazy" data-loupe><i class="scr-tint" aria-hidden="true"></i></span></div><figcaption class="label pf-cap">In the browser</figcaption></figure><figure class="pf" style="--span:6" data-kind="board"><div class="pl pl--hug on-night" data-kind="board" data-lens="media" data-src="assets/work/bandcamp/collection.webp" data-ring="GALLERY · COLLECTION · "><i class="pl-lt" aria-hidden="true"></i><span class="pl-bd pl-bd--cap" style="--cap:480px"><img src="assets/work/bandcamp/collection.webp" alt="The Collection tab: the synced library, 2,735 tracks, with Re-sync, over the player" width="769" height="1347" decoding="async" loading="lazy" data-loupe></span></div><figcaption class="label pf-cap">Collection</figcaption></figure><figure class="pf" style="--span:6" data-kind="board"><div class="pl pl--hug on-night" data-kind="board" data-lens="media" data-src="assets/work/bandcamp/discovery.webp" data-ring="GALLERY · DISCOVERY · "><i class="pl-lt" aria-hidden="true"></i><span class="pl-bd pl-bd--cap" style="--cap:480px"><img src="assets/work/bandcamp/discovery.webp" alt="The Discovery tab: a session queue of 200 tracks, with Load page and Add page, over the player" width="769" height="1347" decoding="async" loading="lazy" data-loupe></span></div><figcaption class="label pf-cap">Discovery</figcaption></figure><figure class="pf" style="--span:12" data-kind="board"><div class="pl pl--hug on-night" data-kind="board" data-lens="media" data-src="assets/work/bandcamp/mini.webp" data-ring="GALLERY · COLLAPSED · "><i class="pl-lt" aria-hidden="true"></i><span class="pl-bd pl-bd--cap" style="--cap:480px"><img src="assets/work/bandcamp/mini.webp" alt="The player collapsed to one bar: artwork, track, shuffle, previous, pause, next and expand" width="769" height="158" decoding="async" loading="lazy" data-loupe></span></div><figcaption class="label pf-cap">Collapsed</figcaption></figure></div></div></section><section id="next" class="w-next w-lit" data-tone="night" data-name="Next project" data-f="4" aria-labelledby="next-h" style="--h1:var(--iris);--h2:var(--glacier);--ax:74%;--ay:72%"><i class="w-sky" aria-hidden="true"></i><i class="w-veil" aria-hidden="true"></i><h2 class="label nx-label" id="next-h">Next project</h2><a class="nx-link" href="affinidi" data-next="affinidi" aria-label="Next project: Affinidi"><span class="nx-stage rack" aria-hidden="true"><span class="st-dev" style="--bwf:0.7044;--bar:1.4248;--cxf:0.4966;--cyf:0.4778;--ar:0.6062"><i class="st-sh" aria-hidden="true" style="-webkit-mask-image:url(assets/work/affinidi-halo.png);mask-image:url(assets/work/affinidi-halo.png)"></i><img class="st-img st-soft" src="assets/affinidi-soft-moon.webp" alt="" width="800" height="485" decoding="async" loading="lazy"><img class="st-img st-sharp" src="assets/affinidi.webp" alt="" width="1600" height="970" decoding="async" loading="lazy" data-loupe></span></span><span class="nx-copy" aria-hidden="true"><span class="label nx-no">Nº 03 · Case study</span><span class="nx-title"><span class="w">A</span> <span class="w">design</span> <span class="w">system</span> <span class="w">for</span> <span class="w">Affinidi's</span> <span class="w">identity</span> <span class="w">apps<span class="stop">.</span></span></span><span class="nx-name">Affinidi</span></span><span class="nx-go glass g-l" aria-hidden="true"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><a class="pill pill--sm pill--back nx-back" href="index.html#work" data-back><span class="chip"><i class="b-light lit"></i><svg class="arr arr--back" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Back to all work</span></a></section>
+<script>WORK.render()</script>
+</main>
+
+<!-- ─────────────────────────────── footer ────────────────────────── -->
+<footer id="footer" class="footer" data-tone="night" data-name="Contact" data-f="22" aria-labelledby="footer-h">
+  <div class="ft-sky" aria-hidden="true"></div>
+  <h2 class="sr-only" id="footer-h">Let's connect.</h2>
+  <p class="label ft-kicker wrap"><span data-ft-n>06</span> · Contact</p>
+  <div class="ft-band" aria-hidden="true" data-lens="text">
+    <div class="ft-track">
+      <span class="ft-item">Let’s connect<span class="stop">.</span></span><span class="ft-item">Let’s connect<span class="stop">.</span></span><span class="ft-item">Let’s connect<span class="stop">.</span></span><span class="ft-item">Let’s connect<span class="stop">.</span></span>
+    </div>
+  </div>
+  <div class="ft-main wrap">
+    <div class="ft-copy">
+      <p class="ft-line">Got an idea that needs building, or just want to argue about design systems? I'm up for either.</p>
+      <div class="ft-connect">
+        <p class="label">Connect</p>
+        <div class="ft-pills">
+          <a class="pill" href="https://www.linkedin.com/in/werner-van-huffelen-0047a842/" data-goatcounter-click="linkedin" data-goatcounter-title="LinkedIn" target="_blank" rel="noopener">
+            <span>LinkedIn</span>
+            <span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="pill" href="https://www.instagram.com/wernerschnitzel" data-goatcounter-click="instagram" data-goatcounter-title="Instagram" target="_blank" rel="noopener">
+            <span>Instagram</span>
+            <span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="ft-disc">
+      <div class="disc-wrap">
+        <i class="disc-glow" aria-hidden="true"></i>
+        <svg class="ring-svg disc-ring" id="disc-ring" aria-hidden="true"></svg>
+        <a class="disc lit" href="mailto:me@wernersdesigns.com" data-goatcounter-click="contact-me" data-goatcounter-title="Contact button" data-cursor="hide" aria-label="Contact me, me@wernersdesigns.com">
+          <i class="disc-core" aria-hidden="true"></i>
+          <span class="disc-label">Contact me</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="ft-bottom wrap">
+    <span class="fb-c">© 2026 Werner van Huffelen</span>
+    <span class="fb-b">Berlin</span>
+    <i class="ft-dot lit" data-lit="track" aria-hidden="true"></i>
+  </div>
+</footer>
+<script>WORK.after()</script>
+
+<!-- ─────────────────────────────── menu ─────────────────────────────────── -->
+<div id="menu" class="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden aria-hidden="true">
+  <div class="m-still"></div>
+  <div class="m-vignette"></div>
+  <div class="menu-inner">
+    <nav class="menu-links" aria-label="Sections">
+      <a class="menu-link" href="index.html#about">About<span class="stop">.</span></a>
+      <a class="menu-link" href="index.html#work">Case studies<span class="stop">.</span></a>
+      <a class="menu-link" href="index.html#companies">Companies<span class="stop">.</span></a>
+      <a class="menu-link" href="#footer">Contact<span class="stop">.</span></a>
+    </nav>
+    <aside class="menu-card card on-ice" aria-label="Contact">
+      <div class="mc-top">
+        <p class="mc-name">Werner van Huffelen</p>
+        <p class="mc-role">Lead Product Designer at GALVANY</p>
+        <p class="label mc-label">Say hello</p>
+        <a class="mc-mail" href="mailto:me@wernersdesigns.com" data-goatcounter-click="contact-email" data-goatcounter-title="Email in the menu">me@wernersdesigns.com</a>
+        <div class="mc-social">
+          <a class="pill pill--sm" href="https://www.linkedin.com/in/werner-van-huffelen-0047a842/" data-goatcounter-click="linkedin" data-goatcounter-title="LinkedIn" target="_blank" rel="noopener"><span>LinkedIn</span><span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="pill pill--sm" href="https://www.instagram.com/wernerschnitzel" data-goatcounter-click="instagram" data-goatcounter-title="Instagram" target="_blank" rel="noopener"><span>Instagram</span><span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+        </div>
+      </div>
+      <i class="tear tear--h"></i>
+      <div class="mc-stub">
+        <p class="label">Berlin</p>
+        <a class="pill pill--ink" href="cv/Werner-van-Huffelen-CV-web.pdf" data-goatcounter-click="cv-download" data-goatcounter-title="CV download" download="Werner-van-Huffelen-CV.pdf"><span>Download resume</span><span class="chip"><i class="b-light lit"></i><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      </div>
+    </aside>
+  </div>
+  <div class="menu-foot"><span>Esc to close</span></div>
+</div>
+
+</body>
+</html>

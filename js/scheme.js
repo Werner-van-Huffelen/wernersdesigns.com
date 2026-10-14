@@ -25,7 +25,7 @@
   window.FS_SCHEME={id:id,index:i,list:T,changed:nav==='reload'&&p>=0};
   /* the favicon is the scheme's lit disc */
   var C={violet:['F7F4FF','B3A8FF','7C6BFF'],ember:['FFF4EC','FFB894','FF6B2B'],cobalt:['F1F6FF','A6BDFF','3F6BFF'],sodium:['FFFBEE','FFE07A','FFC933'],borealis:['F0FFF8','A0F5D0','2EE59D']}[id];
-  var ic=d.querySelector('link[rel=icon]');
+  var ic=d.querySelector('link[rel=icon][data-scheme]');   /* the stable favicon.ico for search results stays */
   if(ic)ic.href="data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><radialGradient id='g' cx='.4' cy='.36' r='.72'><stop offset='0' stop-color='#"+C[0]+"'/><stop offset='.42' stop-color='#"+C[1]+"'/><stop offset='1' stop-color='#"+C[2]+"'/></radialGradient></defs><circle cx='16' cy='16' r='14' fill='url(#g)'/></svg>");
   /* the keys in the hero's line: ⌘ R on Apple, Ctrl R elsewhere, a tap on touch screens */
   var mac=/Mac|iPhone|iPad|iPod/.test(navigator.platform||navigator.userAgent),touch=false;

@@ -11,9 +11,10 @@
   var GC_CODE = 'wernersdesigns';   // https://wernersdesigns.goatcounter.com (Werner's account, 2026-10-09)
   if (!GC_CODE || location.hostname !== 'www.wernersdesigns.com') return;
   if (/[?&](static|notrack)(=|&|$)/.test(location.search) || navigator.webdriver) return;
-  var m = /[?&]p=([a-z0-9-]+)/.exec(location.search), slug = m ? m[1] : '';
+  /* a deployed case page names its slug on <html data-slug> (/affinidi, 2026-10-14); work.html?p=<slug> still works */
+  var ds = document.documentElement.getAttribute('data-slug'), m = /[?&]p=([a-z0-9-]+)/.exec(location.search), slug = ds || (m ? m[1] : '');
   slug = { 'galvany-os': 'galvany', 'sales-portal': 'galvany' }[slug] || slug;   // the merged case's old links, as work-data.js
-  var work = /\/work(\.html)?$/.test(location.pathname);   // GitHub Pages also serves work.html as /work
+  var work = !!ds || /\/work(\.html)?$/.test(location.pathname);   // GitHub Pages also serves work.html as /work
   window.goatcounter = {
     path: function () { return work ? '/work/' + slug : '/'; },
     /* a fixed title per page: the homepage's <title> changes with the scheme */
