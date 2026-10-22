@@ -8,8 +8,9 @@
  * --aurora-lit with the project's key and fill (css/work.css .pl-lt). And, from his live site (wernersdesigns.com), the
  * three case studies gain their process sections, as data (WORK.sections) rendered by generic blocks.
  *
- *   WORK.projects[slug]  the five projects. Copy verbatim from src/components/projects-data.ts (CASE_STUDIES,
- *                        EYE_CANDY: never edit src/). Added for the concept, and marked so: no (the homepage's Nº),
+ *   WORK.projects[slug]  the six projects. Copy verbatim from src/components/projects-data.ts (CASE_STUDIES,
+ *                        EYE_CANDY: never edit src/); Juno (2026-10-22) is written for this site only. Added for the
+ *                        concept, and marked so: no (the homepage's Nº),
  *                        hue (the homepage card's --h1/--h2/--ax/--ay), card/cardAlt (the homepage card's device,
  *                        PROJECTS[].image/.alt, which the hero shows), stats (outcome numbers, cut from the
  *                        outcome's own sentences), links (the live site's Link row), order (the page's sections).
@@ -30,6 +31,10 @@
  *   WORK.views[type]     the page body between the Brief and the Next band: 'case' (projects[].order) and 'eye-candy'.
  *   WORK.render()        writes <main> for ?p=<slug>, or a short not-found note; sets the title and the pill's name.
  *   WORK.after()         inline after the footer: the footer's section number and stop follow the page's own.
+ *
+ * 2026-10-22 (audit): every case-page sentence is 20 words or fewer (long ones split, a few long words made plain), so
+ * the copy no longer matches projects-data.ts or the live site word for word. Facts and the illustrations' phrases
+ * (js/work-illus.js said()) are unchanged.
  */
 (function () {
   'use strict';
@@ -42,7 +47,7 @@
 
   /* ── media: the data's paths → the concept's own assets ──────────────────── */
   var dev = function (id, w, h, box) {
-    return { kind: 'device', src: 'assets/' + id + '.webp', soft: 'assets/' + id + '-soft-moon.webp', halo: 'assets/work/' + id + '-halo.png', w: w, h: h, box: box };
+    return { kind: 'device', src: 'assets/' + id + '.webp', soft: 'assets/' + id + '-soft-moon.webp', halo: 'assets/work/' + id + '-halo.webp', w: w, h: h, box: box };
   };
   WORK.media = {
     '/projects/affinidi-phones.webp': dev('affinidi', 1600, 970, [231, 68, 1358, 859]),
@@ -53,6 +58,8 @@
     '/projects/heycar.jpg': { kind: 'screen', src: 'assets/ext/heycar.jpg', w: 1024, h: 640 },
     /* round 7: Werner's own shot of his Bandcamp player, the two panels overlapping (his 8.webp, rebuilt on the light: tools/bandcamp.py) */
     'bandcamp/panels': dev('bandcamp', 1600, 1787, [244, 272, 1356, 1515]),
+    /* Juno (2026-10-22): one laptop with Juno's homepage, nearly face-on (tools/juno.py) */
+    'juno/laptop': Object.assign(dev('juno', 1600, 1187, [154, 115, 1446, 1073]), { x2: 'assets/juno-3200.webp' }),
   };
   /* the live site's images. Screens are flat and opaque (a glass frame on the light); boards are flat UI on
      transparency with their own baked shadows (straight on the light, or on a night board where their type is set
@@ -117,6 +124,16 @@
   ['board', 'drawer', 'profile', 'calendar'].forEach(function (k) { WORK.live['sales-portal/' + k] = scr('sales-portal/' + k, 4348, 2269); });
   WORK.live['sales-portal/attention'] = scr('sales-portal/attention', 1931, 1280);
   for (var i = 1; i <= 7; i++) WORK.live['heycar/finance-0' + i] = scr('heycar/finance-0' + i, 2400, 1500);
+  /* Juno: its own pages, the made-up example report and Juno's quick audit of this site (tools/juno.py) */
+  WORK.live['juno/report-summary'] = scr('juno/report-summary', 2008, 798);
+  WORK.live['juno/scores'] = scr('juno/report-scores', 2064, 884);
+  WORK.live['juno/finding'] = scr('juno/report-finding', 1920, 1096);
+  WORK.live['juno/six-questions'] = scr('juno/home-questions', 2544, 1703);
+  WORK.live['juno/big-three'] = scr('juno/report-big-three', 2064, 1402);
+  WORK.live['juno/example-now-try'] = scr('juno/example-now-try', 2008, 1066);
+  WORK.live['juno/plan'] = scr('juno/report-plan', 2008, 2146);
+  WORK.live['juno/brief-md'] = scr('juno/report-brief', 2008, 690);
+  WORK.live['juno/phone'] = scr('juno/mobile-report', 1170, 2040);   /* 390 x 680 at 3x */
   var L = function (k) { return WORK.live[k]; };
 
   /* the decisions' own framings (concept data): each of these images is shown whole elsewhere on its page (the device
@@ -135,6 +152,10 @@
     'affinidi-1': { kind: 'detail', of: '/projects/affinidi-phones.webp', cx: 760, cy: 370, mcx: 700, mcy: 345 },
     'goodworker-2': { kind: 'detail', of: '/projects/goodworker-devices.webp', cx: 915, cy: 350, mcx: 735, mcy: 310 },   /* r6: clear of the bezel (≈542–578) */
     'heycar-1': { kind: 'screen', src: 'assets/work/heycar-questions.webp', w: 1900, h: 670 },   /* r6: cut from the live idea-search screen */
+    'juno-1': L('juno/scores'),
+    'juno-2': L('juno/finding'),
+    'juno-3': L('juno/six-questions'),
+    'juno-4': L('juno/big-three'),
   };
   /* eye candy's one screen, flat (tools/work.py gallery): the hero shows the render, the Gallery opens on its screen */
   WORK.screens = {
@@ -142,8 +163,39 @@
 
   /* ── the projects ─────────────────────────────────────────────────────────── */
   WORK.projects = {
+    /* Juno (2026-10-22): junoknows.design, a website audit Werner designed and built alone with Claude Code. The
+       numbers are his own site's quick audit of 21 Oct 2026. */
+    juno: {
+      type: 'case', no: '01', hue: { h1: 'glacier', h2: 'orchid', ax: '26%', ay: '20%' },   /* a case study; on the homepage also under Recent work */
+      card: 'juno/laptop', cardAlt: 'Juno’s homepage on a laptop: “Your website, seen by a designer.” beside Juno the jellyfish',
+      order: ['outcome', 'dogfood', 'what', 'audit', 'decisions', 'final'],
+      links: [{ href: 'https://junoknows.design', text: 'junoknows.\u200bdesign' }],   /* may break after the dot in a narrow meta cell */
+      slug: 'juno',
+      name: 'Juno',
+      headline: 'Juno reviews websites like a designer, mine\u00a0included.',
+      company: 'Self-employed',
+      role: 'Designer & developer',
+      year: '2026',
+      team: 'Solo',
+      tags: ['Product design', 'Design in code', 'AI', 'Accessibility', 'UX writing'],
+      brief: 'A small business can’t easily get a designer to review its website. Free SEO tools only check whether Google can read it. Juno gives owners that kind of review, with the fixes in plain words. It was also my test of how far one designer can take a real product alone.',
+      seo: { title: 'Juno UX/UI website audit case study · Werner van Huffelen', description: 'How I designed and built Juno with Claude Code in 4 days: a UX/UI website audit for small businesses. Then I ran it on my own portfolio.' },
+      whatIDid: [
+        'I designed and built Juno’s audit engine, scoring, report and website. Juno herself is a 3D jellyfish who talks you through each audit. She follows the pointer and respects a request for less motion. The site and its reports work in English and German. Each report is written in the language the audit was started in.',
+        'I designed straight into code with Claude Code. The rubric is code too: every check has a question, a pass line, a weight and a source. Sources include NN/g and WCAG. Tests guard the scoring: a site that passes everything must score 100. The code checks the German copy against the English, so a missing translation shows up as an error.',
+      ],
+      decisions: [
+        { heading: 'No score without evidence', body: 'A finding without evidence never moves the score. Neither does a verdict Juno isn’t sure of. Both are set aside for a person to confirm. The overall score shows how much was checked. Where too little of an audit was checked, its tile says “Not checked yet” and shows no score.', image: 'juno-1', imageAlt: 'Scores by audit on my site: UI 47, copy 75, accessibility 38 and SEO 70. UX and conversion say “Not checked yet”.' },
+        { heading: 'Two readers for every finding', body: 'The owner gets each finding in plain words, with the fix. That version has no code, colour codes or acronyms. Below it, a folded note gives their developer the exact selectors and values.', image: 'juno-2', imageAlt: 'My site’s intro contrast finding: the owner’s version with its fix, and the developer’s note open below' },
+        { heading: 'The six questions customers ask', body: 'Inside, the report has six audits with expert names, like UX and SEO. On the homepage, I framed the audit as six questions a customer asks. Can people find you? Is it clear in 5 seconds? Each card lists the checks behind its question, with no design jargon.', image: 'juno-3', imageAlt: 'Six cards, one per question, from “Can people find you?” to “Do you look trustworthy?”' },
+        { heading: 'What to fix first', body: 'Each finding is ranked by how serious it is and how widely it shows. After the scores, the report picks the three that matter most, no more than two from one audit. When two findings matter equally, the quicker fix comes first.', image: 'juno-4', imageAlt: '“If you only do three things” from my site’s report: three numbered fixes, each with why it matters' },
+      ],
+      outcome: 'Juno is live at junoknows.design. I designed and built it in 4 days with Claude Code. It reviews a website against a rubric of 68 checks. On my own site it scored 48, and I fixed 12 of its 19 findings.',
+      stats: [{ n: '4', label: 'Days to build' }, { n: '68', label: 'Checks in the rubric' }, { n: '48', label: 'My site’s score out of 100' }],
+      nextSlug: 'galvany',
+    },
     affinidi: {
-      type: 'case', no: '03', hue: { h1: 'iris', h2: 'glacier', ax: '74%', ay: '72%' },
+      type: 'case', no: '04', hue: { h1: 'iris', h2: 'glacier', ax: '74%', ay: '72%' },
       card: '/projects/affinidi-phones.webp', cardAlt: 'Affinidi identity apps on four iPhones',
       /* concept: the page's sections after the Brief, and the live site's Link row */
       order: ['outcome', 'what', 'decisions', 'system', 'atomic', 'final'],   /* r6 review: the why before the deep-dive; 2026-10-08 (Werner): outcome first */
@@ -158,11 +210,11 @@
       tags: ['Design system', 'Design leadership', 'Responsive design', 'UX/UI', 'Web 3.0'],
       heroImage: '/projects/affinidi-hero.png',
       heroImageAlt: 'Affinidi identity apps on multiple devices',
-      brief: "Multiple product teams had spent years on what was supposed to be one product, and each had drifted into its own visual language. Over about six months in 2022 and 2023, we built one design system to pull them together under a single developer console.",
+      brief: "Multiple product teams had spent years on what was supposed to be one product. Each had drifted into its own visual language. We built one design system to pull them together under a single developer console. It took about six months, in 2022 and 2023.",
       seo: { title: "Affinidi design system case study · Werner van Huffelen", description: "How we pulled years of drifting product teams into one design system and one developer console at Affinidi, in about six months across 2022 and 2023." },
       whatIDid: [
-        'As Lead Product Designer, I was the link between the Berlin and Singapore teams. I had worked on most of these products at some point, so I could see exactly where the experiences had fragmented.',
-        'I led the team in designing and building the design system components using an atomic design approach, and managed the handover to the developers building it out. I was also responsible for the final product: the developer console that brought everything together.',
+        'As Lead Product Designer, I was the link between the Berlin and Singapore teams. I had worked on most of these products at some point. I could see exactly where the experiences had fragmented.',
+        'I led the team in designing and building the design system’s components, using atomic design. I managed the handover to the developers building out the system. I also owned the final product: the developer console that brought everything together.',
       ],
       decisions: [
         {
@@ -174,20 +226,20 @@
         },
         {
           heading: 'White-label as the proof of concept',
-          body: 'To me, the test of a design system is whether it can adapt without forking. So we duplicated ours, swapped the style guide, and used it to build new branded applications in a fraction of the original time. The architecture held up.',
+          body: 'To me, the test of a design system is whether it can adapt without forking. So we duplicated ours and swapped the style guide. We used the copy to build new branded applications in a fraction of the original time. The architecture held up.',
         },
       ],
       finalDesigns: [
         { src: '/projects/affinidi.png', alt: 'Affinidi developer console', caption: 'The primary application built on the design system' },
         { src: '/projects/affinidi-phones.webp', alt: 'White-label credential applications across four phones', caption: 'White-label credential apps: the same system with a different brand, built in a fraction of the time' },
       ],
-      outcome: 'The design system was adopted across 3 product teams and used as the foundation for 4 white-label credential applications. Design-to-dev handover went from weeks to days.',
+      outcome: 'The design system was adopted across 3 product teams. It was also the foundation for 4 white-label credential applications. Design-to-dev handover went from weeks to days.',
       /* concept: the outcome's numbers, echoed as stat discs (label = the words beside the number, in sentence case) */
       stats: [{ n: '3', label: 'Product teams' }, { n: '4', label: 'White-label credential applications' }, { from: 'weeks', to: 'days', label: 'Design-to-dev handover' }],
       nextSlug: 'goodworker',
     },
     goodworker: {
-      type: 'case', no: '04', hue: { h1: 'orchid', h2: 'glacier', ax: '50%', ay: '18%' },
+      type: 'case', no: '05', hue: { h1: 'orchid', h2: 'glacier', ax: '50%', ay: '18%' },
       card: '/projects/goodworker-devices.webp', cardAlt: 'GoodWorker platform on desktop, tablet and phone',
       /* concept. GoodWorker was sold in 2025 (Werner 2026-10-07: sold, not terminated), so its live link (goodworker.in) is left out */
       order: ['outcome', 'context', 'what', 'process', 'research', 'concept', 'wireframes', 'decisions', 'final'],   /* 2026-10-08 (Werner): outcome first */
@@ -205,16 +257,16 @@
       seo: { title: "GoodWorker hiring platform case study · Werner van Huffelen", description: "450 million blue-collar workers in India are hired through middlemen. How we designed GoodWorker's employer portal MVP: three flows, tested with employers." },
       whatIDid: [
         'I joined halfway through the project to lead the product team: one junior designer, one researcher, one PM. My focus was end-to-end design of the employer portal, plus overseeing and mentoring the rest of the team.',
-        'I ran research interviews with employers, set the information architecture, and took the employer portal from wireframes through a tested high-fidelity prototype. I also made the call on what went into the MVP.',
+        'I ran research interviews with employers and set the information architecture. I took the employer portal from wireframes through a tested high-fidelity prototype. I also made the call on what went into the MVP.',
       ],
       decisions: [
         {
           heading: 'Scope the MVP to three flows',
-          body: 'Of the three products, the employer portal had the clearest success metric: does an employer hire someone? I scoped the MVP to three flows (create a job posting, review candidates, contact one) and deferred everything else, so we could stay focused and learn faster.',
+          body: 'Of the three products, the employer portal had the clearest success metric: does an employer hire someone? I scoped the MVP to three flows (create a job posting, review candidates, contact one). I deferred everything else, so we could stay focused and learn faster.',
         },
         {
           heading: 'Test wireframes before going high-fidelity',
-          body: "We ran 10 employer usability sessions on wireframes before touching any high-fidelity design. Those sessions caught a critical issue: employers wanted to see a candidate's location before their skills, so we flipped the order. Finding that kind of thing before hi-fi saves a lot of rework.",
+          body: "We ran 10 employer usability sessions on wireframes before touching any high-fidelity design. Those sessions caught a critical issue: employers wanted to see a candidate's location before their skills. So we flipped the order. Finding that kind of thing before hi-fi saves a lot of rework.",
           image: '/projects/goodworker-devices.webp',
           imageAlt: 'GoodWorker employer portal on desktop, tablet and phone',
           imageCaption: 'The final employer portal, tested and iterated before any pixel polish',
@@ -229,7 +281,7 @@
       nextSlug: 'heycar',
     },
     heycar: {
-      type: 'case', no: '05', hue: { h1: 'glacier', h2: 'iris', ax: '20%', ay: '46%' },
+      type: 'case', no: '06', hue: { h1: 'glacier', h2: 'iris', ax: '20%', ay: '46%' },
       card: '/projects/heycar-macbook.webp', cardAlt: 'heycar vehicle page on a MacBook',
       order: ['outcome', 'challenge', 'what', 'ideation', 'decisions', 'final'],   /* 2026-10-08 (Werner): outcome first */
       /* links: dropped 2026-10-14 (Werner): hey.car and heycar.co.uk now redirect to drive.co.uk */
@@ -243,7 +295,7 @@
       tags: ['UX design', 'UI design', 'Design leadership', 'User research', 'Prototyping'],
       heroImage: '/projects/heycar-hero.png',
       heroImageAlt: 'heycar car search interface on a laptop',
-      brief: 'Buying a second-hand car feels like a minefield: opaque dealers, no way to judge quality, and financing that only gets harder. heycar started as a pitch concept and became two years of shipping product.',
+      brief: 'Buying a second-hand car feels like a minefield. Dealers are opaque, there’s no way to judge quality, and financing only gets harder. heycar started as a pitch concept and became two years of shipping product.',
       seo: { title: "heycar used car platform case study · Werner van Huffelen", description: "How a pitch concept for Volkswagen Financial Services became heycar: two years of shipping a simple, fair way to buy a second-hand car." },
       whatIDid: [
         'I was involved from day one. The concept that won the pitch with Volkswagen Financial Services was a team effort, and I pitched its design. After that, I delivered the financing calculator and the dealer portal for the Germany launch.',
@@ -259,7 +311,7 @@
         },
         {
           heading: 'Contextual tips over permanent tooltips',
-          body: 'Buyers felt inadequate judging car quality, and permanent help text gets ignored. So we surfaced specific tips based on context: a quality check tip on the car detail page, a financing tip on the financing step. That way each tip is relevant at the right moment and invisible otherwise.',
+          body: 'Buyers felt inadequate judging car quality, and permanent help text gets ignored. So we surfaced specific tips based on context. A quality check tip appeared on the car detail page, a financing tip on the financing step. That way each tip is relevant at the right moment and invisible otherwise.',
         },
       ],
       finalDesigns: [
@@ -268,13 +320,13 @@
       ],
       outcome: 'heycar launched in Germany and quickly became one of the leading platforms for quality second-hand cars. In the UK, the pitch we designed sold the project. The platform has since expanded across multiple European markets.',
       stats: [],                                  /* no numbers in the outcome, so no stat row */
-      nextSlug: 'galvany',
+      nextSlug: 'juno',
     },
     /* GALVANY OS & Sales Portal as one case study (2026-10-08, live; Werner: "merge the OS and Sales portal into 1 case
        study"). The flow is his own: lead in and verified in the OS, picked up by a seller in the portal, offer back to the
        OS, signed contract checked in the OS. The rest is the two pages' fact-checked copy. */
     galvany: {
-      type: 'case', no: '01', hue: { h1: 'iris', h2: 'orchid', ax: '30%', ay: '24%' },   /* a case study; on the homepage also under Recent work */
+      type: 'case', no: '02', hue: { h1: 'iris', h2: 'orchid', ax: '30%', ay: '24%' },   /* a case study; on the homepage also under Recent work */
       card: 'galvany/laptops', cardAlt: 'GALVANY OS and the GALVANY Sales Portal on two laptops, facing each other',
       order: ['outcome', 'context', 'what', 'system', 'decisions', 'research', 'final'],   /* 2026-10-08 (Werner): outcome first */
       slug: 'galvany',
@@ -284,16 +336,16 @@
       role: 'Lead Product Designer',
       year: '2026',
       tags: ['Product design', 'Design in code', 'Design systems', 'User research', 'Internal tools', 'Sales tools'],
-      brief: 'GALVANY sells heat pumps through sales partners. GALVANY OS is meant to replace Airtable for its own teams, the partners work in the Sales Portal, and every customer passes from one to the other and back. I design both.',
+      brief: 'GALVANY sells heat pumps through sales partners. GALVANY OS is meant to replace Airtable for its own teams. The partners work in the Sales Portal, and every customer passes from one to the other and back. I design both.',
       seo: { title: "GALVANY OS & Sales Portal case study · Werner van Huffelen", description: "How I design GALVANY OS and the Sales Portal in code: one flow from lead to installed heat pump, shared by GALVANY's teams and its sales partners." },
       whatIDid: [
-        'I lead product design at GALVANY, and its design system started with me. Long before our developer built his version, I built the first one in code, from an existing UI kit skinned to our brand, and ran the OS and the Sales Portal prototypes on it. I own both prototypes: what each team and each seller sees, how a project moves between teams, and what the backend will be built against. For the OS, I also own the interviews.',
-        'I design in code with Claude Code: clickable prototypes on fictional, seeded data, with over two thousand mock projects in the OS. Claude asks, I decide. Even a sort order waits for my answer, which is logged in the code as a dated decision. When I let it run ahead, as in the overnight build of the first twelve OS work views, every guess is logged for my review.',
+        'I lead product design at GALVANY, and its design system started with me. Long before our developer built his version, I built the first one in code, from an existing UI kit. I skinned it to our brand and ran the OS and the Sales Portal prototypes on it. I own both prototypes: what each team and each seller sees, and how a project moves between teams. The backend will be built against them. For the OS, I also own the interviews.',
+        'I design in code with Claude Code: clickable prototypes on fictional, seeded data. The OS prototype runs on over two thousand mock projects. Claude asks, I decide. Even a sort order waits for my answer, and it goes into the code as a dated decision. Sometimes I let Claude run ahead, as in the overnight build of the first twelve OS work views. It logs every guess for my review.',
       ],
       decisions: [
-        { heading: 'The lead opens beside the board', body: 'In the portal, a lead opens in a drawer on the right, so the seller keeps their place on the board. Calling, the offer and the next steps sit at the top. On a phone, the drawer goes full screen.', image: 'galvany-1', imageAlt: 'A lead’s drawer over the seller’s board: call and e-mail, the offer, the next steps, the key facts and the appointments' },
-        { heading: 'Every exception starts with a lead', body: 'The portal’s team view lists what needs attention as open exceptions, each one triggered by a lead’s state, like a lead still waiting three days in a seller’s inbox. Sellers aren’t measured on speed or activity. One click opens the seller’s page, where a call can unblock it.', image: 'galvany-2', imageAlt: 'Needs attention in the team: open exceptions, each a lead a seller hasn’t accepted yet, with how long it has waited' },
-        { heading: 'A rejection names the page', body: "Back in the OS, order review sits beside the signed offer: a seven-point checklist, each point with its page, then release or reject with a reason. A rejection names the failed check and the page, like 'Cancellation policy not signed · p. 12', and the seller sees it in the portal, so whoever fixes it doesn’t have to guess.", image: 'galvany-3', imageAlt: 'Order review: the signed offer on the left, the seven-point checklist with its page numbers on the right' },
+        { heading: 'The lead opens beside the board', body: 'In the portal, a lead opens in a drawer on the right, so sellers keep their place on the board. Calling, the offer and the next steps sit at the top. On a phone, the drawer goes full screen.', image: 'galvany-1', imageAlt: 'A lead’s drawer over the seller’s board: call and e-mail, the offer, the next steps, the key facts and the appointments' },
+        { heading: 'Every exception starts with a lead', body: 'The portal’s team view lists what needs attention as open exceptions. Each one comes from a lead’s state, like a lead still waiting three days in a seller’s inbox. Sellers aren’t measured on speed or activity. One click opens the seller’s page, where a call can unblock it.', image: 'galvany-2', imageAlt: 'Needs attention in the team: open exceptions, each a lead a seller hasn’t accepted yet, with how long it has waited' },
+        { heading: 'A rejection names the page', body: "Back in the OS, order review sits beside the signed offer: a seven-point checklist, each point with its page. It ends in a release, or a rejection with a reason. A rejection names the failed check and the page, like 'Cancellation policy not signed · p. 12'. The seller sees it in the portal, so whoever fixes it doesn’t have to guess.", image: 'galvany-3', imageAlt: 'Order review: the signed offer on the left, the seven-point checklist with its page numbers on the right' },
         { heading: 'Gates before anyone installs', body: 'Nothing gets installed until its four gates are clear: subsidy, detailed planning, financing and the electrics. Every pipeline card shows them as check circles (the electrics joined later), so what’s blocking is visible at a glance.', image: 'galvany-4', imageAlt: 'Three of the gates (subsidy, detailed planning and financing), each with its open, done and not-applicable count' },
         { heading: 'A view starts with a sentence', body: 'In the OS, people describe the view they need in their own words: region, amount, period, team. It becomes a list or a dashboard on the live data, saved with their other views. To change it, they tell the AI what should change, or edit each part of the view directly.', image: 'galvany-5', imageAlt: 'Views in GALVANY OS: “Which view do you need?” above a box to describe it in your own words' },
       ],
@@ -303,7 +355,7 @@
       nextType: 'side-quest',
     },
     bandcamp: {
-      type: 'side-quest', no: '02', hue: { h1: 'orchid', h2: 'iris', ax: '72%', ay: '26%' },
+      type: 'side-quest', no: '03', hue: { h1: 'orchid', h2: 'iris', ax: '72%', ay: '26%' },
       card: 'bandcamp/panels', cardAlt: "The Bandcamp player's Collection and Discovery panels",
       order: ['player'],
       slug: 'bandcamp',
@@ -313,7 +365,7 @@
       role: 'Designer & developer',
       year: '2026',
       tags: ['Chrome extension', 'Product design', 'UI design'],
-      brief: "Bandcamp is where my music lives, but listening there never worked the way I like. So I wanted to see if I could build it: a Chrome extension that makes it easy to discover new music, and plays my own library at work without downloading all of it.",
+      brief: "Bandcamp is where my music lives, but listening there never worked the way I\u00a0like. So I wanted to see if I could build it as a Chrome extension. It makes new music easy to discover, and plays my own library at work without downloading all of it.",
       seo: { title: "Bandcamp player Chrome extension · Werner van Huffelen", description: "A side quest: I designed and built a Chrome extension that makes discovering new music on Bandcamp easier, and plays my library without downloading it." },
       nextSlug: 'affinidi',
       nextType: 'case',
@@ -337,11 +389,34 @@
      Images carry alt text (what they show) and never a caption the brief does not give: unlabelled slots get a mono
      index ("01 / 03"). */
   WORK.sections = {
+    /* Juno (2026-10-22): the self-audit of this site, then how an audit runs */
+    juno: {
+      dogfood: { name: 'Self-audit', h2: 'I used Juno on my own site.', blocks: [
+        { p: [
+          'On 21 October I ran a quick audit on this site’s homepage. It scored 48 out of 100, which Juno calls Poor. It found 19 issues: 3 critical, 6 major and 10 minor. A quick audit only measures in code, so it checked 51%.',
+          'That day I fixed small things, like 44px tap targets and instant press feedback. The next day I took on the design and copy findings. The site now has one type scale of eight steps. Almost all its spacing sits on a 4px grid. No sentence on a case page runs past 20 words, and the pages load faster.',
+        ], cols: 2 },
+        { figs: [
+          { m: L('juno/report-summary'), label: 'Quick audit · 21 Oct 2026', alt: 'Juno’s summary for wernersdesigns.com: 48 of 100, Poor, with 3 critical, 6 major and 10 minor findings, 51% checked' },
+        ] },
+        { p: ['Not every finding held up. One critical finding was about words in my intro that start dim and sharpen as you scroll. Juno measured them while dim, at a contrast of 1.42:1. Its report said they might be mid-animation. They are. They reach full contrast once read and never dim with reduced motion, so I left them.'] },
+        { note: 'That 48 is from before the fixes. I haven’t run Juno on the site since.' },
+      ] },
+      audit: { name: 'The audit', h2: 'One link in, six answers out.', blocks: [
+        { steps: [
+          { name: 'Capture', text: 'One browser visit records the site at desktop, tablet and phone widths. It only reads pages and never sends a form.' },
+          { name: 'Measure', text: 'Code measures 44 of the 68 checks, like contrast and tap targets. There is no AI in this step.' },
+          { name: 'Judge', text: 'Claude judges what code can’t see, like whether a headline is clear. Each judge runs three times, and the median verdict wins.' },
+          { name: 'Write', text: 'A second model rewrites each finding for the owner, in Juno’s voice. It never changes a verdict or a score.' },
+        ] },
+        { note: 'The judges also use open-source guides by Anthropic, Vercel and Corey Haines.' },
+      ] },
+    },
     galvany: {
       context: { name: 'The flow', h2: 'Two products, one customer.', blocks: [
         { p: [
           'The two need to work together and share a lot of information. They also speak the same language: the portal uses the OS’s words for every offer and order state.',
-          'Behind the OS sits the project record GALVANY’s own teams share in Airtable today. Mapping it field by field showed how much of it repeats: the date goods leave the warehouse, for one, turns up in four places.',
+          'Behind the OS sits the project record GALVANY’s own teams share in Airtable today. Mapping it field by field showed how much of it repeats. The date goods leave the warehouse, for one, turns up in four places.',
         ], cols: 2 },
         { steps: [
           { name: 'Lead', text: 'A lead comes in through the OS and gets verified.' },
@@ -353,8 +428,8 @@
       ] },
       system: { name: 'The system', h2: 'The OS borrowed the seller’s board.', blocks: [
         { p: [
-          'In the OS, sales runs through queues built on the same grammar: lead, offer, order and project. Its lead board took its look from the seller’s board in the portal: white cards, a coloured pill with the count on each column, and tags on the cards in the column’s colour. So a lead looks familiar to the team that verified it and to the seller who picks it up.',
-          'Behind the queues sits the status model, from order review through detailed planning, procurement and scheduling to installation, acceptance and close. Every status belongs to a station, so the system always knows whose move it is.',
+          'In the OS, sales runs through queues built on the same grammar: lead, offer, order and project. Its lead board took its look from the seller’s board in the portal. Each column gets a coloured pill with its count, and the white cards carry tags in the column’s colour. So a lead looks familiar to the team that verified it and to the seller who picks it up.',
+          'Behind the queues sits the status model. It runs from order review through detailed planning, procurement and scheduling to installation, acceptance and close. Every status belongs to a station, so the system always knows whose move it is.',
         ], cols: 2 },
         { figs: [
           { m: L('galvany-os/leads-board'), label: 'GALVANY OS', alt: 'Leads in GALVANY OS as a board: new, contacted, waitlist, scheduled', span: 6 },
@@ -364,8 +439,8 @@
       ] },
       research: { name: 'Research', h2: 'Every workaround counts as a finding.', size: 'statement', blocks: [
         { p: [
-          'I test the OS prototype with the people who will live in it. In one session, two order managers spent thirty minutes on how they work today and thirty on the prototype. In a paired interview the biggest risk is false agreement, so on the main questions both wrote their answers down before saying them, and only one of them drove.',
-          'The interviews changed the product. A ‘blocked’ badge became a named reason, the electrics got their own traffic light, and add-on orders got a record of their own. Next came installer matching, ‘best three’: three ranked installer teams with plain-language reasons. Assigning a team doesn’t fix the date: the installer accepts and picks the start day.',
+          'I test the OS prototype with the people who will live in it. In one session, two order managers spent thirty minutes on how they work today and thirty on the prototype. In a paired interview the biggest risk is false agreement. So on the main questions, both wrote their answers down before saying them, and only one of them drove.',
+          'The interviews changed the product. A ‘blocked’ badge became a named reason. The electrics got their own traffic light, and add-on orders a record of their own. Next came installer matching, ‘best three’: three ranked installer teams with plain-language reasons. Assigning a team doesn’t fix the date: the installer accepts and picks the start day.',
         ], cols: 2 },
       ] },
     },
@@ -384,9 +459,9 @@
     affinidi: {
       system: { name: 'The system', h2: "Building a design system for Affinidi's privacy-preserving applications.", size: 'statement', blocks: [
         { p: [
-          'A design system gives every team the same reusable components and guidelines, so all platforms and products look and feel consistent. It also makes products faster to build and easier to scale.',
-          'Design and development get simpler, with less duplicate work and fewer errors, and teams find it easier to work together.',
-          'With a design system in place, organisations can try new ideas sooner and ship good products that give users what they need and expect.',
+          'A design system gives every team the same reusable components and guidelines. That way all platforms and products look and feel consistent. It also makes products faster to build and easier to scale.',
+          'Design and development get simpler, with less duplicate work and fewer errors. Teams also find it easier to work together.',
+          'With a design system in place, organisations can try new ideas sooner and ship what users need and expect.',
         ], cols: 2 },
       ] },
       atomic: { name: 'Atomic design', blocks: [
@@ -395,26 +470,26 @@
           guide: { name: 'Style guide', text: 'The style guide below was the foundation of our design system. Most elements were already defined, and we added more as we needed them.',
             fig: { m: L('affinidi/styleguide'), alt: 'The Affinidi style guide: brand, utility and neutral colours, text styles and icons' } },
           list: [
-            { name: 'Atoms', text: 'Atoms are the most basic components, the building blocks of a design system: buttons, lines, shapes, icons, text fields, text labels and so on. Here are some of the atoms we used.',
+            { name: 'Atoms', text: 'Atoms are the most basic components, the building blocks of a design system. They include buttons, lines, shapes, icons, text fields, text labels and so on. Here are some of the atoms we used.',
               figs: [
                 { m: L('affinidi/atoms-messages'), label: 'Messages', alt: 'Message atoms: info, warning, error and success', span: 7 },
                 { m: L('affinidi/atoms-inputs'), label: 'Inputs and selects', alt: 'Input and select atoms: text fields, a pin input, dropdowns, a search field, checkboxes, toggles and radio buttons' },
               ] },
-            { name: 'Molecules', text: 'Molecules are made by combining two or more atoms. An input field and a button, for instance, can combine into a search form. Below are some of the molecules from our design system.',
+            { name: 'Molecules', text: 'Molecules combine two or more atoms. An input field and a button, for instance, can combine into a search form. Below are some of the molecules from our design system.',
               figs: [{ m: L('affinidi/molecules'), alt: 'Molecules: an attribute form, a project card, an upload field, a schema card and a drawer' }] },
-            { name: 'Organisms', text: 'Multiple molecules together form an organism, for example a header, sidebar or signup form.',
+            { name: 'Organisms', text: 'Several molecules together form an organism, like a header, sidebar or signup form.',
               figs: [
                 { m: L('affinidi/organism-header'), label: 'Header', alt: 'The console header with its project switcher open' },
                 { m: L('affinidi/organism-sidebar'), label: 'Sidebar', alt: 'The console sidebar navigation', span: 4 },
                 { m: L('affinidi/organism-form'), label: 'Form', alt: 'A nested attribute form', span: 8 },
               ] },
-            { name: 'Templates', text: 'Templates are the glue that combines the different organisms or individual sections to create a complete design.',
+            { name: 'Templates', text: 'Templates are the glue that combines organisms or individual sections into a complete design.',
               figs: [
                 { m: L('affinidi/template-headline'), alt: 'A page template with a headline', index: true },
                 { m: L('affinidi/template-drawer'), alt: 'A page template with a drawer', index: true, span: 6 },
                 { m: L('affinidi/template-tabs'), alt: 'A page template with tabs', index: true, span: 6 },
               ] },
-            { name: 'Pages', text: 'The highest level of hierarchy in an atomic design system is the actual pages that make up a product. Below is a selection of the pages of our developer console.',
+            { name: 'Pages', text: 'The highest level in an atomic design system is the actual pages that make up a product. Below is a selection of the pages of our developer console.',
               seq: { ring: 'PAGES', steps: [
                 { m: L('affinidi/page-login'), alt: 'Developer console page: log in' },
                 { m: L('affinidi/page-projects'), alt: 'Developer console page: my projects' },
@@ -430,19 +505,19 @@
     goodworker: {
       context: { name: 'Context', blocks: [
         { photo: { m: L('goodworker/photo-worker'), alt: 'A worker at a sewing machine in a garment workshop',
-          lead: 'The challenge was to design 3 different products: an Android app for workers, a responsive web app for employers and a back-office tool for operators.',
+          lead: 'The challenge was to design 3 different products. Workers would use an Android app, employers a responsive web app and operators a back-office tool.',
           cols: [
-            ['The 450 million blue-collar workers in India include security guards, delivery staff, construction labourers, housekeepers, maids, assembly line workers, plumbers, electricians and more. They work hard every day, but their situation is becoming unstable.',
-              'Inflation is threatening their already meagre earnings. Applying for jobs through middlemen or agencies gives them little transparency. Recruitment agencies can exploit them, and employers can pay them late or unfairly. They might not get adequate training either, which could later cost them the job they rely on.'],
-            ['Contract employers struggle with workforce management too: a high risk of improper background checks, workers who are hard to find and match on skills, and a time-consuming recruitment process.',
-              'GoodWorker gives workers in India a digital, verified biodata on its platform. With it they can find jobs more easily, secure their livelihood and establish a formal career. And employers can hire the right worker more efficiently and at lower cost.'],
+            ['India has 450 million blue-collar workers. They include security guards, delivery staff, construction labourers, housekeepers, maids, assembly line workers, plumbers, electricians and more. They work hard every day, but their situation is becoming unstable.',
+              'Inflation threatens their already meagre earnings. Applying for jobs through middlemen or agencies gives them little transparency. Recruitment agencies can exploit them, and employers can pay them late or unfairly. They might not get adequate training either, which could later cost them the job they rely on.'],
+            ['Contract employers struggle with workforce management too. They face a high risk of improper background checks. Workers are hard to find and match on skills, and recruitment takes a lot of time.',
+              'GoodWorker gives workers in India a digital, verified biodata on its platform. With it they can find jobs more easily, secure their livelihood and build a formal career. And employers can hire the right worker more efficiently and at lower cost.'],
           ] } },
       ] },
       process: { name: 'My process', blocks: [
         { steps: [
           { name: 'Research', text: 'When I joined the project, I interviewed several employers about their needs and pain points. I also did a UX competitor analysis to see what was already out there.' },
-          { name: 'Conceptualise', text: 'Working from the research, we brainstormed features, created a user flow and set the information architecture for the employer portal.' },
-          { name: 'Design', text: 'I started with low-fidelity wireframes built on the user flow and information architecture, then turned them into a high-fidelity prototype.' },
+          { name: 'Conceptualise', text: 'Working from the research, we brainstormed features and created a user flow. Then we set the information architecture for the employer portal.' },
+          { name: 'Design', text: 'I started with low-fidelity wireframes, built on the user flow and information architecture. Then I turned them into a high-fidelity prototype.' },
           { name: 'Test', text: 'We ran a usability test with 10 employers to gauge their interest and to spot UX design problems.' },
         ] },
       ] },
@@ -450,14 +525,14 @@
         { lead: 'In the research we found three major pain points for our employer portal to solve:' },
         { list: [
           "Workers' skills are hard to verify because there is little formal record of their employment history",
-          'Relying on intermediaries often makes hiring slow',
+          'Relying on middlemen often makes hiring slow',
           'Replacements are hard to find when workers do not show up',
         ] },
         { note: 'That gave us this solution statement:' },
         { quote: 'Allow employers to hire the right workers, at the right time.' },
       ] },
       concept: { name: 'Conceptualise', blocks: [
-        { lead: 'We prioritised the following features for the MVP of the employer portal:' },
+        { lead: 'We prioritised these features for the MVP of the employer portal:' },
         { list: ['Create a job listing', 'See candidates that applied for a job', 'Contact candidates'] },
         /* the information architecture beside the three paragraphs that walk it (the diagram is light on a night board) */
         { ia: {
@@ -490,11 +565,11 @@
         { quote: 'With heycar we aimed to make the buyer more confident when it comes to buying a second-hand car.' },
       ] },
       ideation: { name: 'Ideation', blocks: [
-        { lead: 'During the ideation phase we brainstormed around different features that would simplify the buying process for buyers. I created wireframes for these different features, which we then tested with users.' },
+        { lead: 'During the ideation phase we brainstormed features that would make buying a car simpler. I created wireframes for these features, which we then tested with users.' },
         /* the wireframes carry the working name "KITTKAT" in their header: that is how they are */
         { features: [
           { m: L('heycar/idea-search'), name: 'Simplify the search', text: 'Reducing the number of options the user can choose from reduces the cognitive load.', alt: 'Wireframe: the simplified search' },
-          { m: L('heycar/idea-models'), name: 'Provide a list of suitable models', text: 'Based on the option selected by the user we provide them with a list of suitable cars they can select from.', alt: 'Wireframe: a list of suitable models' },
+          { m: L('heycar/idea-models'), name: 'Provide a list of suitable models', text: 'Based on the option the user picks, we show them a list of suitable cars to choose from.', alt: 'Wireframe: a list of suitable models' },
           { m: L('heycar/idea-tips'), name: 'Contextual tips', text: 'Providing the buyer with contextual tips will give them confidence to find the right car for them.', alt: 'Wireframe: search results with a contextual tip' },
           { m: L('heycar/idea-dealer'), name: 'Connect with dealership', text: 'Buyers can connect with a dealership beforehand to request a personalised quote, request a video or book a test drive.', alt: 'Wireframe: a request to a dealership' },
           { m: L('heycar/idea-message'), name: 'Message dealership', text: 'Message the dealership to bargain the price beforehand or make an appointment for a test drive.', alt: 'Wireframe: a chat with a dealership' },
@@ -511,6 +586,12 @@
      Its step labels quote the UI's own step tabs, which are real text in the images. ── */
   var P = WORK.projects;
   WORK.finals = {
+    juno: [
+      { m: L('juno/example-now-try'), alt: 'The example report’s copy chapter: a bakery’s current headline beside a suggested rewrite', title: 'Copy, rewritten', text: ['Where Claude judges the copy, a weak line gets a “Now” and a “Try”.'], caption: 'From the example report. The bakery is made up.' },
+      { m: L('juno/plan'), alt: '“Your 30-minute plan” from my site’s report: 0 of 10 done, starting with hard-to-read text in the intro', title: 'A 30-minute plan', text: ['Every fix that takes minutes goes in one checklist, sorted by priority.'] },
+      { m: L('juno/brief-md'), alt: '“A brief your developer can work from”, beside a Markdown preview of my site’s top issue: area, severity, impact, effort and what Juno found', title: 'A brief for the developer', text: ['The whole list in one Markdown file, ready for a ticket or an AI coding tool.'] },
+      { m: L('juno/phone'), alt: 'The report on a phone: 3 critical, 6 major and 10 minor, 51% checked and a score of 48', title: 'On a phone', text: ['The same report at phone width, opening with the summary and the score.'] },
+    ],
     galvany: [
       { m: L('galvany-os/views-refine'), alt: 'Refining a view in GALVANY OS: a chat on the left, the view’s preview on the right, a dashboard and the orders behind it', title: 'Refine a view with AI', text: ['Tell the OS what should change and see it in the preview, or edit the view’s filters and grouping directly. Changes stay a draft until you apply them.'] },
       { m: L('galvany-os/offers-board'), alt: 'Offers in GALVANY OS as a board: sent, opened, expiring, signed', title: 'Offers in the OS', text: ['Every offer a seller sends shows up here, from sent to signed.'] },
@@ -519,16 +600,16 @@
     ],
     affinidi: [
       Object.assign({}, P.affinidi.finalDesigns[0], { m: L('affinidi/console-macbook'), title: 'Developer console',
-        text: ['We first built the design system for the developer console, which gives Affinidi’s customers tools to improve data privacy and portability in their own applications.'] }),
+        text: ['We first built the design system for the developer console. The console gives Affinidi’s customers tools to improve data privacy and portability in their own apps.'] }),
       /* r6 review: phones-b was the hero's four phones again; a 1:1 detail on the white-label Home app instead
          (Decision 01 already frames StudID beside GameID) */
       Object.assign({}, P.affinidi.finalDesigns[1], { m: { kind: 'detail', of: '/projects/affinidi-phones.webp', cx: 1150, cy: 540, mcx: 1150, mcy: 560 },
-        text: ['The design system was flexible enough to reuse across different applications.',
+        text: ['The design system was flexible enough to reuse in other applications.',
           'We duplicated it and updated the style guide to give each new application its own look and feel.'] }),
     ],
     goodworker: [
       { m: L('goodworker/final-job-postings'), alt: P.goodworker.finalDesigns[0].alt, caption: P.goodworker.finalDesigns[0].caption, title: 'Job postings',
-        text: ['The job postings board shows all the available positions in the company, with the status of each posting at a glance. From the board the user can open the detail view of any posting or create a new job posting.'] },
+        text: ['The job postings board lists all the available positions in the company. Each posting shows its status at a glance. From the board the user can open the detail view of any posting or create a new job posting.'] },
       { m: L('goodworker/final-create-posting'), alt: 'GoodWorker employer portal: creating a new job posting', title: 'Create new job posting',
         text: ['Employers can easily create a new job posting and set all its requirements. Workers are then matched on those requirements.'] },
       { m: L('goodworker/final-job-detail'), alt: 'GoodWorker employer portal: a job detail page with its candidates', title: 'Job detail page',
@@ -561,10 +642,10 @@
   var STOP = '<span class="stop">.</span>';
   /* one span per word (the focus reveals run per word), the closing period as the lit stop inside the last word, so it
      never wraps onto a line of its own. Copy stays verbatim: the stop is the period's own glyph, drawn transparent. */
-  function words(s, keep) {
+  function words(s, keep) {   /* 2026-10-22: splits on plain spaces only, so a no-break space keeps two words together */
     var t = String(s), end = /\.$/.test(t);
     if (end) t = t.slice(0, -1);
-    var ws = t.split(/\s+/), out = ws.map(function (w, i) { return '<span class="w' + (/\w-\w/.test(w) ? ' nw' : '') + '">' + esc(w) + (end && i === ws.length - 1 ? STOP : '') + '</span>'; });
+    var ws = t.split(/[ \t\n\r]+/), out = ws.map(function (w, i) { return '<span class="w' + (/\w-\w/.test(w) ? ' nw' : '') + '">' + esc(w) + (end && i === ws.length - 1 ? STOP : '') + '</span>'; });
     /* polish review: text-wrap pretty cannot see orphans across one inline-block per word, so a statement could end on
        one short word ("markets.", "do it."). keep: its closing words wrap as one group of at least `keep` characters */
     if (keep && ws.length > 2) {
@@ -662,7 +743,7 @@
   /* section head: a mono label, an H2 in the homepage's --t-h2 (or a statement size for a sentence) with its stop */
   var head = function (id, c, lab, h2, size) {
     var t = String(h2).replace(/\.$/, '');
-    return '<div class="w-head wrap"><p class="label">' + c.n + ' · ' + esc(lab) + '</p><h2 class="h2' + (size ? ' h2--' + size : '') + '" id="' + id + '-h" data-lens="text">' + esc(t).replace(/(\S+-\S+)/g, '<span class="nw">$1</span>') + STOP + '</h2></div>';   /* compounds never break at their hyphen */
+    return '<div class="w-head wrap"><p class="label">' + c.n + ' · ' + esc(lab) + '</p> <h2 class="h2' + (size ? ' h2--' + size : '') + '" id="' + id + '-h" data-lens="text">' + esc(t).replace(/(\S+-\S+)/g, '<span class="nw">$1</span>') + STOP + '</h2></div>';   /* compounds never break at their hyphen */
   };
   WORK.head = head;
 
@@ -670,42 +751,45 @@
      the static fallback (and holds the light while the menu borrows the field); the veil is the night where text sits */
   var SKY = '<i class="w-sky" aria-hidden="true"></i><i class="w-veil" aria-hidden="true"></i>';
 
+  /* 2026-10-22 (audit): the template puts a space between block, flex and grid siblings, so the page's plain text reads
+     "customer. The", never "customer.The" (no gap renders between them; the hero's tags are flex items). Never between
+     inline siblings: the .w word spans, the stat's "weeks → days", the seq-read readout. */
   function hero(p) {
     var m = WORK.media[p.card], meta = [['Company', p.company], ['Role', p.role], ['Year', p.year], ['Team', p.team]].filter(function (r) { return r[1]; });
-    var link = p.links && p.links.length ? '<div class="wm wm--link"><dt>Link</dt><dd>' + p.links.map(function (l) {
+    var link = p.links && p.links.length ? '<div class="wm wm--link"><dt>Link</dt> <dd>' + p.links.map(function (l) {
       return '<a href="' + l.href + '" target="_blank" rel="noopener">' + esc(l.text) + '<span class="sr-only"> (opens in a new tab)</span></a>';
     }).join('<span class="wm-sep" aria-hidden="true"> · </span>') + '</dd></div>' : '';
     return '<section id="top" class="w-hero w-lit" data-tone="night" data-name="' + esc(p.name) + '" data-f="1.4" aria-labelledby="w-title" style="' + hue(p.hue) + '">' + SKY +
       /* the device, large, on the light: its stage is the hero's right-hand side (css/work.css), a size container */
-      '<div class="wh-stage rack">' + WORK.fx(m, p.cardAlt, { eager: true }) + '</div>' +
+      '<div class="wh-stage rack">' + WORK.fx(m, p.cardAlt, { eager: true }) + '</div> ' +
       '<div class="wh-stack">' +
-        backPill('Selected work', 'wh-back') +
-        '<p class="label wh-label">' + esc(label(p)) + '</p>' +
-        '<p class="wh-name">' + esc(p.name) + '</p>' +
-        '<h1 class="wh-title" id="w-title" data-lens="text">' + words(p.headline) + '</h1>' +
-        '<ul class="wh-tags" aria-label="Disciplines">' + p.tags.map(function (t) { return '<li class="tag"><i class="t-stop"><i class="lit"></i></i>' + esc(t) + '</li>'; }).join('') + '</ul>' +
-      '</div>' +
-      '<dl class="wh-meta' + (link ? ' wh-meta--5' : meta.length === 3 ? ' wh-meta--3' : '') + '">' + meta.map(function (r) { return '<div class="wm"><dt>' + r[0] + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('') + link + '</dl>' +
+        backPill('Selected work', 'wh-back') + ' ' +
+        '<p class="label wh-label">' + esc(label(p)) + '</p> ' +
+        '<p class="wh-name">' + esc(p.name) + '</p> ' +
+        '<h1 class="wh-title" id="w-title" data-lens="text">' + words(p.headline) + '</h1> ' +
+        '<ul class="wh-tags" aria-label="Disciplines">' + p.tags.map(function (t) { return '<li class="tag"><i class="t-stop"><i class="lit"></i></i>' + esc(t) + '</li>'; }).join(' ') + '</ul>' +
+      '</div> ' +
+      '<dl class="wh-meta' + (link ? ' wh-meta--5' : meta.length === 3 ? ' wh-meta--3' : '') + '">' + meta.map(function (r) { return '<div class="wm"><dt>' + r[0] + '</dt> <dd>' + esc(r[1]) + '</dd></div>'; }).join(' ') + (link ? ' ' + link : '') + '</dl>' +
     '</section>';
   }
   function brief(p, c) {
     return '<section id="brief" class="w-sec w-brief wrap on-night" data-tone="night" data-name="Brief" data-f="' + c.f + '" aria-labelledby="brief-h">' +
-      '<h2 class="label" id="brief-h">' + c.n + ' · Brief</h2>' +
+      '<h2 class="label" id="brief-h">' + c.n + ' · Brief</h2> ' +
       '<p class="w-statement" data-lens="text">' + words(p.brief, 12) + '</p>' +
     '</section>';
   }
   function what(p, c) {
-    return open('what', c, 'What I did', 'w-what') + head('what', c, 'What I did', 'What I did') +
-      '<div class="what-cols wrap">' + p.whatIDid.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div>' +
+    return open('what', c, 'What I did', 'w-what') + head('what', c, 'What I did', 'What I did') + ' ' +
+      '<div class="what-cols wrap">' + p.whatIDid.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join(' ') + '</div>' +
     '</section>';
   }
   function decisions(p, c) {
-    return open('decisions', c, 'Decisions', 'w-dec') + head('decisions', c, 'Key decisions', 'Key decisions') +
+    return open('decisions', c, 'Decisions', 'w-dec') + head('decisions', c, 'Key decisions', 'Key decisions') + ' ' +
       '<ol class="dec-list wrap">' + p.decisions.map(function (d, i) {
         var n = i + 1, m = d.image && (WORK.decMedia[p.slug + '-' + n] || WORK.media[d.image]), fig;
         if (m) {
           fig = '<figure class="dec-fig">' + WORK.plate(m, { fit: true, cls: 'dm rack', alt: d.imageAlt }) +
-            (d.imageCaption ? '<figcaption class="dec-cap">' + esc(d.imageCaption) + '</figcaption>' : '') + '</figure>';
+            (d.imageCaption ? ' <figcaption class="dec-cap">' + esc(d.imageCaption) + '</figcaption>' : '') + '</figure>';
         } else {
           /* no image in the data: an illustration slot (a circle diagram on its night card, which stays). js/work-illus.js
              fills it (data-state empty → ready); the box keeps its 4:3 either way, so the layout never depends on it */
@@ -713,35 +797,35 @@
         }
         return '<li class="dec" data-i="' + n + '" data-side="' + (i % 2 ? 'left' : 'right') + '">' +
           '<div class="dec-text">' +
-            '<span class="dec-idx glass g-l" aria-hidden="true"><i class="b-light lit"></i><span>' + pad2(n) + '</span></span>' +
-            '<h3 class="dec-h" data-lens="text">' + esc(d.heading) + '</h3>' +
+            '<span class="dec-idx glass g-l" aria-hidden="true"><i class="b-light lit"></i><span>' + pad2(n) + '</span></span> ' +
+            '<h3 class="dec-h" data-lens="text">' + esc(d.heading) + '</h3> ' +
             '<p class="dec-body">' + esc(d.body) + '</p>' +
-          '</div>' + fig + '</li>';
-      }).join('') + '</ol>' +
+          '</div> ' + fig + '</li>';
+      }).join(' ') + '</ol>' +
     '</section>';
   }
   /* a Final designs card: the plate (16:9, the loupe on hover), then its mono label beside what the design is: the
      live site's title, the data's caption, the live site's text (each only where there is one) */
   WORK.fdCard = function (m, it, n, ring, lab) {
     return '<figure class="fd" data-i="' + n + '" data-kind="' + m.kind + '">' +
-      WORK.plate(m, { fit: true, cls: 'fdc rack', alt: it.alt, lens: ring + ' · ' + pad2(n) + ' · ' }) +
-      '<figcaption class="fd-cap">' + (lab ? '<span class="label">' + esc(lab) + ' ' + pad2(n) + '</span>' : '') +
-        '<span class="fd-main">' + (it.title ? '<h3 class="fd-title">' + esc(it.title) + '</h3>' : '') +
-        (it.caption && !it.title ? '<span class="fd-txt">' + esc(it.caption) + '</span>' : '') +
-        (it.text ? it.text.map(function (t) { return '<span class="fd-p">' + esc(t) + '</span>'; }).join('') : '') +
+      WORK.plate(m, { fit: true, cls: 'fdc rack', alt: it.alt, lens: ring + ' · ' + pad2(n) + ' · ' }) + ' ' +
+      '<figcaption class="fd-cap">' + (lab ? '<span class="label">' + esc(lab) + ' ' + pad2(n) + '</span> ' : '') +
+        '<span class="fd-main">' + (it.title ? '<h3 class="fd-title">' + esc(it.title) + '</h3> ' : '') +
+        (it.caption && !it.title ? '<span class="fd-txt">' + esc(it.caption) + '</span> ' : '') +
+        (it.text ? it.text.map(function (t) { return '<span class="fd-p">' + esc(t) + '</span>'; }).join(' ') : '') +
         /* r6 review: a title and a caption that open with the same words read as a duplicate; the caption follows */
-        (it.caption && it.title ? '<span class="fd-note">' + esc(it.caption) + '</span>' : '') + '</span>' +
+        (it.caption && it.title ? ' <span class="fd-note">' + esc(it.caption) + '</span>' : '') + '</span>' +
       '</figcaption>' +
     '</figure>';
   };
   function finals(p, c) {
     var list = WORK.finals[p.slug] || p.finalDesigns, k = 0;
-    return open('final', c, 'Final designs', 'w-final') + head('final', c, 'Final designs', 'Final designs') +
+    return open('final', c, 'Final designs', 'w-final') + head('final', c, 'Final designs', 'Final designs') + ' ' +
       '<div class="fd-list wrap">' + list.map(function (d) {
         if (d.group) return group(d);
         k++;
         return WORK.fdCard(d.m || WORK.media[d.src], d, k, 'FINAL DESIGN', 'Final design');
-      }).join('') + '</div>' +
+      }).join(' ') + '</div>' +
     '</section>';
   }
   /* a titled group inside Final designs (heycar's financing calculator): its H3, the devices on the light, then its
@@ -749,18 +833,18 @@
   function group(g) {
     return '<div class="fd-group">' +
       '<h3 class="fd-gh" data-lens="text">' + esc(g.group) + '</h3>' +
-      (g.lead ? '<figure class="fd fd--lead" data-kind="' + g.lead.m.kind + '">' + WORK.plate(g.lead.m, { fit: true, cls: 'fdc fdc--bleed rack', alt: g.lead.alt, lens: g.seq.ring + ' · ' }) + '</figure>' : '') +
-      (g.seq ? seq(g.seq) : '') +
+      (g.lead ? ' <figure class="fd fd--lead" data-kind="' + g.lead.m.kind + '">' + WORK.plate(g.lead.m, { fit: true, cls: 'fdc fdc--bleed rack', alt: g.lead.alt, lens: g.seq.ring + ' · ' }) + '</figure>' : '') +
+      (g.seq ? ' ' + seq(g.seq) : '') +
     '</div>';
   }
   function outcome(p, c) {
     var st = p.stats && p.stats.length ? '<ul class="stats" aria-hidden="true">' + p.stats.map(function (s) {
       var num = s.from ? '<span class="st-n st-n--w">' + esc(s.from) + '<span class="to">' + ARR + '</span>' + esc(s.to) + '</span>'
         : '<span class="st-n" data-count="' + esc(s.n) + '">' + esc(s.n) + '</span>';
-      return '<li class="stat"><span class="st-disc glass"><i class="b-light lit"></i>' + num + '</span><span class="st-l">' + esc(s.label).replace(/(\S+-\S+)/g, '<span class="nw">$1</span>') + '</span></li>';
-    }).join('') + '</ul>' : '';
+      return '<li class="stat"><span class="st-disc glass"><i class="b-light lit"></i>' + num + '</span> <span class="st-l">' + esc(s.label).replace(/(\S+-\S+)/g, '<span class="nw">$1</span>') + '</span></li>';
+    }).join(' ') + '</ul> ' : '';
     return open('outcome', c, 'Outcome', 'w-out wrap' + (p.stats && p.stats.length === 1 ? ' w-out--one' : '')) +
-      '<h2 class="label" id="outcome-h">' + c.n + ' · Outcome</h2>' + st +
+      '<h2 class="label" id="outcome-h">' + c.n + ' · Outcome</h2> ' + st +
       '<p class="w-outcome" data-lens="text">' + words(p.outcome, 12) + '</p>' +
     '</section>';
   }
@@ -774,16 +858,16 @@
     var m = WORK.media[n.card], href = WORK.caseHref(n.slug);
     return '<section id="next" class="w-next w-lit" data-tone="night" data-name="Next project" data-f="' + c.f + '" aria-labelledby="next-h" style="' + hue(n.hue) + '">' + SKY +
       /* the heading before the link it introduces (reading and heading order); both are placed absolutely */
-      '<h2 class="label nx-label" id="next-h">Next project</h2>' +
+      '<h2 class="label nx-label" id="next-h">Next project</h2> ' +
       '<a class="nx-link" href="' + href + '" data-next="' + n.slug + '" aria-label="Next project: ' + esc(n.name) + '">' +
-        '<span class="nx-stage rack" aria-hidden="true">' + WORK.fx(m, '') + '</span>' +
+        '<span class="nx-stage rack" aria-hidden="true">' + WORK.fx(m, '') + '</span> ' +
         '<span class="nx-copy" aria-hidden="true">' +
-          '<span class="label nx-no">' + esc(label(n)) + '</span>' +
-          '<span class="nx-title">' + words(n.headline) + '</span>' +
+          '<span class="label nx-no">' + esc(label(n)) + '</span> ' +
+          '<span class="nx-title">' + words(n.headline) + '</span> ' +
           '<span class="nx-name">' + esc(n.name) + '</span>' +
-        '</span>' +
+        '</span> ' +
         '<span class="nx-go glass g-l" aria-hidden="true"><i class="b-light lit"></i>' + ARR + '</span>' +
-      '</a>' +
+      '</a> ' +
       backPill('Back to all work', 'nx-back') +
     '</section>';
   }
@@ -794,10 +878,10 @@
     var lab = f.label || (f.index ? pad2(k) + ' / ' + pad2(n) : '');
     return '<figure class="pf" style="--span:' + (f.span || 12) + '" data-kind="' + f.m.kind + '">' +
       WORK.plate(f.m, { alt: f.alt, lens: ring + (f.label ? ' · ' + f.label.toUpperCase() : '') + ' · ' }) +
-      (lab ? '<figcaption class="label pf-cap">' + esc(lab) + '</figcaption>' : '') + '</figure>';
+      (lab ? ' <figcaption class="label pf-cap">' + esc(lab) + '</figcaption>' : '') + '</figure>';
   }
   function figs(list, ring) {
-    return '<div class="pf-grid">' + list.map(function (f, i) { return fig(f, ring, i + 1, list.length); }).join('') + '</div>';
+    return '<div class="pf-grid">' + list.map(function (f, i) { return fig(f, ring, i + 1, list.length); }).join(' ') + '</div>';
   }
   /* the stepped sequence: every step a plate at the steps' shared aspect, labelled "01 / 07" (and the UI's own step
      tab, where the screen shows one). Live on wide screens it is a sticky stage that the scroll steps through, the
@@ -809,11 +893,11 @@
       '<div class="seq-stage">' +
         '<ol class="seq-list">' + s.steps.map(function (st, i) {
           var lab = pad2(i + 1) + ' / ' + pad2(n);
-          return '<li class="seq-step" data-i="' + i + '"><figure class="pf">' + WORK.plate(st.m, { alt: st.alt, lens: s.ring + ' · ' + pad2(i + 1) + ' · ' }) +
-            '<figcaption class="label pf-cap seq-cap"><span class="seq-no">' + lab + '</span>' + (st.tab ? '<span class="seq-tab">' + esc(st.tab) + '</span>' : '') + '</figcaption></figure></li>';
-        }).join('') + '</ol>' +
+          return '<li class="seq-step" data-i="' + i + '"><figure class="pf">' + WORK.plate(st.m, { alt: st.alt, lens: s.ring + ' · ' + pad2(i + 1) + ' · ' }) + ' ' +
+            '<figcaption class="label pf-cap seq-cap"><span class="seq-no">' + lab + '</span>' + (st.tab ? ' <span class="seq-tab">' + esc(st.tab) + '</span>' : '') + '</figcaption></figure></li>';
+        }).join(' ') + '</ol> ' +
         '<div class="seq-bar">' +
-          '<span class="seq-dots">' + s.steps.map(function (st, i) { return '<button class="seq-dot" type="button" data-i="' + i + '" aria-label="Step ' + (i + 1) + ' of ' + n + '"><i class="lit"></i></button>'; }).join('') + '</span>' +
+          '<span class="seq-dots">' + s.steps.map(function (st, i) { return '<button class="seq-dot" type="button" data-i="' + i + '" aria-label="Step ' + (i + 1) + ' of ' + n + '"><i class="lit"></i></button>'; }).join('') + '</span> ' +
           '<span class="label seq-read" aria-hidden="true"><span class="seq-n"><span class="seq-at">01</span> / ' + pad2(n) + '</span><span class="seq-rt"></span></span>' +
         '</div>' +
       '</div>' +
@@ -823,25 +907,25 @@
      horizontal sequence the scroll carries sideways (a sticky stage); a stack on phones, static and reduced motion */
   function features(list) {
     return '<div class="feat" style="--n:' + list.length + '"><div class="feat-pin"><ol class="feat-track">' + list.map(function (f, i) {
-      return '<li class="feat-it">' + WORK.plate(f.m, { alt: f.alt, lens: 'IDEATION · ' + pad2(i + 1) + ' · ' }) +
-        '<p class="label feat-no">' + pad2(i + 1) + ' / ' + pad2(list.length) + '</p>' +
-        '<h3 class="feat-h">' + esc(f.name) + '</h3><p class="feat-p">' + esc(f.text) + '</p></li>';
-    }).join('') + '</ol></div></div>';
+      return '<li class="feat-it">' + WORK.plate(f.m, { alt: f.alt, lens: 'IDEATION · ' + pad2(i + 1) + ' · ' }) + ' ' +
+        '<p class="label feat-no">' + pad2(i + 1) + ' / ' + pad2(list.length) + '</p> ' +
+        '<h3 class="feat-h">' + esc(f.name) + '</h3> <p class="feat-p">' + esc(f.text) + '</p></li>';
+    }).join(' ') + '</ol></div></div>';
   }
   /* the process: glass index discs (the decisions' own, lit in turn as the row comes into view) on one hairline */
   function steps(list) {
     return '<div class="w-b w-b--full"><ol class="stp-list">' + list.map(function (s, i) {
-      return '<li class="stp" data-i="' + (i + 1) + '"><span class="stp-idx glass g-l" aria-hidden="true"><i class="b-light lit"></i><span>' + pad2(i + 1) + '</span></span>' +
-        '<h3 class="stp-h">' + esc(s.name) + '</h3><p class="stp-p">' + esc(s.text) + '</p></li>';
-    }).join('') + '</ol></div>';
+      return '<li class="stp" data-i="' + (i + 1) + '"><span class="stp-idx glass g-l" aria-hidden="true"><i class="b-light lit"></i><span>' + pad2(i + 1) + '</span></span> ' +
+        '<h3 class="stp-h">' + esc(s.name) + '</h3> <p class="stp-p">' + esc(s.text) + '</p></li>';
+    }).join(' ') + '</ol></div>';
   }
   /* the photo band: full bleed and full colour; its lead sits over the photo's foot on a night veil (on phones under
      it), the two columns of context beside it on the section's ground */
   function photo(b) {
     return '<div class="ph">' +
       '<div class="ph-band on-night" data-tone="night">' + img(b.m, b.alt, 'ph-img') + '<i class="ph-veil" aria-hidden="true"></i>' +
-        '<p class="ph-lead wrap" data-lens="text">' + words(b.lead, 12) + '</p></div>' +
-      '<div class="w-b ph-cols">' + b.cols.map(function (col) { return '<div class="ph-col">' + col.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div>'; }).join('') + '</div>' +
+        '<p class="ph-lead wrap" data-lens="text">' + words(b.lead, 12) + '</p></div> ' +
+      '<div class="w-b ph-cols">' + b.cols.map(function (col) { return '<div class="ph-col">' + col.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join(' ') + '</div>'; }).join(' ') + '</div>' +
     '</div>';
   }
   /* Affinidi's atomic design: the style guide (the foundation, a tall dark board given the full width), then the five
@@ -852,29 +936,29 @@
     var g = s.guide, ring = 'ATOMIC DESIGN';
     var rail = '<nav class="stg-rail" aria-label="The five stages"><ol>' + s.list.map(function (st, i) {
       return '<li><a class="stg-a" href="#stage-' + (i + 1) + '" data-i="' + i + '"><i class="stg-d" style="--d:' + DISC[i] + 'px" aria-hidden="true"><i class="lit"></i></i><span class="stg-n">' + esc(st.name) + '</span></a></li>';
-    }).join('') + '</ol></nav>';
-    return '<div class="w-b stg-guide"><p class="label stg-gl">' + esc(g.name) + '</p><p class="stg-gp">' + esc(g.text) + '</p>' +
-        '<figure class="pf pf--guide" data-kind="board">' + WORK.plate(g.fig.m, { alt: g.fig.alt, lens: 'STYLE GUIDE · ' }) + '</figure></div>' +
-      '<div class="w-b stg">' + rail + '<div class="stg-body">' + s.list.map(function (st, i) {
+    }).join(' ') + '</ol></nav>';
+    return '<div class="w-b stg-guide"><p class="label stg-gl">' + esc(g.name) + '</p> <p class="stg-gp">' + esc(g.text) + '</p> ' +
+        '<figure class="pf pf--guide" data-kind="board">' + WORK.plate(g.fig.m, { alt: g.fig.alt, lens: 'STYLE GUIDE · ' }) + '</figure></div> ' +
+      '<div class="w-b stg">' + rail + ' <div class="stg-body">' + s.list.map(function (st, i) {
         return '<div class="stage" id="stage-' + (i + 1) + '" data-i="' + i + '">' +
-          '<p class="label stage-no">' + pad2(i + 1) + ' / ' + pad2(s.list.length) + '</p>' +
-          '<h3 class="stage-h" data-lens="text">' + esc(st.name) + '</h3>' +
+          '<p class="label stage-no">' + pad2(i + 1) + ' / ' + pad2(s.list.length) + '</p> ' +
+          '<h3 class="stage-h" data-lens="text">' + esc(st.name) + '</h3> ' +
           '<p class="stage-p">' + esc(st.text) + '</p>' +
-          (st.figs ? figs(st.figs, ring + ' · ' + st.name.toUpperCase()) : '') + (st.seq ? seq(st.seq) : '') +
+          (st.figs ? ' ' + figs(st.figs, ring + ' · ' + st.name.toUpperCase()) : '') + (st.seq ? ' ' + seq(st.seq) : '') +
         '</div>';
-      }).join('') + '</div></div>';
+      }).join(' ') + '</div></div>';
   }
   function list(items) {
-    return '<div class="w-b"><ul class="w-list">' + items.map(function (t) { return '<li><i class="li-stop" aria-hidden="true"><i class="lit"></i></i><span>' + esc(t) + '</span></li>'; }).join('') + '</ul></div>';
+    return '<div class="w-b"><ul class="w-list">' + items.map(function (t) { return '<li><i class="li-stop" aria-hidden="true"><i class="lit"></i></i><span>' + esc(t) + '</span></li>'; }).join(' ') + '</ul></div>';
   }
   function ia(b) {
-    return '<div class="w-b w-ia"><p class="w-note">' + esc(b.note) + '</p>' +
-      '<figure class="pf pf--ia" data-kind="board">' + WORK.plate(b.fig.m, { alt: b.fig.alt, lens: 'INFORMATION ARCHITECTURE · ' }) + '</figure>' +
-      '<div class="w-ia-p">' + b.p.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div></div>';
+    return '<div class="w-b w-ia"><p class="w-note">' + esc(b.note) + '</p> ' +
+      '<figure class="pf pf--ia" data-kind="board">' + WORK.plate(b.fig.m, { alt: b.fig.alt, lens: 'INFORMATION ARCHITECTURE · ' }) + '</figure> ' +
+      '<div class="w-ia-p">' + b.p.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join(' ') + '</div></div>';
   }
   function block(b, sec, slug) {
     if (b.lead) return '<div class="w-b"><p class="w-lead" data-lens="text">' + words(b.lead, 12) + '</p></div>';
-    if (b.p) return '<div class="w-b"><div class="w-p' + (b.cols ? ' w-p--' + b.cols : '') + '">' + b.p.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div></div>';
+    if (b.p) return '<div class="w-b"><div class="w-p' + (b.cols ? ' w-p--' + b.cols : '') + '">' + b.p.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join(' ') + '</div></div>';
     if (b.list) return list(b.list);
     if (b.note) return '<div class="w-b"><p class="w-note">' + esc(b.note) + '</p></div>';
     if (b.quote) return '<div class="w-b w-b--full"><blockquote class="w-quote"><p class="w-qt" data-lens="text">' + words(b.quote, 12) + '</p></blockquote></div>';
@@ -888,8 +972,8 @@
   }
   function story(p, c, key) {
     var s = WORK.sections[p.slug][key];
-    return open(key, c, s.name, 'w-story w-story--' + key) + head(key, c, s.name, s.h2 || s.name, s.size) +
-      s.blocks.map(function (b) { return block(b, s, p.slug); }).join('') + '</section>';
+    return open(key, c, s.name, 'w-story w-story--' + key) + head(key, c, s.name, s.h2 || s.name, s.size) + ' ' +
+      s.blocks.map(function (b) { return block(b, s, p.slug); }).join(' ') + '</section>';
   }
 
   /* ── the eye-candy gallery: the one real render's screen, flat and whole, then details of it ─────────────────
@@ -974,7 +1058,7 @@
       });
       WORK.count = keys.length;
       WORK.stops = [1.4].concat(keys.map(function (k, i) { return i + 2; }), [keys.length + 2, keys.length + 3]);
-      html = hero(p) + parts.join('') + next(p, { f: keys.length + 2 });
+      html = hero(p) + ' ' + parts.join(' ') + ' ' + next(p, { f: keys.length + 2 });   /* 2026-10-22 (audit): spaces between the sections, so plain text never glues */
     }
     var s = document.currentScript, main = (s && s.parentNode) || document.getElementById('main');
     /* a deployed case page arrives prerendered (tools/build_site.py): keep its markup, set only the state */

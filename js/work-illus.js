@@ -118,8 +118,7 @@
       key = k;
       const res = FS.ring(svg, ring.toUpperCase() + ' · ', R, size, { track: .22, fit: 'fill', range: [size * .9, size * 1.12] });
       const s = res ? res.size : size, Rr = res ? res.R : R, box = 2 * (Rr + s + 4);
-      svg.style.width = svg.style.height = box + 'px';
-      svg.style.marginLeft = svg.style.marginTop = (-box / 2) + 'px';
+      svg.style.width = svg.style.height = box + 'px';   /* 2026-10-22 (audit): css/work-illus.css centres it (translate), no margins */
       $('.wl-hair--in', il).style.setProperty('--hr', (Rr - air).toFixed(1) + 'px');
       $('.wl-hair--out', il).style.setProperty('--hr', (Rr + .7 * s + air).toFixed(1) + 'px');
     }

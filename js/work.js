@@ -427,7 +427,6 @@
     FS.ring(svg, 'ME@WERNERSDESIGNS.COM · CONTACT ME · ', R, size);
     const box = 2 * (R + size + 4);
     svg.style.width = svg.style.height = box + 'px';
-    svg.style.marginLeft = svg.style.marginTop = (-box / 2) + 'px';
   }
   function footer() {
     const wrap = $('.disc-wrap'), disc = $('.disc');

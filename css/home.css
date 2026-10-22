@@ -64,25 +64,29 @@ html.portrait-focus .barrel{opacity:1!important}
    then the five schemes as five stops, this one lit. Clicking it reloads, which moves to the next scheme. */
 .hero{--eb-h:36px;--eb-gap:clamp(24px, 2.2vw, 32px);--h1-cap:.105}
 .hero-eyebrow{position:absolute;z-index:2;left:var(--margin);top:calc(var(--h1-top) + var(--h1-cap) * var(--h1-size) - var(--eb-gap) - var(--eb-h));
-  height:var(--eb-h);display:inline-flex;align-items:center;gap:16px;border-radius:var(--r-pill);
-  font:400 15px/1 var(--f-mono);letter-spacing:.02em;color:#F3F1F8b3;white-space:nowrap;transition:color var(--d-short) var(--ease-focus)}
-.eb-keys{display:inline-flex;gap:5px}
-.eb-key{width:var(--eb-h);height:var(--eb-h);font:400 14px/1 var(--f-mono);color:var(--moon);transition:transform 200ms var(--ease-glass)}
+  height:var(--eb-h);display:inline-flex;align-items:center;gap:16px;border-radius:var(--btn-r);
+  font:var(--btn-w) var(--btn-fs)/1 var(--btn-f);letter-spacing:.02em;color:var(--moon);white-space:nowrap}
+/* 2026-10-22 (audit): the button carries the control face (tier 3, text); its sentence keeps the Mono hint */
+.eb-text{font:400 var(--t-ui)/1 var(--f-mono);letter-spacing:.02em;color:#F3F1F8b3;transition:color var(--d-short) var(--ease-focus)}
+.eb-keys{display:inline-flex;gap:var(--s1)}
+.eb-key{width:var(--eb-h);height:var(--eb-h);font:400 var(--t-ui)/1 var(--f-mono);color:var(--moon);transition:transform 200ms var(--ease-glass)}
 .eb-key .k-mac{font:400 17px/1 -apple-system,"SF Pro Text",system-ui,sans-serif;transform:translateY(-.5px)}
 .eb-key .k-touch{width:15px;height:15px}
 html.kbd-pc .eb-mod{width:auto;padding:0 12px;border-radius:var(--r-pill)}
 html:not(.kbd-mac) .k-mac,html:not(.kbd-pc) .k-pc,html:not(.kbd-touch) .k-touch,html.kbd-touch .eb-r{display:none}
-.eb-dots{display:inline-flex;align-items:center;gap:7px;margin-left:4px}
+.eb-dots{display:inline-flex;align-items:center;gap:var(--s2);margin-left:var(--s1)}
 .eb-dots i{position:relative;width:7px;height:7px;border-radius:50%;background:var(--c);opacity:.34;transition:opacity var(--d-short) var(--ease-focus)}
 .eb-dots i.is-on{opacity:1;box-shadow:0 0 0 2.5px var(--night),0 0 0 3.5px color-mix(in srgb,var(--c) 75%,transparent),0 0 10px color-mix(in srgb,var(--c) 60%,transparent)}
 .eb-dots [data-s=violet]{--c:#7C6BFF}.eb-dots [data-s=ember]{--c:#FF6B2B}.eb-dots [data-s=cobalt]{--c:#3F6BFF}
 .eb-dots [data-s=sodium]{--c:#FFC933}.eb-dots [data-s=borealis]{--c:#2EE59D}
-@media (hover:hover){.hero-eyebrow:hover{color:var(--moon)}.hero-eyebrow:hover .eb-key::after{opacity:1}.hero-eyebrow:hover .eb-dots i{opacity:.7}.hero-eyebrow:hover .eb-dots i.is-on{opacity:1}}
+@media (hover:hover){.hero-eyebrow:hover .eb-text{color:var(--moon)}.hero-eyebrow:hover .eb-key::after{opacity:1}.hero-eyebrow:hover .eb-dots i{opacity:.7}.hero-eyebrow:hover .eb-dots i.is-on{opacity:1}}
 .hero-eyebrow.is-pressed .eb-key{transform:scale(.9)}
 .hero-eyebrow.is-pressed .eb-r{transition-delay:60ms}
 .hero-eyebrow:focus-visible{outline-offset:6px}
-@media (max-width:767px){.hero-eyebrow{gap:10px;font-size:13px}.eb-key{font-size:13px}.eb-key .k-touch{width:14px;height:14px}
-  .eb-dots{gap:6px;margin-left:2px}.eb-dots i{width:6px;height:6px}}
+.hero-eyebrow::after{content:"";position:absolute;left:0;right:0;top:50%;height:max(100%,44px);translate:0 -50%}   /* 2026-10-21 (audit): a 44px tap (drawn 30px on phones) */
+@media (max-width:767px){.hero-eyebrow{gap:var(--s2)}.eb-key .k-touch{width:14px;height:14px}
+  .eb-dots{gap:var(--s2);margin-left:var(--s1)}.eb-dots i{width:6px;height:6px}}
+@media (max-width:359px){.eb-dots{display:none}}   /* 2026-10-22 (audit): a 320px phone fits the keys and the sentence, the five stops step aside */
 /* See the work: the portrait ring's small sibling, bottom-right (HOME.seeGeom writes --see-x/-y, the centre in hero px,
    --see-d, the outer-hairline diameter, --see-core, the glass disc, and the two hairline radii). The ring text is
    FS.ring fit 'fill' with the portrait ring's tracking, spaces and colour. 2026-10-08 motion cut: it no longer spins
@@ -102,7 +106,7 @@ html:not(.kbd-mac) .k-mac,html:not(.kbd-pc) .k-pc,html:not(.kbd-touch) .k-touch,
 @media (hover:hover){.see:hover .b-light{--bl:50%}.see:hover .arr{color:var(--ink)}.see:hover .glass::after{opacity:1}}
 .see:focus-visible .b-light{--bl:50%}.see:focus-visible .arr{color:var(--ink)}
 .see:focus-visible .see-core{outline:2px solid var(--glacier);outline-offset:3px}
-.see:active .see-in,.see.is-pressed .see-in{transform:scale(.96)}
+.see:active .see-in,.see.is-pressed .see-in{transform:scale(var(--btn-press))}
 
 .hero-title{position:absolute;z-index:2;left:var(--margin);top:var(--h1-top);margin:0;white-space:nowrap;
   padding-right:.3em;                                  /* the mask covers the box only: room for the overhanging full stop */
@@ -143,7 +147,7 @@ html:not(.kbd-mac) .k-mac,html:not(.kbd-pc) .k-pc,html:not(.kbd-touch) .k-touch,
 .m-br{display:none}
 .manifesto .w{will-change:filter,opacity}
 .manifesto{margin-top:var(--s7);display:grid;gap:0}
-.m-line{font:500 var(--t-manifesto)/1.0 var(--f-display);letter-spacing:-.035em;color:var(--moon);white-space:nowrap;text-wrap:balance}
+.m-line{font:500 var(--t-section)/1.0 var(--f-display);letter-spacing:-.035em;color:var(--moon);white-space:nowrap;text-wrap:balance}
 .m-line .w{display:inline-block}
 .m-line+.m-line{margin-top:.02em}
 
@@ -154,31 +158,36 @@ html:not(.kbd-mac) .k-mac,html:not(.kbd-pc) .k-pc,html:not(.kbd-touch) .k-touch,
 .about{background:var(--night);padding-top:var(--s5);padding-bottom:0}
 .bio-card{--bio-py:clamp(112px, 12.5svh, 160px);--bio-px:clamp(48px, 5vw, 112px);
   position:relative;display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);min-height:max(100svh, 800px);background:var(--ice)}
+/* 2026-10-22 (audit): the fluid paddings land on the 4px grid (guarded: a custom property holding an unknown round() would
+   resolve the paddings to 0) */
+@supports (width:round(1px, 4px)){.bio-card{--bio-py:round(clamp(112px, 12.5svh, 160px), 4px);--bio-px:round(clamp(48px, 5vw, 112px), 4px)}}
 .bio-body{padding:var(--bio-py) var(--bio-px) var(--bio-py) var(--margin);display:flex;flex-direction:column;align-items:flex-start}
-.bio-h{font:600 clamp(56px, 6.2vw, 108px)/.98 var(--f-display);letter-spacing:-.035em;margin:clamp(32px, 3.3vw, 56px) 0 40px;max-width:11em;text-wrap:balance}
-.bio-text{font:400 clamp(20px, 1.75vw, 27px)/1.5 var(--f-sans);letter-spacing:-.005em;max-width:32em;margin-top:0;text-wrap:pretty;color:color-mix(in srgb, var(--ink) 90%, transparent)}
-.bio-stub{background:var(--ice-2);padding:var(--bio-py) var(--margin) var(--bio-py) var(--bio-px);display:flex;flex-direction:column;align-items:flex-start}
-.bio-top{display:flex;flex-direction:column;gap:clamp(28px, 2.6vw, 44px);margin-bottom:clamp(32px, 3vw, 56px)}
+.bio-h{font:600 var(--t-section)/.98 var(--f-display);letter-spacing:-.035em;margin:clamp(32px, 3.3vw, 56px) 0 40px;margin:round(clamp(32px, 3.3vw, 56px), 4px) 0 40px;max-width:11em;text-wrap:balance}
+.bio-text{font:400 var(--t-lead)/1.5 var(--f-sans);letter-spacing:-.005em;max-width:32em;margin-top:0;text-wrap:pretty;color:color-mix(in srgb, var(--ink) 90%, transparent)}
+.bio-stub{background:var(--ice-2);padding:var(--bio-py) var(--margin) var(--bio-py) calc(100% / 6 + (2 * var(--gutter) - var(--margin)) / 3);display:flex;flex-direction:column;align-items:flex-start}   /* 2026-10-22 (audit): the stub's copy on column 9 at every width (its 40% panel starts mid-column 8) */
+.bio-top{display:flex;flex-direction:column;gap:clamp(28px, 2.6vw, 44px);margin-bottom:clamp(32px, 3vw, 56px);
+  gap:round(clamp(28px, 2.6vw, 44px), 4px);margin-bottom:round(clamp(32px, 3vw, 56px), 4px)}
 /* the hero's circle, stopped down, with Werner in it (sky tuning: a hole through the ice) */
 .bio-eye{position:relative;display:block;width:clamp(168px, 15vw, 240px);height:clamp(168px, 15vw, 240px);border-radius:50%;overflow:hidden;flex:none;
   box-shadow:inset 0 3px 10px #0000008c,0 0 0 1px color-mix(in srgb, var(--ink) 12%, transparent);isolation:isolate}
 .bio-eye .lit{position:absolute;inset:0;border-radius:50%}
 .bio-eye img{position:absolute;left:-9%;top:-12%;width:118%;height:118%;max-width:none;object-fit:contain}
 .bio-eye .be-soft{opacity:0}                         /* 2026-10-08 motion cut: the eye no longer pulls focus, it rests sharp */
-.bio-now{font:400 clamp(28px, 2.3vw, 40px)/1.2 var(--f-sans);letter-spacing:-.015em;max-width:13em;text-wrap:balance}
+.bio-now{font:400 var(--t-title)/1.2 var(--f-sans);letter-spacing:-.015em;max-width:13em;text-wrap:balance}
 .bio-now strong{font-weight:700;letter-spacing:.01em}
-.bio-facts{margin:auto 0 clamp(32px, 3.3vw, 48px);width:100%;border-top:1px solid var(--line-ice)}
-.bio-facts>div{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s5);padding:clamp(16px, 1.3vw, 22px) 0;border-bottom:1px solid var(--line-ice)}
-.bio-facts dt{font:400 13px/1.3 var(--f-mono);letter-spacing:.02em;color:var(--haze-ink);white-space:nowrap}
-.bio-facts dd{margin:0;font:500 clamp(17px, 1.35vw, 22px)/1.3 var(--f-sans);letter-spacing:-.01em;text-align:right}
-/* the resume pill, one size up for a chapter this large */
-.pill--lg{height:60px;padding:0 7px 0 28px;gap:22px;font-size:17px}
-.pill--lg .chip{width:46px;height:46px}
-.pill--lg .chip .arr{width:19px;height:19px}
+.bio-facts{margin:auto 0 clamp(32px, 3.3vw, 48px);margin:auto 0 round(clamp(32px, 3.3vw, 48px), 4px);width:100%;border-top:1px solid var(--line-ice)}
+.bio-facts>div{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s5);padding:clamp(16px, 1.3vw, 22px) 0;padding:round(clamp(16px, 1.3vw, 22px), 4px) 0;border-bottom:1px solid var(--line-ice)}
+.bio-facts dt{font:400 var(--t-micro)/1.3 var(--f-mono);letter-spacing:.02em;color:var(--haze-ink);white-space:nowrap}
+.bio-facts dd{margin:0;font:500 var(--t-body)/1.3 var(--f-sans);letter-spacing:-.01em;text-align:right}
+/* the resume pill, one size up for a chapter this large. 2026-10-22 (audit): the lg stadium (56) on the control face,
+   its chip 44 at the concentric 6px inset */
+.pill--lg{height:var(--btn-h-lg);padding:0 6px 0 24px;gap:16px}
+.pill--lg .chip{width:44px;height:44px}
+.pill--lg .chip .arr{width:18px;height:18px}
 
 /* ── clients ──────────────────────────────────────────────────────── */
 .clients{background:var(--night);padding-top:var(--s9);padding-bottom:var(--s6)}
-.caption{font:500 var(--t-caption)/1.05 var(--f-display);letter-spacing:-.02em;margin-top:var(--s4)}
+.caption{font:500 var(--t-heading)/1.05 var(--f-display);letter-spacing:-.02em;margin-top:var(--s4)}
 .logo-band{position:relative;height:120px;margin-top:40px}
 .logo-band canvas{position:absolute;inset:0;width:100%;height:100%}
 .logo-band::before,.logo-band::after{content:"";position:absolute;top:0;bottom:0;width:96px;z-index:1;pointer-events:none}
@@ -191,14 +200,14 @@ html.is-static .logo-band::before,html.is-static .logo-band::after,html.is-reduc
 .work{--ground:var(--ice);background:var(--ice);padding-top:var(--s11);padding-bottom:var(--s9)}
 .work-head{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s6)}
 .work-head .h2{margin-top:var(--s4)}
-.work-tags{display:flex;flex-wrap:wrap;gap:var(--s2);justify-content:flex-end;margin-bottom:6px}
+.work-tags{display:flex;flex-wrap:wrap;gap:var(--s2);justify-content:flex-end;margin-bottom:var(--s2)}
 /* the filter reflows the grid (js/home.js places, js/motion.js choreographs): nothing in it may anchor the scroll */
 .work-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--gutter);margin-top:var(--s9);overflow-anchor:none}
 .wcol{display:flex;flex-direction:column;gap:var(--s7);container-type:inline-size;min-width:0}
 .wcol--offset{padding-top:var(--s9)}
 /* round 4 (Werner: "remove the indents on the cards"): the work cards drop the half-disc notch pair (the Companies
    cards too, since); the r28 corners, the dotted tear and the stop's run along it stay. A filtered-out card leaves the layout. */
-.work-card{--ty:calc(100cqw * 2 / 3);--tear-in:32px;--ground:var(--ice);-webkit-mask:none;mask:none;
+.work-card{--ty:calc(100cqw * 2 / 3);--tear-in:var(--inset);--ground:var(--ice);-webkit-mask:none;mask:none;
   background:var(--night-2);color:var(--moon)}
 .work-card[hidden]{display:none}
 .work-card[inert]{pointer-events:none}
@@ -230,10 +239,10 @@ html.is-static .logo-band::before,html.is-static .logo-band::after,html.is-reduc
 .work-card.is-hover .wc-halo{left:7%;top:8%;width:86%;height:84%;opacity:.8}
 .wc-soft{opacity:var(--soft,0)}
 .wc-sharp{opacity:calc(1 - var(--soft,0))}
-.wc-stub{position:relative;padding:28px 32px 32px;min-height:156px}
+.wc-stub{position:relative;padding:28px var(--inset) var(--inset);min-height:156px}
 .wc-label{font:400 var(--t-micro)/1.3 var(--f-mono);letter-spacing:.02em;color:var(--haze)}
 .wc-name{font:600 var(--t-ui)/1.2 var(--f-sans);margin-top:var(--s3);color:var(--moon)}
-.wc-title{font:600 var(--t-card)/1.12 var(--f-display);letter-spacing:-.015em;margin-top:var(--s2);max-width:19em;text-wrap:balance}
+.wc-title{font:600 var(--t-title)/1.12 var(--f-display);letter-spacing:-.015em;margin-top:var(--s2);max-width:19em;text-wrap:balance}
 .wc-btn{position:absolute;z-index:3;left:calc(100% - 60px - 28px);top:calc(var(--ty) - 28px);color:var(--moon)}
 .wc-btn .arr{width:20px;height:20px;vertical-align:0;transition:color 240ms var(--ease-focus)}
 .wc-btn::after{background:radial-gradient(circle at 50% 0%,color-mix(in srgb,var(--pearl) 20%,transparent),#0000 60%)}   /* a fixed sheen (2026-10-08 motion cut: no pointer-following) */
@@ -262,33 +271,35 @@ html.is-static .logo-band::before,html.is-static .logo-band::after,html.is-reduc
 }
 .svc-sub{transition:color 320ms var(--ease-focus)}
 .svc-h{font:inherit;position:relative;z-index:1}
-.svc-head{width:100%;height:176px;padding:0 var(--margin);display:grid;grid-template-columns:112px minmax(0,1fr) 300px 108px 48px;align-items:center;text-align:left;border-radius:0}
+.svc-head{width:100%;height:176px;padding:0 var(--margin);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center;text-align:left;border-radius:0}   /* 2026-10-22 (audit): square, not --btn-r: a radius clips the hit test, and a 999px one left the row's 88px ends dead */
 .svc-head:focus-visible{outline-offset:-6px;border-radius:12px}
-.svc-idx{font:400 13px/1 var(--f-mono);letter-spacing:.02em}
-.svc-title{font:500 clamp(32px,5.1vw,76px)/1.0 var(--f-display);letter-spacing:-.03em;white-space:nowrap}
+/* 2026-10-22 (audit): the rows on the page's 12 columns: the index on 1, the title from 2, the subtitle and the second
+   paragraph on 9 (the bio stub's and the footer's column), the toggle at the end of 12 */
+.svc-idx{grid-column:1;font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em}
+.svc-title{grid-column:2 / 9;font:500 var(--t-display)/1.0 var(--f-display);letter-spacing:-.03em;white-space:nowrap}
 .svc-title .to{margin-inline:.16em}
 .nw{white-space:nowrap}
-.svc-sub{font:400 18px/1.4 var(--f-sans);color:var(--haze)}
-.svc-toggle{grid-column:5}
-.svc-toggle i{position:absolute;left:50%;top:50%;width:14px;height:1.5px;margin:-.75px 0 0 -7px;background:currentColor;border-radius:1px;transition:transform 320ms var(--ease-focus)}
-.svc-toggle i:last-child{width:1.5px;height:14px;margin:-7px 0 0 -.75px}
+.svc-sub{grid-column:9 / 12;font:400 var(--t-body)/1.4 var(--f-sans);color:var(--haze)}
+.svc-toggle{grid-column:12;justify-self:end}
+.svc-toggle i{position:absolute;left:50%;top:50%;width:14px;height:1.5px;translate:-50% -50%;background:currentColor;border-radius:1px;transition:transform 320ms var(--ease-focus)}
+.svc-toggle i:last-child{width:1.5px;height:14px}
 .svc.is-open .svc-toggle i:last-child{transform:scaleY(0)}
 .svc-panel{position:relative;z-index:1;display:grid;grid-template-rows:0fr;transition:grid-template-rows 640ms var(--ease-focus)}
 .svc.is-open .svc-panel{grid-template-rows:1fr}
 .svc-panel-in{overflow:hidden;min-height:0;visibility:hidden;transition:visibility 0s 640ms}
 .svc.is-open .svc-panel-in{visibility:visible;transition:visibility 0s}
-.svc-body{display:grid;grid-template-columns:112px minmax(0,1fr) 456px;column-gap:0;padding:0 var(--margin) var(--s8);row-gap:var(--s6)}
+.svc-body{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);padding:0 var(--margin) var(--s8);row-gap:var(--s6)}
 .svc-body p{font:400 var(--t-body)/1.6 var(--f-sans);color:#F3F1F8d9;max-width:34em}
-.svc-body p:nth-child(1){grid-column:2;padding-right:var(--s9)}
-.svc-body p:nth-child(2){grid-column:3}
-.svc-tags{grid-column:2 / 4;display:flex;flex-wrap:wrap;gap:var(--s2)}
-.svc-tags .tag{height:36px;font-size:14px}
+.svc-body p:nth-child(1){grid-column:2 / 9;padding-right:var(--s9)}
+.svc-body p:nth-child(2){grid-column:9 / 13}
+.svc-tags{grid-column:2 / 13;display:flex;flex-wrap:wrap;gap:var(--s2)}
+.svc-tags .tag{height:36px}
 
 /* ── companies ─────────────────────────────────────────────────────── */
 .companies{--ground:var(--ice);background:var(--ice);padding-top:var(--s11);padding-bottom:var(--s11)}
 .co-head{max-width:960px;margin:0 auto;text-align:center;display:flex;flex-direction:column;align-items:center}
 .co-head .h2{margin-top:var(--s4);max-width:8.4em}
-.co-intro{max-width:640px;margin-top:var(--s6);color:var(--haze-ink)}
+.co-intro{max-width:640px;margin-top:var(--s6);color:var(--haze-ink);text-wrap:balance}   /* 2026-10-22 (audit): no lone word on its last line */
 .co-list{max-width:960px;margin:var(--s9) auto 0;display:flex;flex-direction:column;gap:var(--s4)}
 /* Werner: "remove the indents on the cards like you did for the other cards": no half-disc notch pair (the r28 corners
    and the dotted tear stay, as on the work cards). The stub holds the year over the sector tag, centred as a pair */
@@ -301,18 +312,18 @@ html.is-static .logo-band::before,html.is-static .logo-band::after,html.is-reduc
 .co-card>.co-punch{grid-column:4;grid-row:1 / -1}
 /* Werner: the tags take the scheme (⌘R): a tint of the accent, its ring, the text mixed down to ink (4.7–5.9:1 on the tint
    in all five schemes), and the stop lit like the punches, so it reads as a label, not an unselected filter */
-.co-tag{height:28px;padding:0 11px 0 10px;gap:7px;font-size:13px;background:color-mix(in srgb,var(--iris) 14%,var(--ice-2));
+.co-tag{height:28px;padding:0 var(--s3);gap:var(--s2);font-size:var(--t-micro);background:color-mix(in srgb,var(--iris) 14%,var(--ice-2));
   box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent-ice) 30%,transparent);color:color-mix(in srgb,var(--accent-ice) 60%,var(--ink))}
 .co-tag .t-stop{box-shadow:none}
 .co-tag .t-stop .lit{--bl:50%}
-.co-year{text-align:center;font:500 36px/1 var(--f-display);letter-spacing:-.02em;color:var(--ink)}
+.co-year{text-align:center;font:500 var(--t-title)/1 var(--f-display);letter-spacing:-.02em;color:var(--ink)}
 .co-body{padding-left:40px;min-width:0}
-.co-name{font:600 36px/1.05 var(--f-display);letter-spacing:-.025em}
-.co-desc{font:400 17px/1.4 var(--f-sans);color:var(--haze-ink);margin-top:6px}
-.co-out{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding-left:24px}
-.co-num{font:600 var(--t-stat)/.95 var(--f-display);letter-spacing:-.03em}
+.co-name{font:600 var(--t-title)/1.05 var(--f-display);letter-spacing:-.025em}
+.co-desc{font:400 var(--t-body)/1.4 var(--f-sans);color:var(--haze-ink);margin-top:var(--s2)}
+.co-out{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:var(--s2);padding-left:24px}
+.co-num{font:600 var(--t-display)/.95 var(--f-display);letter-spacing:-.03em}
 .co-lbl{font:400 var(--t-micro)/1.2 var(--f-mono);letter-spacing:.02em;color:var(--haze-ink)}
-.co-term{font:400 17px/1.4 var(--f-sans);color:var(--haze-ink)}
+.co-term{font:400 var(--t-body)/1.4 var(--f-sans);color:var(--haze-ink)}
 .co-punch{justify-self:center;width:var(--punch);height:var(--punch);border-radius:50%;clip-path:circle(var(--pr,50%) at 50% 50%);
   box-shadow:inset 0 1px 3px #0000008c,inset 0 0 0 1px #15111F33}
 .co-punch.is-unlit{background:var(--ice);box-shadow:inset 0 0 0 1px var(--line-ice);clip-path:none}
@@ -330,29 +341,43 @@ html.is-static .ft-sky,html.field-borrowed .ft-sky,html.field-still .ft-sky{disp
 .ft-item~.ft-item{display:none}
 .ft-main{flex:1;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center;padding-block:var(--s7)}
 .ft-copy{grid-column:1 / 7;display:flex;flex-direction:column;gap:var(--s7)}
-.ft-line{font:400 26px/1.35 var(--f-sans);letter-spacing:-.01em;max-width:520px}
+.ft-line{font:400 var(--t-lead)/1.35 var(--f-sans);letter-spacing:-.01em;max-width:520px;text-wrap:pretty}
 .ft-connect .label,.ft-kicker{color:#F3F1F8b3}
 /* the section kicker, clear of the header when the menu's "Contact" lands the footer at the top */
-.ft-kicker{margin:0 0 var(--s4)}
+.ft-kicker{display:block;margin:0 0 var(--s4)}   /* 2026-10-22 (audit): one text run: the case pages' number span no longer sets a second edge after a flex gap */
 .ft-pills{display:flex;gap:var(--s2);margin-top:var(--s4)}
 .ft-disc{grid-column:8 / 13;display:grid;place-items:center}
 .disc-wrap{position:relative;width:360px;height:360px}
-.disc-glow{position:absolute;left:50%;top:50%;width:280px;height:280px;margin:-140px 0 0 -140px;border-radius:50%;box-shadow:0 0 120px color-mix(in srgb,var(--iris) 40%,transparent);pointer-events:none}
+.disc-glow{position:absolute;left:50%;top:50%;width:280px;height:280px;translate:-50% -50%;border-radius:50%;box-shadow:0 0 120px color-mix(in srgb,var(--iris) 40%,transparent);pointer-events:none}
 .disc{position:absolute;inset:0;display:grid;place-items:center;border-radius:50%;clip-path:circle(var(--dr,140px) at 50% 50%)}
 html:not(.disc-js) .disc{transition:clip-path 520ms var(--ease-glass)}
 .disc-core{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 42% 38%,color-mix(in srgb,var(--pearl) 80%,transparent),#0000 55%)}
-.disc-label{position:relative;font:600 30px/1 var(--f-display);letter-spacing:-.02em;color:var(--ink)}
-.disc-ring{position:absolute;left:50%;top:50%;width:430px;height:430px;margin:-215px 0 0 -215px;color:var(--moon);pointer-events:none;
-  clip-path:circle(0 at 50% 50%);transition:clip-path 520ms var(--ease-focus)}   /* 2026-10-08 motion cut: no spin */
+.disc-label{position:relative;font:600 var(--t-title)/1 var(--f-display);letter-spacing:-.02em;color:var(--ink)}
+.disc-ring{position:absolute;left:50%;top:50%;width:430px;height:430px;translate:-50% -50%;color:var(--moon);pointer-events:none;
+  clip-path:circle(0 at 50% 50%);transition:clip-path 520ms var(--ease-focus)}   /* 2026-10-08 motion cut: no spin. 2026-10-22 (audit): centred by translate, so js sets only the box */
 @media (hover:hover){html:not(.disc-js) .disc-wrap:hover .disc{--dr:180px}html:not(.disc-js) .disc-wrap:hover .disc-ring{clip-path:circle(71% at 50% 50%)}}
 html:not(.disc-js) .disc:focus-visible{--dr:180px}
 .disc:focus-visible{outline:none}
 .disc-wrap.is-open .disc-ring,.disc-wrap:focus-within .disc-ring{clip-path:circle(71% at 50% 50%)}
 .ft-bottom{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center;border-top:1px solid var(--line-night);
   padding-top:var(--s5);padding-bottom:var(--s5);font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:#F3F1F8a6}
-.ft-bottom .fb-c{grid-column:1 / 5}.ft-bottom .fb-b{grid-column:8 / 10}
+.ft-bottom .fb-c{grid-column:1 / 5}.ft-bottom .fb-b{grid-column:9 / 11}   /* 2026-10-22 (audit): on column 9, with the bio stub and the services' right column */
 /* the page ends on its full stop: the brand's lit disc, as a sign-off */
 .ft-dot{grid-column:12;justify-self:end;display:block;width:13px;height:13px;border-radius:50%;box-shadow:0 0 6px color-mix(in srgb,var(--iris) 40%,transparent)}
+
+/* 2026-10-22 (audit): tablets and small laptops: the subtitle stacks under the title (beside it, the nowrap title ran
+   into it at 1024), the index keeps its 112px column */
+@media (min-width:768px) and (max-width:1279px){
+  .svc-head{height:auto;min-height:176px;padding-block:var(--s6);grid-template-columns:112px minmax(0,1fr) 48px;column-gap:0;row-gap:var(--s2)}
+  .svc-idx{grid-row:1 / 3}
+  .svc-title{grid-column:2;grid-row:1}
+  .svc-sub{grid-column:2;grid-row:2}
+  .svc-toggle{grid-column:3;grid-row:1 / 3}
+  .svc-body{grid-template-columns:112px minmax(0,1fr) minmax(0,1fr);column-gap:0}
+  .svc-body p:nth-child(1){grid-column:2;padding-right:var(--s5)}
+  .svc-body p:nth-child(2){grid-column:3}
+  .svc-tags{grid-column:2 / 4}
+}
 
 /* ── 390 ─────────────────────────────────────────────────────────────────── */
 @media (max-width:767px){
@@ -365,23 +390,21 @@ html:not(.disc-js) .disc:focus-visible{--dr:180px}
   .vision{padding-top:var(--s9);padding-bottom:var(--s7)}
   .m-br{display:inline}
   .manifesto{margin-top:var(--s5)}
-  .m-line{white-space:normal;font-size:40px;line-height:1.02}
+  .m-line{white-space:normal;line-height:1.02}
   .m-line+.m-line{margin-top:.18em}
 
   .about{padding-top:var(--s5)}
   /* stacked, still full-bleed: white then grey, the page margin as the side padding */
   .bio-card{display:flex;flex-direction:column;min-height:0}
   .bio-body{padding:var(--s9) var(--margin) var(--s8)}
-  .bio-h{font-size:40px;line-height:1;margin:var(--s5) 0 var(--s6)}
-  .bio-text{font-size:18px;line-height:1.55;margin-top:0}
+  .bio-h{line-height:1;margin:var(--s5) 0 var(--s6)}
+  .bio-text{line-height:1.55;margin-top:0}
   .bio-stub{padding:var(--s7) var(--margin) var(--s8)}
   .bio-top{flex-direction:row;align-items:center;gap:var(--s5);margin-bottom:var(--s7)}
   .bio-eye{width:104px;height:104px}
-  .bio-now{font-size:22px;line-height:1.25}
+  .bio-now{line-height:1.25}
   .bio-facts{margin:0 0 var(--s6)}
   .bio-facts>div{padding:16px 0}
-  .bio-facts dt{font-size:12px}
-  .bio-facts dd{font-size:17px}
 
   .clients{padding-top:var(--s8);padding-bottom:var(--s5)}
   .logo-band{height:64px;margin-top:28px}
@@ -390,61 +413,54 @@ html:not(.disc-js) .disc:focus-visible{--dr:180px}
   .work{padding-top:var(--s9);padding-bottom:var(--s9)}
   .work-head{flex-direction:column;align-items:flex-start;gap:var(--s5)}
   .work-tags{justify-content:flex-start;margin-bottom:0}
-  .work-tags .tag{height:36px;font-size:14px;padding:0 12px 0 11px;gap:8px}
+  .work-tags .tag{height:var(--btn-h-sm);padding:0 var(--s3);gap:8px}   /* 2026-10-22 (audit): the sm stadium, was 36 */
   .work-grid{grid-template-columns:minmax(0,1fr);row-gap:var(--s5);margin-top:var(--s7)}
   .wcol{gap:var(--s5)}
   .wcol--offset{padding-top:0}
   .wcol:not(:has(>.work-card:not([hidden]))){display:none}   /* a filter can empty a column: no stray row gap */
-  .work-card{--ty:calc(100cqw * .7486);--tear-in:20px;border-radius:var(--r-card-m)}
-  .wc-stub{min-height:0;padding:24px 20px 24px}
+  .work-card{--ty:calc(100cqw * .7486);border-radius:var(--r-card-m)}
+  .wc-stub{min-height:0;padding:24px var(--inset)}
   .wc-title{max-width:none;padding-right:0}
 
   .services{padding-top:var(--s9);padding-bottom:var(--s8)}
   .svc-list{margin-top:var(--s7)}
-  .svc-head{height:auto;min-height:112px;padding:20px var(--margin);grid-template-columns:44px minmax(0,1fr) 44px;column-gap:14px;row-gap:4px}
-  .svc-idx{width:44px;height:44px;font-size:11px;grid-row:1 / 3;align-self:center}
-  .svc-title{font-size:30px;white-space:normal;text-wrap:balance;grid-column:2;grid-row:1;line-height:1.02}
-  .svc-sub{grid-column:2;grid-row:2;font-size:15px}
+  .svc-head{height:auto;min-height:112px;padding:20px var(--margin);grid-template-columns:44px minmax(0,1fr) 44px;column-gap:var(--s3);row-gap:4px}
+  .svc-idx{width:44px;height:44px;grid-row:1 / 3;align-self:center}
+  .svc-title{font-size:var(--t-heading);white-space:normal;text-wrap:balance;grid-column:2;grid-row:1;line-height:1.02}   /* 2026-10-22 (audit): a step down, so the two-word titles keep one line at 390 */
+  .svc-sub{grid-column:2;grid-row:2}
   .svc-toggle{grid-column:3;grid-row:1 / 3;width:44px;height:44px;align-self:center}
-  .svc-body{grid-template-columns:minmax(0,1fr);padding:4px var(--margin) var(--s7) calc(var(--margin) + 58px);row-gap:var(--s4)}
-  .svc-body p:nth-child(1),.svc-body p:nth-child(2){grid-column:1;padding-right:0;font-size:16px}
+  .svc-body{grid-template-columns:minmax(0,1fr);padding:4px var(--margin) var(--s7) calc(var(--margin) + 56px);row-gap:var(--s4)}
+  .svc-body p:nth-child(1),.svc-body p:nth-child(2){grid-column:1;padding-right:0}
   .svc-tags{grid-column:1}
-  .svc-tags .tag{height:34px;font-size:13px;padding:0 12px 0 10px;gap:8px}
+  .svc-tags .tag{height:34px;padding:0 var(--s3);gap:8px}
 
   .companies{padding-top:var(--s9);padding-bottom:var(--s9)}
   .co-head .h2{max-width:none}
-  .co-intro{font-size:17px}
   .co-list{margin-top:var(--s7);gap:var(--s3)}
   /* the top row: the year, its sector tag, the punch */
   .co-card{--out-h:84px;height:auto;display:grid;grid-template-columns:auto auto minmax(0,1fr) 22px;grid-template-rows:auto auto var(--out-h);
-    padding:20px 20px 0;column-gap:10px;row-gap:10px;border-radius:var(--r-card-m)}
+    padding:var(--inset) var(--inset) 0;column-gap:var(--s2);row-gap:var(--s3);border-radius:var(--r-card-m)}
   .co-card .tear--v{display:none}
-  /* the perforation's first and last holes sit on the card padding (20px), as on the work cards: round fits whole holes */
-  .co-card::after{content:"";position:absolute;left:calc(20px + var(--hole) / 2 - var(--hole-pitch) / 2);right:calc(20px + var(--hole) / 2 - var(--hole-pitch) / 2);bottom:calc(var(--out-h) - var(--hole) / 2);height:var(--hole);opacity:.6;
+  /* the perforation's first and last holes sit on the card padding (--inset), as on the work cards: round fits whole holes */
+  .co-card::after{content:"";position:absolute;left:calc(var(--inset) + var(--hole) / 2 - var(--hole-pitch) / 2);right:calc(var(--inset) + var(--hole) / 2 - var(--hole-pitch) / 2);bottom:calc(var(--out-h) - var(--hole) / 2);height:var(--hole);opacity:.6;
     background:radial-gradient(circle calc(var(--hole) / 2),#15111F2e calc(var(--hole) / 2 - .5px),#0000 calc(var(--hole) / 2)) 0 50%/var(--hole-pitch) var(--hole) round no-repeat}
-  .co-card>.co-year{grid-column:1;grid-row:1;text-align:left;font:400 12px/1 var(--f-mono);letter-spacing:.02em;color:var(--haze-ink);align-self:center}
-  .co-card>.co-tag{grid-column:2;grid-row:1;align-self:center;justify-self:start;height:26px;font-size:12px;padding:0 10px 0 9px;gap:6px}
+  .co-card>.co-year{grid-column:1;grid-row:1;text-align:left;font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:var(--haze-ink);align-self:center}
+  .co-card>.co-tag{grid-column:2;grid-row:1;align-self:center;justify-self:start;height:26px;padding:0 var(--s2);gap:var(--s2)}
   .co-card>.co-punch{grid-column:4;grid-row:1;align-self:center}
-  .co-card>.co-body{grid-column:1 / -1;grid-row:2;padding:0 0 18px}
-  .co-name{font-size:28px}
-  .co-desc{font-size:16px}
+  .co-card>.co-body{grid-column:1 / -1;grid-row:2;padding:0 0 var(--s4)}
   .co-card>.co-out{grid-column:1 / -1;grid-row:3;flex-direction:row;align-items:baseline;justify-content:space-between;padding:0;align-self:center}
-  .co-num{font-size:40px}
-  .co-term{font-size:16px}
 
   .footer{min-height:0;padding-top:88px}
   .ft-band{height:124px}
   .ft-item{font-size:clamp(44px,15vw,72px)}
   .ft-main{display:flex;flex-direction:column;align-items:stretch;gap:var(--s8);padding-block:var(--s7) var(--s8)}
-  .ft-line{font-size:20px}
   .ft-disc{align-self:center}
   .disc-wrap{width:260px;height:260px}
   .disc{--dr:100px}
-  .disc-glow{width:200px;height:200px;margin:-100px 0 0 -100px;box-shadow:0 0 80px color-mix(in srgb,var(--iris) 40%,transparent)}
-  .disc-label{font-size:24px}
+  .disc-glow{width:200px;height:200px;box-shadow:0 0 80px color-mix(in srgb,var(--iris) 40%,transparent)}
   @media (hover:hover){html:not(.disc-js) .disc-wrap:hover .disc{--dr:130px}}
   html:not(.disc-js) .disc:focus-visible{--dr:130px}
-  .ft-bottom{grid-template-columns:minmax(0,1fr) auto;row-gap:14px;padding-bottom:var(--s6)}
+  .ft-bottom{grid-template-columns:minmax(0,1fr) auto;row-gap:var(--s4);padding-bottom:var(--s6)}
   .ft-bottom .fb-c{grid-column:1;grid-row:1}.ft-dot{grid-column:2;grid-row:1;width:12px;height:12px}
   .ft-bottom .fb-b{grid-column:1;grid-row:2}
   html.is-static .logo-band,html.is-reduced .logo-band{height:256px}

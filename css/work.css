@@ -24,7 +24,7 @@
 .pl-lt::before{background:radial-gradient(circle at var(--ax,30%) var(--ay,26%),var(--h1),#0000 60%);opacity:.92}
 .pl-lt::after{background:radial-gradient(circle at calc(100% - var(--ax,30%)) calc(100% - var(--ay,26%)),var(--h2),#0000 66%);mix-blend-mode:color;opacity:.8}
 .pl--fit{container-type:size}
-.pl--hug{padding:clamp(16px, 5%, 64px)}
+.pl--hug{padding:clamp(16px, 5%, 64px);padding:round(clamp(16px, 5%, 64px), 4px)}   /* 2026-10-22 (audit): fluid spacing lands on the 4px grid */
 /* 2026-10-08 motion cut: the key light no longer rises on hover (a plate does nothing when clicked) */
 
 /* a device: a zero box at the stage's centre; the render is placed from its fit (js/work-data.js WORK.fit): its content
@@ -64,20 +64,22 @@
 .pl--fit .scr{--sw:min(calc(var(--nw) * 1px), var(--sfw,80) * 1cqw, calc(var(--sfh,78) * 1cqh * var(--nw) / var(--nh)));
   position:absolute;left:50%;top:50%;width:calc(var(--sw) + 2 * var(--bz));transform:translate(-50%,-50%)}
 .pl--hug .scr{--bz:clamp(5px, .9vw, 12px)}
+/* 2026-10-22 (audit): the bezels step 8/12 (guarded: a custom property holding an unknown round() would zero the bezel) */
+@supports (width:round(1px, 4px)){.scr{--bz:round(clamp(6px, 1.1cqh, 12px), 4px)}.pl--hug .scr{--bz:round(clamp(5px, .9vw, 12px), 4px)}}
 /* a board: flat UI straight on the light (its own shadows), or on a night board where its type is set light on dark */
 .pl-bd{position:relative;z-index:1;display:block}
 .pl-bd img{display:block;width:100%;height:auto}
 /* round 7: a board kept near its own pixels (the Bandcamp player's 2× panels), centred on the light */
 .pl-bd--cap{width:min(100%, var(--cap));margin-inline:auto}
-.pl-bd--night{padding:clamp(10px, 2.4%, 36px);border-radius:clamp(12px, 1.4vw, 20px);background:var(--night-2);
+.pl-bd--night{padding:clamp(10px, 2.4%, 36px);padding:round(clamp(12px, 2.4%, 36px), 4px);border-radius:clamp(12px, 1.4vw, 20px);background:var(--night-2);
   box-shadow:0 40px 80px -36px #000000b3,inset 0 0 0 1px var(--line-night)}
 /* a wide board's pan (phones only, §15): elsewhere it is just the board's box */
 .pl-pan{position:relative;z-index:1;display:block}
 /* a night board needs less of the light round it: its own ground is already the frame (the inputs strip read small) */
-.pl--hug:has(>.pl-bd--night){padding:clamp(12px, 3.2%, 44px)}
+.pl--hug:has(>.pl-bd--night){padding:clamp(12px, 3.2%, 44px);padding:round(clamp(12px, 3.2%, 44px), 4px)}
 
 /* the back pill: the chip leads, its arrow points back */
-.pill--back{padding:0 18px 0 5px}
+.pill--back{padding:0 20px 0 5px}
 .arr--back{transform:scaleX(-1)}
 .pill--back .chip .arr{transition:color 240ms var(--ease-focus)}   /* 2026-10-08 motion cut: the chip lights, the arrow no longer nudges */
 
@@ -122,22 +124,25 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 .wh-stage .st-dev{--fw:1;--fh:1}
 .wh-stack{position:absolute;z-index:3;left:var(--margin);bottom:calc(var(--meta-h) + clamp(32px, 4.4svh, 48px));width:var(--stack-w,var(--col));
   display:flex;flex-direction:column;align-items:flex-start}
-.wh-back{margin-bottom:clamp(28px, 4.4svh, 48px)}
+.wh-back{margin-bottom:clamp(28px, 4.4svh, 48px);margin-bottom:round(clamp(28px, 4.4svh, 48px), 4px)}
 .wh-name{font:600 var(--t-ui)/1.2 var(--f-sans);margin-top:var(--s3);color:var(--moon)}
 .wh-title{margin-top:var(--s4);font:600 var(--wt,clamp(56px, 6.6vw, 120px))/.94 var(--f-display);letter-spacing:-.042em;color:var(--moon);
   text-wrap:balance;max-width:100%;padding-right:.16em}
 .wh-title .w{display:inline-block}
-.wh-tags{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:clamp(24px, 3.4svh, 36px)}
-.wh-tags .tag{height:36px;font-size:14px;padding:0 14px 0 12px;gap:9px}
-/* the meta strip: four cells (five with the live site's Link), mono terms over Sans values, hairlines between */
-.wh-meta{position:absolute;z-index:3;left:var(--margin);right:var(--margin);bottom:0;margin:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+.wh-tags{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:clamp(24px, 3.4svh, 36px);margin-top:round(clamp(24px, 3.4svh, 36px), 4px)}
+.wh-tags .tag{height:36px;padding:0 var(--s3);gap:var(--s2)}
+@media (min-width:1600px){.wh-tags{margin-right:calc(-1 * var(--gutter))}}   /* 2026-10-22 (audit check): five tags keep one row at 1920 (the row may reach into the gap) */
+/* the meta strip: four cells (five with the live site's Link), mono terms over Sans values, hairlines between.
+   2026-10-22 (audit): on the page's 12 columns, so each value starts a column (4 cells: 1, 4, 7, 10; 3: 1, 5, 9; 5: 1, 4, 7,
+   9, 11); the hairline stands in the gutter, 24px before the text, as it did */
+.wh-meta{position:absolute;z-index:3;left:var(--margin);right:var(--margin);bottom:0;margin:0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);
   border-top:1px solid var(--line)}
-.wh-meta--5{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,.9fr)}
-.wh-meta--3{grid-template-columns:repeat(3,minmax(0,1fr))}   /* round 7: Bandcamp has no Team: three across, never a lone Year */
-.wm{padding:20px 24px 28px;border-left:1px solid var(--line);min-width:0}
-.wm:first-child{border-left:0;padding-left:0}
+.wh-meta--5 .wm:nth-child(n+3){grid-column:span 2}
+.wh-meta--3 .wm{grid-column:span 4}   /* round 7: Bandcamp has no Team: three across, never a lone Year */
+.wm{position:relative;grid-column:span 3;padding:20px var(--gutter) 28px 0;min-width:0}
+.wm+.wm::before{content:"";position:absolute;top:0;bottom:0;left:calc(-1 * var(--gutter));width:1px;background:var(--line)}
 .wm dt{font:400 var(--t-micro)/1.3 var(--f-mono);letter-spacing:.02em;color:var(--fg-dim)}
-.wm dd{margin:8px 0 0;font:500 clamp(15px, 1.2vw, 18px)/1.35 var(--f-sans);letter-spacing:-.005em;color:var(--moon);text-wrap:balance}
+.wm dd{margin:8px 0 0;font:500 var(--t-body)/1.35 var(--f-sans);letter-spacing:-.005em;color:var(--moon);text-wrap:balance}
 .wm dd a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.22em;text-decoration-color:var(--fg-dim);border-radius:4px;
   transition:text-decoration-color 240ms var(--ease-focus)}
 @media (hover:hover){.wm dd a:hover{text-decoration-color:var(--moon)}}
@@ -154,7 +159,7 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 .w-sec.on-ice{background:var(--ice);--ground:var(--ice)}
 .w-head .h2{margin-top:var(--s4)}
 /* a heading that is a sentence (Affinidi's system): a statement size, not the section size */
-.h2--statement{font-size:clamp(40px, 5vw, 84px);line-height:.98;letter-spacing:-.036em;max-width:15em}
+.h2--statement{font-size:var(--t-display);line-height:.98;letter-spacing:-.036em;max-width:15em}
 /* the blocks: text in the editorial column (5–12 of 12, like What I did), media on the whole grid */
 .w-b{padding-inline:var(--margin);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);margin-top:var(--s8)}
 .w-b>*{grid-column:1 / 9;min-width:0}   /* 2026-10-09 (Werner): story blocks start on their title's edge; same 8-column measure as before (was 5 / 13) */
@@ -162,8 +167,9 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 .w-head+.w-b{margin-top:var(--s9)}
 
 /* ── 5 · brief: one statement, focus-revealed word by word as it passes the reading line (js/work.js) ── */
-.w-brief{padding-top:clamp(112px, 15svh, 176px);padding-bottom:clamp(128px, 17svh, 200px)}
-.w-statement{margin-top:var(--s7);font:500 clamp(32px, 4.2vw, 68px)/1.08 var(--f-display);letter-spacing:-.032em;color:var(--moon);max-width:20em;text-wrap:pretty}
+.w-brief{padding-top:clamp(112px, 15svh, 176px);padding-bottom:clamp(128px, 17svh, 200px);
+  padding-top:round(clamp(112px, 15svh, 176px), 4px);padding-bottom:round(clamp(128px, 17svh, 200px), 4px)}
+.w-statement{margin-top:var(--s7);font:500 var(--t-display)/1.08 var(--f-display);letter-spacing:-.032em;color:var(--moon);max-width:20em;text-wrap:pretty}
 .w-statement .w,.w-qt .w,.w-lead .w,.ph-lead .w{display:inline-block}
 .w-statement .stop,.w-qt .stop{--sk:1.3}
 .w-statement .stop::before,.w-outcome .stop::before,.w-qt .stop::before{transition:clip-path 180ms var(--ease-glass);box-shadow:0 0 .3em color-mix(in srgb,var(--iris) 45.1%,transparent),0 0 .08em color-mix(in srgb,var(--pearl) 40%,transparent)}
@@ -171,7 +177,8 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 
 /* ── 6 · what I did: two columns under the head, offset like an editorial spread ── */
 .what-cols{margin-top:var(--s9);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter)}
-.what-cols p,.w-p p,.ph-col p,.w-ia-p p{font:400 clamp(18px, 1.5vw, 22px)/1.55 var(--f-sans);letter-spacing:-.005em;color:color-mix(in srgb,var(--fg) 88%,transparent);text-wrap:pretty}
+.what-cols p,.w-p p,.ph-col p,.w-ia-p p{font:400 var(--t-lead)/1.55 var(--f-sans);letter-spacing:-.005em;color:color-mix(in srgb,var(--fg) 88%,transparent);text-wrap:pretty}
+@media (max-width:1279px){.what-cols p,.w-p--2 p{font-size:var(--t-body)}}   /* 2026-10-22 (audit check): two columns under 1280 keep a readable line at the body step */
 .what-cols p:nth-child(1){grid-column:1 / 5}
 .what-cols p:nth-child(2){grid-column:5 / 9}
 .w-p--2{columns:2;column-gap:var(--gutter)}
@@ -180,23 +187,23 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 
 /* ── 7 · the live blocks ─────────────────────────────────────────────────────────────────────────────────────── */
 /* a lead: a statement in Display 500, its full stop lit */
-.w-lead{font:500 clamp(28px, 3vw, 46px)/1.14 var(--f-display);letter-spacing:-.026em;color:var(--fg);max-width:22em;text-wrap:pretty}
+.w-lead{font:500 var(--t-heading)/1.14 var(--f-display);letter-spacing:-.026em;color:var(--fg);max-width:22em;text-wrap:pretty}
 .w-lead .stop::before{box-shadow:0 0 .2em color-mix(in srgb,var(--iris) 34.9%,transparent)}
 .on-ice .w-lead .stop::before{box-shadow:inset 0 .06em .12em #0000008c,inset 0 0 0 1px #15111F33}
 /* a lead-in line: Sans, dimmed, before what it introduces */
-.w-note{font:400 clamp(17px, 1.3vw, 20px)/1.5 var(--f-sans);color:var(--fg-dim)}
+.w-note{font:400 var(--t-body)/1.5 var(--f-sans);color:var(--fg-dim)}
 /* lit-stop bullets: each point a row between hairlines, its bullet the site's stop, lit (2026-10-08 motion cut: no longer
    in turn as the list enters) */
 .w-b .w-list{margin-top:calc(var(--s5) - var(--s8))}
 .w-list{border-top:1px solid var(--line)}
-.w-list li{display:flex;align-items:baseline;gap:20px;padding:22px 0 23px;border-bottom:1px solid var(--line);
-  font:500 clamp(20px, 1.8vw, 28px)/1.3 var(--f-sans);letter-spacing:-.012em;color:var(--fg);text-wrap:pretty}
+.w-list li{display:flex;align-items:baseline;gap:20px;padding:var(--s5) 0;border-bottom:1px solid var(--line);
+  font:500 var(--t-lead)/1.3 var(--f-sans);letter-spacing:-.012em;color:var(--fg);text-wrap:pretty}
 .li-stop{position:relative;flex:none;width:.36em;height:.36em;border-radius:50%;box-shadow:inset 0 0 0 1px var(--fg-dim);transform:translateY(-.02em)}
 .li-stop .lit{position:absolute;inset:0;border-radius:50%;clip-path:circle(var(--bl,50%) at 50% 50%)}
 .on-night .li-stop .lit{box-shadow:0 0 .3em color-mix(in srgb,var(--iris) 40%,transparent)}
 /* a quote (the solution statement) and heycar's aim: the manifesto's size, its stop lit */
 .w-b--full>.w-quote{grid-column:1 / 12}
-.w-qt{font:600 clamp(36px, 5vw, 76px)/.98 var(--f-display);letter-spacing:-.042em;color:var(--fg);max-width:15em;text-wrap:balance}
+.w-qt{font:600 var(--t-display)/.98 var(--f-display);letter-spacing:-.042em;color:var(--fg);max-width:15em;text-wrap:balance}
 .w-note+.w-b--full,.w-b+.w-b--full:has(.w-quote){margin-top:var(--s7)}
 .w-b:has(.w-list)+.w-b--full:has(.w-quote){margin-top:var(--s10)}
 /* figures: plates in the 12-column grid, their mono labels under them */
@@ -213,18 +220,18 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 .stp{position:relative;min-width:0}
 .stp:not(:last-child)::before{content:"";position:absolute;left:calc(var(--btn-l) + 14px);top:calc(var(--btn-l) / 2);width:calc(100% + var(--gutter) - var(--btn-l) - 28px);height:1px;
   background:var(--line)}
-.stp-idx,.dec-idx{font:400 13px/1 var(--f-mono);letter-spacing:.02em}
+.stp-idx,.dec-idx{font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em}
 .stp-idx .b-light{--bl:50%}
 .stp-idx>span{color:var(--ink)}
-.stp-h{margin-top:var(--s6);font:500 clamp(28px, 2.6vw, 42px)/1.04 var(--f-display);letter-spacing:-.03em;color:var(--fg)}
-.stp-p{margin-top:var(--s4);font:400 clamp(16px, 1.2vw, 18px)/1.6 var(--f-sans);color:color-mix(in srgb,var(--fg) 82%,transparent);max-width:24em;text-wrap:pretty}
+.stp-h{margin-top:var(--s6);font:500 var(--t-title)/1.04 var(--f-display);letter-spacing:-.03em;color:var(--fg)}
+.stp-p{margin-top:var(--s4);font:400 var(--t-body)/1.6 var(--f-sans);color:color-mix(in srgb,var(--fg) 82%,transparent);max-width:24em;text-wrap:pretty}
 /* the photo band: full bleed, full colour; its lead on a night veil over the photo's foot; the columns beside it */
 .ph{margin-top:var(--s9)}
 .ph-band{position:relative;height:min(88svh, 64vw);min-height:420px;overflow:hidden;background:var(--night-2)}
 .ph-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
 .ph-veil{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(0deg,color-mix(in srgb,var(--night) 86%,transparent),color-mix(in srgb,var(--night) 58%,transparent) 30%,#0000 64%)}
-.ph-lead{position:absolute;left:0;right:0;bottom:clamp(40px, 7svh, 80px);z-index:1;font:500 clamp(28px, 3.2vw, 52px)/1.1 var(--f-display);letter-spacing:-.028em;
+.ph-lead{position:absolute;left:0;right:0;bottom:clamp(40px, 7svh, 80px);z-index:1;font:500 var(--t-heading)/1.1 var(--f-display);letter-spacing:-.028em;
   color:var(--moon);max-width:min(24em, 100%);text-wrap:pretty}
 .ph-cols{margin-top:var(--s9)}
 .ph-cols>.ph-col:nth-child(1){grid-column:1 / 5}
@@ -238,10 +245,10 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 /* the stepped sequence: a stack of its steps (phones, static, reduced: js/work.js turns it into a stage) */
 .seq{margin-top:var(--s7)}
 .seq-list{display:flex;flex-direction:column;gap:var(--s7)}
-.seq-cap{display:flex;gap:14px}
+.seq-cap{display:flex;gap:var(--s4)}
 .seq-tab{color:var(--fg)}
 .seq-bar{display:none}
-.seq-dot{position:relative;width:12px;height:12px;border-radius:50%;padding:0;box-shadow:inset 0 0 0 1px var(--fg-dim);flex:none}
+.seq-dot{position:relative;width:12px;height:12px;padding:0;box-shadow:inset 0 0 0 1px var(--fg-dim);flex:none}
 .seq-dot::after{content:"";position:absolute;inset:-8px;border-radius:50%}
 .seq-dot .lit{position:absolute;inset:0;border-radius:50%;clip-path:circle(0% at 50% 50%);transition:clip-path 420ms var(--ease-glass)}
 .seq-dot.is-on .lit{clip-path:circle(50% at 50% 50%)}
@@ -254,8 +261,8 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 /* 2026-10-09 (Werner): index, title and line sit together, centred beside the image (they were spread over its height) */
 .feat-it>.pl{grid-column:1 / 9;grid-row:1 / 6}
 .feat-no{grid-column:9 / 13;grid-row:2}
-.feat-h{grid-column:9 / 13;grid-row:3;margin-top:var(--s4);font:500 clamp(26px, 2.4vw, 38px)/1.06 var(--f-display);letter-spacing:-.028em;color:var(--fg);text-wrap:balance}
-.feat-p{grid-column:9 / 13;grid-row:4;margin-top:var(--s4);font:400 clamp(16px, 1.2vw, 19px)/1.55 var(--f-sans);color:color-mix(in srgb,var(--fg) 84%,transparent);text-wrap:pretty}
+.feat-h{grid-column:9 / 13;grid-row:3;margin-top:var(--s4);font:500 var(--t-title)/1.06 var(--f-display);letter-spacing:-.028em;color:var(--fg);text-wrap:balance}
+.feat-p{grid-column:9 / 13;grid-row:4;margin-top:var(--s4);font:400 var(--t-body)/1.55 var(--f-sans);color:color-mix(in srgb,var(--fg) 84%,transparent);text-wrap:pretty}
 
 /* the index and stat discs on ice light with the lit aurora, the light their ink numbers are set on (the ice's own
    sky sample, --aurora-sky, is the night's dusk: ink on it was unreadable, in GoodWorker's ice Process and Outcome) */
@@ -273,30 +280,30 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
    under the header, naming the stage in view. */
 .stg-guide{row-gap:var(--s4);margin-top:var(--s10)}
 .stg-guide>.stg-gl{grid-column:4 / 13}
-.stg-guide>.stg-gp{grid-column:4 / 11;font:400 clamp(18px, 1.5vw, 22px)/1.55 var(--f-sans);color:color-mix(in srgb,var(--fg) 88%,transparent);text-wrap:pretty}
+.stg-guide>.stg-gp{grid-column:4 / 11;font:400 var(--t-lead)/1.55 var(--f-sans);color:color-mix(in srgb,var(--fg) 88%,transparent);text-wrap:pretty}
 .stg-guide>.pf--guide{grid-column:1 / -1;margin-top:var(--s6)}
-.pf--guide .pl--hug{padding:clamp(20px, 6%, 112px) clamp(20px, 12%, 240px)}
+.pf--guide .pl--hug{padding:clamp(20px, 6%, 112px) clamp(20px, 12%, 240px);padding:round(clamp(20px, 6%, 112px), 4px) round(clamp(20px, 12%, 240px), 4px)}
 .stg{margin-top:var(--s11);align-items:start}
 /* the rail's column is placed with more weight than the tablet .w-b>* rule (r6 review: 1024–1099 stacked the rail on the copy) */
 .stg-rail{position:sticky;top:calc(var(--header-h) + 56px);z-index:2}
 .w-b.stg>.stg-rail{grid-column:1 / 4}
-.stg-rail ol{display:flex;flex-direction:column;gap:14px}
-.stg-a{display:flex;align-items:center;gap:14px;border-radius:var(--r-pill);color:var(--fg-dim);font:500 16px/1.2 var(--f-sans);letter-spacing:-.005em;
-  transition:color 320ms var(--ease-focus)}
+.stg-rail ol{display:flex;flex-direction:column;gap:var(--s4)}
+.stg-a{display:grid;grid-template-columns:40px auto;align-items:center;gap:var(--s4);border-radius:var(--btn-r);color:var(--fg-dim);font:var(--btn-w) var(--btn-fs)/1.2 var(--btn-f);letter-spacing:var(--btn-ls);
+  transition:color 320ms var(--ease-focus)}   /* 2026-10-22 (audit): a tier 3 control, on the control tokens; each disc centred in a 40px slot */
 .stg-a.is-on{color:var(--fg)}
-.stg-d{position:relative;display:block;flex:none;width:var(--d);height:var(--d);margin-inline:calc((42px - var(--d)) / 2);border-radius:50%;box-shadow:inset 0 0 0 1px var(--fg-dim)}
+.stg-d{position:relative;display:block;flex:none;width:var(--d);height:var(--d);justify-self:center;border-radius:50%;box-shadow:inset 0 0 0 1px var(--fg-dim)}
 .stg-d .lit{position:absolute;inset:0;border-radius:50%;clip-path:circle(0% at 50% 50%);transition:clip-path 560ms var(--ease-glass)}
 .stg-a.is-on .stg-d .lit{clip-path:circle(50% at 50% 50%)}
 .stg-at{display:none}
 .w-b.stg>.stg-body{grid-column:4 / 13}
 .stage{scroll-margin-top:calc(var(--header-h) + 24px)}
 .stage+.stage{margin-top:var(--s11)}
-.stage-h{margin-top:var(--s3);font:500 clamp(36px, 4vw, 64px)/1 var(--f-display);letter-spacing:-.034em;color:var(--fg)}
-.stage-p{margin-top:var(--s5);font:400 clamp(18px, 1.5vw, 22px)/1.55 var(--f-sans);color:color-mix(in srgb,var(--fg) 88%,transparent);max-width:34em;text-wrap:pretty}
+.stage-h{margin-top:var(--s3);font:500 var(--t-display)/1 var(--f-display);letter-spacing:-.034em;color:var(--fg)}
+.stage-p{margin-top:var(--s5);font:400 var(--t-lead)/1.55 var(--f-sans);color:color-mix(in srgb,var(--fg) 88%,transparent);max-width:34em;text-wrap:pretty}
 .stage .pf-grid,.stage .seq{margin-top:var(--s7)}
 
 /* ── 9 · key decisions: rows, the media on alternating sides ─────────── */
-.dec-list{margin-top:var(--s10);display:flex;flex-direction:column;gap:clamp(112px, 11vw, 176px)}
+.dec-list{margin-top:var(--s10);display:flex;flex-direction:column;gap:clamp(112px, 11vw, 176px);gap:round(clamp(112px, 11vw, 176px), 4px)}
 .dec{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center}
 .dec-text,.dec-fig,.dec-illus{grid-row:1}
 .dec[data-side=right] .dec-text{grid-column:1 / 6}
@@ -306,12 +313,12 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 /* the index: the services' glass disc, lit (2026-10-08 motion cut: no longer only while its row is in view) */
 .dec-idx .b-light{--bl:50%}
 .dec-idx>span{color:var(--ink)}
-.dec-h{margin-top:var(--s6);font:500 clamp(32px, 3.4vw, 52px)/1.04 var(--f-display);letter-spacing:-.03em;color:var(--fg);max-width:12em;text-wrap:balance}
-.dec-body{margin-top:var(--s5);font:400 clamp(17px, 1.3vw, 20px)/1.6 var(--f-sans);color:color-mix(in srgb,var(--fg) 82%,transparent);max-width:30em;text-wrap:pretty}
+.dec-h{margin-top:var(--s6);font:500 var(--t-heading)/1.04 var(--f-display);letter-spacing:-.03em;color:var(--fg);max-width:12em;text-wrap:balance}
+.dec-body{margin-top:var(--s5);font:400 var(--t-body)/1.6 var(--f-sans);color:color-mix(in srgb,var(--fg) 82%,transparent);max-width:30em;text-wrap:pretty}
 /* the media card: a 4:3 plate, the light filled edge to edge; a device fitted in it, a framed screen, or a detail */
 .dm{aspect-ratio:4/3;--fw:.84;--fh:.84}
 .dm[data-kind=screen]{--sfh:62;--sfw:84}
-.dec-cap{margin-top:var(--s4);font:400 12px/1.4 var(--f-mono);letter-spacing:.02em;color:var(--fg-dim);text-wrap:balance}
+.dec-cap{margin-top:var(--s4);font:400 var(--t-micro)/1.4 var(--f-mono);letter-spacing:.02em;color:var(--fg-dim);text-wrap:balance}
 /* the illustration slot (js/work-illus.js): the card's box, 4:3, night-2 (the circle diagrams stay, on either tone),
    and until it is filled an unlit aperture ring */
 .dec-illus{position:relative;aspect-ratio:4/3;border-radius:var(--r-card);overflow:hidden;background:var(--night-2);container-type:size;color:var(--moon)}
@@ -319,7 +326,7 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
   box-shadow:inset 0 0 0 1px var(--line-night)}
 
 /* ── 10 · final designs: large plates, the loupe on hover, then what each design is ─────────── */
-.fd-list{margin-top:var(--s9);display:flex;flex-direction:column;gap:clamp(96px, 9vw, 144px)}
+.fd-list{margin-top:var(--s9);display:flex;flex-direction:column;gap:clamp(96px, 9vw, 144px);gap:round(clamp(96px, 9vw, 144px), 4px)}
 .fdc{aspect-ratio:16/9;max-height:82svh;width:100%;--fw:.84;--fh:.84;--sfw:78;--sfh:78}
 .fd[data-kind=screen] .fdc{aspect-ratio:16/10;max-height:90svh;--sfw:88;--sfh:88}   /* r6 review: the payoff is the largest screen on the page */
 /* a device render cut at its own edge (heycar's calculator: the laptop's base runs off the image) bleeds off the plate */
@@ -328,15 +335,15 @@ html.is-static .w-sky,html.is-reduced .w-sky,html.field-borrowed .w-sky,html.her
 .fd-cap .label{grid-column:1 / 4}
 .fd-main{grid-column:4 / 11;display:flex;flex-direction:column;gap:var(--s3)}
 .fd-cap .fd-main:first-child{grid-column:1 / 10}
-.fd-title{font:500 clamp(28px, 2.8vw, 44px)/1.04 var(--f-display);letter-spacing:-.03em;color:var(--fg);text-wrap:balance}
-.fd-txt{font:500 clamp(18px, 1.6vw, 24px)/1.35 var(--f-sans);letter-spacing:-.01em;color:var(--fg);text-wrap:balance}
-.fd-title+.fd-txt{font-size:clamp(16px, 1.2vw, 19px);font-weight:500;color:var(--fg-dim)}
-.fd-p{font:400 clamp(16px, 1.25vw, 19px)/1.6 var(--f-sans);color:color-mix(in srgb,var(--fg) 84%,transparent);max-width:36em;text-wrap:pretty}
-.fd-note{font:400 12px/1.45 var(--f-mono);letter-spacing:.02em;color:var(--fg-dim);max-width:44em;text-wrap:balance}
+.fd-title{font:500 var(--t-heading)/1.04 var(--f-display);letter-spacing:-.03em;color:var(--fg);text-wrap:balance}
+.fd-txt{font:500 var(--t-lead)/1.35 var(--f-sans);letter-spacing:-.01em;color:var(--fg);text-wrap:balance}
+.fd-title+.fd-txt{font-size:var(--t-body);font-weight:500;color:var(--fg-dim)}
+.fd-p{font:400 var(--t-body)/1.6 var(--f-sans);color:color-mix(in srgb,var(--fg) 84%,transparent);max-width:36em;text-wrap:pretty}
+.fd-note{font:400 var(--t-micro)/1.45 var(--f-mono);letter-spacing:.02em;color:var(--fg-dim);max-width:44em;text-wrap:balance}
 h3.fd-title{margin:0}
 /* a group (heycar's financing calculator): its H3, the devices, the stepped sequence */
 .fd-group{display:flex;flex-direction:column}
-.fd-gh{font:600 clamp(40px, 5vw, 84px)/.96 var(--f-display);letter-spacing:-.038em;color:var(--fg)}
+.fd-gh{font:600 var(--t-display)/.96 var(--f-display);letter-spacing:-.038em;color:var(--fg)}
 .fd--lead{margin-top:var(--s7)}
 .fd-group .seq{margin-top:var(--s9)}
 
@@ -346,7 +353,7 @@ h3.fd-title{margin:0}
    heights and the fragments shrink more slowly than the columns (u ≥ the grid / 1000, up to 1px), so a narrow column
    shows less screen rather than smaller text. Each frame is a plate filled with the project's light; the fragment sits
    inset at its anchor (data-a: tl, tr, bl, br) and bleeds off the other two sides. */
-.gal-grid{margin-top:clamp(96px, 10vw, 160px);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);row-gap:var(--s8);
+.gal-grid{margin-top:clamp(96px, 10vw, 160px);margin-top:round(clamp(96px, 10vw, 160px), 4px);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);row-gap:var(--s8);
   align-items:start;container-type:inline-size}
 .gd{--u:max(calc(100cqw / 1344), min(1px, calc(100cqw / 1000)));--ix:var(--ixd,60);--iy:var(--iyd,60);min-width:0;margin-top:calc(var(--mt,0) * var(--u))}
 .gd[data-span=wide]{grid-column:span 8}
@@ -372,14 +379,16 @@ h3.fd-title{margin:0}
 /* lit, the numbers in ink on the light (2026-10-08 motion cut: the light no longer opens from each disc's centre as
    the row comes into view, nor do the numbers count up) */
 .st-disc .b-light{--bl:50%}
-.st-n{font:600 clamp(64px, 6.6vw, 104px)/1 var(--f-display);letter-spacing:-.045em;color:var(--ink);font-variant-numeric:tabular-nums}
+.st-n{font:600 var(--t-section)/1 var(--f-display);letter-spacing:-.045em;color:var(--ink);font-variant-numeric:tabular-nums}
 /* the word pair (Affinidi's weeks → days) stacks, the arrow turned down, and scales with its disc like the numerals do:
-   .stat .st-n--w outranks the phone .st-n size, which set it at 47px in a 109px disc */
+   .stat .st-n--w outranks .st-n's scale size, which set it at 44px in a 109px disc on phones */
 .stat .st-n--w{display:inline-flex;flex-direction:column;align-items:center;gap:0;font-size:calc(var(--sd) * .17);line-height:.92;letter-spacing:-.03em}
 .st-n--w .to{display:block;margin:.1em 0 .04em;line-height:0}
 .st-n--w .to .arr{width:.62em;height:.62em;vertical-align:0;transform:rotate(90deg)}
 .st-l{font:400 var(--t-micro)/1.4 var(--f-mono);letter-spacing:.02em;color:var(--fg-dim);text-align:center;max-width:100%;text-wrap:balance}
-.w-outcome{margin-top:var(--s8);font:600 clamp(36px, 4.6vw, 80px)/1.02 var(--f-display);letter-spacing:-.038em;color:var(--fg);max-width:17em;text-wrap:pretty}
+@media (max-width:767px){.stat .st-l{max-width:none;width:calc(var(--sd) + var(--s5))}}   /* 2026-10-22 (audit check): 11px Mono labels keep two lines under the 109px discs */
+.w-outcome{margin-top:var(--s8);font:600 var(--t-display)/1.02 var(--f-display);letter-spacing:-.038em;color:var(--fg);max-width:17em;text-wrap:pretty}
+@media (max-width:767px){.w-outcome{font-size:var(--t-heading)}}   /* 2026-10-22 (audit check): 28 on phones, as before; at 32 its no-wrap phrases left single words */
 .w-out .label+.w-outcome{margin-top:var(--s7)}
 /* a single stat (GoodWorker's 10): beside the statement, at its end, not a row of one above it */
 @media (min-width:1024px){
@@ -411,7 +420,7 @@ h3.fd-title{margin:0}
 .nx-copy{position:absolute;inset:0;padding:0 var(--margin);pointer-events:none}
 .nx-no{position:absolute;left:var(--margin);top:calc(var(--header-h) + 88px)}
 .nx-title{position:absolute;left:var(--margin);top:calc(var(--header-h) + 124px);width:min(32vw, 12.5em);
-  font:500 clamp(24px, 2.4vw, 38px)/1.12 var(--f-display);letter-spacing:-.025em;color:var(--moon);text-wrap:balance}
+  font:500 var(--t-title)/1.12 var(--f-display);letter-spacing:-.025em;color:var(--moon);text-wrap:balance}
 .nx-title .w{display:inline-block}
 .nx-name{position:absolute;left:var(--margin);bottom:var(--nb);display:block;white-space:nowrap;
   font:600 var(--nfs,clamp(96px, 15.5vw, 224px))/.8 var(--f-display);letter-spacing:-.05em;color:var(--moon);padding-right:.04em}
@@ -449,7 +458,7 @@ html.hero-bailed .wh-stack,html.hero-bailed .wh-meta,html.hero-bailed .wh-stage 
   html.seq-live .seq-step .pf{width:min(100%, (100svh - var(--header-h) - 150px) * var(--sa) * 1.02)}
   html.seq-live .seq-cap{display:none}
   html.seq-live .seq-bar{display:flex;align-items:center;gap:var(--s5);margin-top:var(--s5)}
-  html.seq-live .seq-dots{display:flex;align-items:center;gap:14px}
+  html.seq-live .seq-dots{display:flex;align-items:center;gap:20px}
   html.seq-live .seq-rt:not(:empty)::before{content:" · "}
   html.seq-live .seq-read{color:var(--fg-dim)}
   html.seq-live .seq-at,html.seq-live .seq-rt{color:var(--fg)}
@@ -462,7 +471,7 @@ html.hero-bailed .wh-stack,html.hero-bailed .wh-meta,html.hero-bailed .wh-stage 
     html.seq-live .seq-step .pf{width:100%}
     html.seq-live .seq-bar{flex-direction:column;align-items:flex-start;gap:var(--s4);margin:0 0 var(--s4)}
     /* the step over its tab, two lines: the UI's own tab name is the caption's second line */
-    html.seq-live .seq-read{flex-direction:column;align-items:flex-start;gap:6px;font-size:13px}
+    html.seq-live .seq-read{flex-direction:column;align-items:flex-start;gap:var(--s2)}
     html.seq-live .seq-rt:not(:empty)::before{content:none}
   }
 }
@@ -479,12 +488,14 @@ html.hero-bailed .wh-stack,html.hero-bailed .wh-meta,html.hero-bailed .wh-stage 
   .wh-stack{position:relative;z-index:3;left:auto;bottom:auto;width:auto;padding:0 var(--margin)}
   .wh-back{margin-bottom:var(--s6)}
   .wh-title{font-size:clamp(38px, 10.4vw, 72px);line-height:.98;letter-spacing:-.035em;padding-right:0}
-  .wh-meta,.wh-meta--5{position:relative;left:auto;right:auto;bottom:auto;margin:var(--s7) var(--margin) 0;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .wh-meta,.wh-meta--5{position:relative;left:auto;right:auto;bottom:auto;margin:var(--s7) var(--margin) 0;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:0}
   .wh-meta.wh-meta--3{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .wm{padding:16px 16px 18px}
+  .wm{padding:var(--s4);border-left:1px solid var(--line)}
+  .wh-meta .wm,.wh-meta--5 .wm:nth-child(n+3){grid-column:auto}
+  .wm+.wm::before{content:none}
   .wm:nth-child(odd){border-left:0;padding-left:0}
   .wm:nth-child(n+3){border-top:1px solid var(--line)}
-  .wm--link:nth-child(5){grid-column:1 / -1;border-left:0;padding-left:0}
+  .wh-meta--5 .wm--link:nth-child(5){grid-column:1 / -1;border-left:0;padding-left:0}
   /* three across (Bandcamp): one row, so the two-column pattern's odd/row-two rules don't apply */
   .wh-meta--3 .wm:nth-child(3){border-left:1px solid var(--line);padding-left:16px;border-top:0}
 }
@@ -502,13 +513,13 @@ html.hero-bailed .wh-stack,html.hero-bailed .wh-meta,html.hero-bailed .wh-stage 
 @media (max-width:1023px){
   .stg{display:block}
   .stg-rail{position:sticky;top:calc(var(--header-h) + 10px);z-index:4;display:flex;justify-content:center;margin-bottom:var(--s8);pointer-events:none}
-  .stg-rail ol{flex-direction:row;align-items:center;gap:6px;padding:7px 14px 7px 10px;border-radius:var(--r-pill);pointer-events:auto;
+  .stg-rail ol{flex-direction:row;align-items:center;gap:var(--s2);padding:var(--s2) var(--s4) var(--s2) var(--s3);border-radius:var(--r-pill);pointer-events:auto;
     background:color-mix(in srgb,var(--ground) 80%,transparent);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:inset 0 0 0 1px var(--line)}
-  .stg-a{gap:0}
+  .stg-a{display:flex;gap:0}
   .stg-d{width:calc(var(--d) * .5 + 4px);height:calc(var(--d) * .5 + 4px);margin-inline:0}
   .stg-a{width:28px;height:28px;justify-content:center}
   .stg-n{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
-  .stg-rail ol::after{content:attr(data-at);display:block;margin-left:10px;font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:var(--fg);min-width:6.5em}
+  .stg-rail ol::after{content:attr(data-at);display:block;margin-left:var(--s3);font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:var(--fg);min-width:6.5em}
   .stg-rail li{list-style:none}
   .stp-list{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:var(--s8)}
   .stp:nth-child(2)::before{display:none}
@@ -526,31 +537,30 @@ html.hero-bailed .wh-stack,html.hero-bailed .wh-meta,html.hero-bailed .wh-stage 
   .pl{border-radius:var(--r-card-m)}
   .w-b{display:block;margin-top:var(--s7)}
   .w-head+.w-b{margin-top:var(--s8)}
-  .h2--statement{font-size:clamp(34px, 9.4vw, 44px);line-height:1}
+  .h2--statement{line-height:1}
   .w-brief{padding-top:var(--s9);padding-bottom:var(--s10)}
-  .w-statement{margin-top:var(--s5);font-size:clamp(28px, 8.2vw, 36px);line-height:1.1}
+  .w-statement{margin-top:var(--s5);line-height:1.1}
   .what-cols{display:flex;flex-direction:column;gap:var(--s5);margin-top:var(--s7)}
-  .what-cols p,.w-p p,.ph-col p,.w-ia-p p,.stg-gp,.stage-p{font-size:18px}
   .w-p--2{columns:1}
-  .w-lead{font-size:clamp(24px, 6.6vw, 28px);line-height:1.18}
+  .w-lead{line-height:1.18}
   .w-b .w-list{margin-top:var(--s5)}
-  .w-list li{font-size:19px;gap:14px;padding:16px 0 17px}
-  .w-qt{font-size:clamp(34px, 9.6vw, 44px);line-height:1.02}
+  .w-list li{gap:var(--s3);padding:var(--s4) 0}
+  .w-qt{line-height:1.02}
   .w-b:has(.w-list)+.w-b--full:has(.w-quote){margin-top:var(--s8)}
   .pf-grid{display:flex;flex-direction:column;gap:var(--s6)}
   .stp-list{display:flex;flex-direction:column;gap:var(--s7)}
   .stp{padding-left:calc(48px + 20px)}
-  .stp-idx{position:absolute;left:0;top:0;width:48px;height:48px;font-size:11px}
+  .stp-idx{position:absolute;left:0;top:0;width:48px;height:48px}
   .stp:not(:last-child)::before{display:block;left:24px;top:calc(48px + 10px);width:1px;height:calc(100% + var(--s7) - 48px - 20px)}
   .stp:nth-child(2)::before{display:block}
-  .stp-h{margin-top:6px;font-size:28px}
-  .stp-p{font-size:17px;margin-top:var(--s3)}
+  .stp-h{margin-top:var(--s2)}
+  .stp-p{margin-top:var(--s3)}
   .ph{margin-top:var(--s8)}
   /* the photo at its own aspect (its width/height), the lead under it on the section's ground, in the section's ink */
   .ph-band{height:auto;min-height:0;overflow:visible;background:none}
   .ph-img{position:relative;display:block;height:auto}
   .ph-veil{display:none}
-  .ph-lead{position:relative;bottom:auto;margin-top:var(--s6);font-size:clamp(24px, 6.6vw, 28px);line-height:1.16;color:var(--fg)}
+  .ph-lead{position:relative;bottom:auto;margin-top:var(--s6);line-height:1.16;color:var(--fg)}
   .ph-band.on-night{--fg:inherit;color:inherit}
   .ph-cols{margin-top:var(--s6)}
   .ph-col+.ph-col{margin-top:1em}
@@ -560,20 +570,19 @@ html.hero-bailed .wh-stack,html.hero-bailed .wh-meta,html.hero-bailed .wh-stage 
   .feat-it{display:flex;flex-direction:column;align-items:stretch;gap:0}
   .feat-no,.feat-h,.feat-p{align-self:auto}
   .feat-no{margin-top:var(--s4)}
-  .feat-h{margin-top:var(--s2);font-size:26px}
-  .feat-p{margin-top:var(--s2);font-size:17px}
+  .feat-h{margin-top:var(--s2)}
+  .feat-p{margin-top:var(--s2)}
   .stg-guide{margin-top:var(--s8)}
   .stg-guide>.stg-gp{margin-top:var(--s3)}
   .stg-guide>.pf--guide{margin-top:var(--s6)}
   .pf--guide .pl--hug{padding:16px}
   .stg{margin-top:var(--s9)}
   .stage+.stage{margin-top:var(--s10)}
-  .stage-h{font-size:36px}
   .dec-list{margin-top:var(--s8);gap:var(--s9)}
   .dec{gap:var(--s6)}
-  .dec-idx{width:48px;height:48px;font-size:11px}
-  .dec-h{margin-top:var(--s5);font-size:clamp(28px, 8vw, 34px)}
-  .dec-body{font-size:17px;margin-top:var(--s4)}
+  .dec-idx{width:48px;height:48px}
+  .dec-h{margin-top:var(--s5)}
+  .dec-body{margin-top:var(--s4)}
   .dec-illus{border-radius:var(--r-card-m)}
   .st-det>*{left:calc(var(--mcx, var(--cx)) * -1px);top:calc(var(--mcy, var(--cy)) * -1px)}
   .fd-list{margin-top:var(--s7);gap:var(--s9)}
@@ -589,10 +598,6 @@ html.hero-bailed .wh-stack,html.hero-bailed .wh-meta,html.hero-bailed .wh-stage 
   .pl-pan::-webkit-scrollbar{display:none}
   .pl-pan>.pl-bd{width:210%}
   .fd-cap{display:flex;flex-direction:column;gap:var(--s3);margin-top:var(--s4)}
-  .fd-title{font-size:28px}
-  .fd-txt{font-size:18px}
-  .fd-p{font-size:17px}
-  .fd-gh{font-size:32px}
   /* the gallery: one column; every frame a window 550 u wide (u ≈ .65px at 390: the render's own pixel size) */
   .gal-grid{display:flex;flex-direction:column;align-items:stretch;gap:var(--s7);margin-top:var(--s8)}
   .gd{--u:calc(100cqw / 550);--ix:36;--iy:36;margin-top:0}
@@ -602,16 +607,14 @@ html.hero-bailed .wh-stack,html.hero-bailed .wh-meta,html.hero-bailed .wh-stage 
   [data-a$=r] .gd-scr{right:calc((var(--ix) - var(--msx,0)) * var(--u))}
   .w-out{--sd:clamp(96px, 28vw, 132px)}
   .stats{margin-top:var(--s6);gap:var(--s5) var(--s3);justify-content:space-between}
-  .st-n{font-size:clamp(40px, 12vw, 56px)}
-  .st-l{font-size:10px}
-  .w-outcome{font-size:clamp(26px, 7.2vw, 30px);line-height:1.04;margin-top:var(--s7)}
+  .w-outcome{line-height:1.04;margin-top:var(--s7)}
   .w-next{--nb:40px}
   .nx-link{min-height:max(92svh, 700px)}
   .nx-label{top:calc(var(--header-h) + 20px)}
   .nx-back{top:calc(var(--header-h) + 8px)}
   .nx-stage{left:var(--margin);right:var(--margin);top:calc(var(--header-h) + 72px);bottom:auto;height:min(64vw, 36svh)}
   .nx-no{top:calc(var(--header-h) + 96px + min(64vw, 36svh) + 24px)}
-  .nx-title{top:calc(var(--header-h) + 96px + min(64vw, 36svh) + 52px);width:auto;right:var(--margin);font-size:22px}
+  .nx-title{top:calc(var(--header-h) + 96px + min(64vw, 36svh) + 52px);width:auto;right:var(--margin)}
   .nx-name{font-size:var(--nfs,56px)}
   .nx-go{width:48px;height:48px;bottom:36px}
   .w-next .w-veil{background:
@@ -660,17 +663,16 @@ html[data-theme=ember] .w-lit{--wv:.64;--wv-top:.48;--wv-foot:.58}
 .w-note{text-wrap:pretty}
 .work-page .ft-line{text-wrap:balance}
 /* line length: side-by-side columns sit at least 2.2em apart, and the supporting copy stays near 68 characters */
-@media (min-width:768px){.what-cols p:nth-child(1),.ph-cols>.ph-col:nth-child(1){padding-right:var(--s5)}}
-.w-p--2{column-gap:var(--s7)}
+@media (min-width:768px){.what-cols p:nth-child(1),.ph-cols>.ph-col:nth-child(1){padding-right:var(--s5)}
+  .w-p--2 p{padding-right:var(--s5)}}   /* 2026-10-22 (audit): the gap is the gutter, so column 2 starts on column 5; the padding keeps the 48 */
 .fd-p,.stage-p{max-width:31em}
 /* hit areas: the back pill keeps a 10px buffer, so a near miss on the Next band goes Back (where it aimed), never forward;
    the step dots abut at a 32px pitch (32×40 targets, no overlap); the rail's links and the meta links reach 40–45px */
 .pill--back::after{content:"";position:absolute;inset:-10px;border-radius:inherit}
-html.seq-live .seq-dots{gap:20px}
 .seq-dot::after{inset:-14px -10px;border-radius:0}
 .stg-a{position:relative}
 .stg-a::after{content:"";position:absolute;inset:-7px 0}
-@media (max-width:1023px){.stg-a::after{inset:-7px -3px}}
+@media (max-width:1023px){.stg-a::after{inset:-8px -3px}}   /* 2026-10-22 (audit check): a 44px tap on the 28px discs */
 .wm dd a{position:relative}
 .wm dd a::after{content:"";position:absolute;inset:-13px -4px}
 /* concentric radii on phones: plate r24 = 12 of light + the frame's r12 (bezel 5 + screen 7) */
@@ -679,9 +681,8 @@ html.seq-live .seq-dots{gap:20px}
   .scr{--bz:5px;border-radius:calc(var(--bz) + 7px)}
   .scr img,.scr-tint{border-radius:7px}
 }
-/* press: the pills answer a tap at the system's .96, like the homepage's See-the-work badge */
-.work-page .pill{transition:scale 150ms ease-out}
-.work-page .pill:active{scale:.96}
+/* press: the pills answer a tap at the system's .96, like the homepage's See-the-work badge. 2026-10-22 (audit): the
+   press and its 150ms ease now live in system.css §10 (--btn-press), for every page */
 /* the meta strip's rule waits for its cells instead of standing alone on the night before the intro */
 html.hero-pre .wh-meta{border-top-color:transparent}
 .wh-meta{transition:border-top-color 480ms var(--ease-focus) 600ms}

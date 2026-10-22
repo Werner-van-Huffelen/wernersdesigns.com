@@ -111,7 +111,9 @@
     if (B) B.opened.then(() => { opened = true; ready(); });
 
     const STEPS = [22, 16, 11, 8, 5.6, 4, 2.8, 2, 1.4];
-    const W = { fonts: .30, soft: .20, moon: .20, field: .20, load: .10 };
+    /* 2026-10-22 (audit, mobile LCP): no 'load' share any more (it was .10, now the sharp portrait's): window load
+       waits for everything below the fold too, so a slow card image could hold the pinhole */
+    const W = { fonts: .30, soft: .20, moon: .30, field: .20 };
     const got = {}; let progress = 0;
     const add = (k) => { if (got[k]) return; got[k] = 1; progress = Math.min(1, progress + W[k]); ready(); };
     /* the bleed goes on once its light is open and everything is in */
@@ -122,15 +124,14 @@
     (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => add('fonts'));
     const dec = (im, k) => { if (!im) return add(k); (im.decode ? im.decode() : Promise.resolve()).then(() => add(k), () => add(k)); };
     dec($('.portrait .p-soft'), 'soft'); dec($('.portrait .p-moon'), 'moon');
+    /* 2026-10-22 (audit): on the still (no WebGL, or no first frame by 1.5 s) the field counts as in at once; waiting for
+       aurora-still.webp (296 KB) cost a slow phone about 1.5 s more of pinhole; the still paints in when it arrives */
     const fieldDone = () => {
       if (FS.field.ready) return add('field');
-      if (html.classList.contains('field-still') || !FS.field.ok) {
-        const im = new Image(); im.onload = im.onerror = () => add('field'); im.src = FS.theme.src('assets/aurora-still.webp'); return;
-      }
+      if (html.classList.contains('field-still') || !FS.field.ok) return add('field');
       FS.on('field:ready', fieldDone);
     };
     fieldDone();
-    if (document.readyState === 'complete') add('load'); else addEventListener('load', () => add('load'));
     /* failsafe: at 4 s jump straight to the widest detent and run the FLIP at 2.5×, so nothing is hidden past ~4.5 s */
     const failsafe = setTimeout(() => {
       if (L.done) return;
@@ -151,7 +152,8 @@
     let pct = 0, pctShown = 0;
     function showPct(v) { pct = v; const n = Math.round(v); if (pctEl && n !== pctShown) { pctShown = n; pctEl.textContent = n + '%'; } }
 
-    /* detents: advance when real progress allows and 110 ms have passed; the diameter springs */
+    /* detents: advance when real progress allows and 70 ms have passed (2026-10-22, audit: was 110, the last hold 120,
+       now 60: the pinhole's minimum 620 ms instead of 1000); the diameter springs */
     const dia = FS.spring({ value: 2, response: .28, damping: 1 });
     let step = 0, lastStep = performance.now(), raf = 0, prev = 0;
     const vmin = () => Math.min(innerWidth, innerHeight);
@@ -164,11 +166,11 @@
     function frame(now) {
       raf = 0;
       const dt = prev ? Math.min(.05, (now - prev) / 1000) : 1 / 60; prev = now;
-      if (step < 8 && progress >= (step + 1) / 8 - 1e-6 && now - lastStep >= 110) { step++; lastStep = now; }
+      if (step < 8 && progress >= (step + 1) / 8 - 1e-6 && now - lastStep >= 70) { step++; lastStep = now; }
       dia.target = targetD(STEPS[step]); dia.step(dt);
       showPct(FS.smooth(pct, step * 12.5, dt, .05));
       place();
-      if (step === 8 && now - lastStep >= 120) { start(); return; }
+      if (step === 8 && now - lastStep >= 60) { start(); return; }
       raf = requestAnimationFrame(frame);
     }
     if (!B) { place(); raf = requestAnimationFrame(frame); }
@@ -189,6 +191,9 @@
          (the ring and 'Zero to' blinked out at the end of the FLIP); finish() clears it */
       L.fade = [barrel, ...$$('.hero-title .w'), ...chrome, $('.see')].filter(Boolean);
       tl = gsap.timeline();
+      /* 2026-10-22 (audit): the pinhole's landing runs at 0.75× its length (finish at T + 900, not 1200), the same
+         sequence; the bleed keeps its pace. The failsafe's timeScale(2.5) still overrides this */
+      if (!B) tl.timeScale(1 / .75);
       if (rd) tl.to(rd, { opacity: 0, filter: 'blur(6px)', duration: .2, ease: 'none' }, 0)
         .to(H, { flip: 1, duration: .9, ease: E.iris, onUpdate: HOME.renderHero }, 0);
       else if (html.classList.contains('is-bleed')) B.out(1100);   /* the light fades from the portrait out as the hero focuses in */
@@ -198,7 +203,7 @@
         .to($$('.hero .ctr'), { '--cr': '50%', duration: .42, ease: E.glass }, .76)
         .to($$('.hero .stop'), { '--sr': '50%', duration: .24, ease: E.glass }, 1.1);
       tl.call(() => FS.ping($('#hero-stop')), null, 1.2)
-        .call(finish, null, 1.2);                        /* §8.1: is-loading lifts at T + 1200, the hero fade already done */
+        .call(finish, null, 1.2);                        /* §8.1: is-loading lifts at T + 1200 (the pinhole: 900), the hero fade already done */
       L.tl = tl;
       return tl;
     }

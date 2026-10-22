@@ -332,17 +332,22 @@
 
   /* ring rotation: a constant 6°/s while the hero is in view; every frame re-runs the whole-letter pass, so the glyphs
      that cross the headline, the subline or the eyebrow fade out whole. 2026-10-08 motion cut: the scroll-velocity
-     speed-up is gone, and so is the See badge's spin (3× on hover/focus): its ring rests at 0°, the core lights. */
-  let ringAngle = 0, ringRaf = 0, ringLast = 0, heroVisible = true;
+     speed-up is gone, and so is the See badge's spin (3× on hover/focus): its ring rests at 0°, the core lights.
+     2026-10-22 (Werner): the ring rests while the pointer is on the portrait or the portrait link has focus. It slows to
+     a stop and picks up again from there (about half a second each way), and the loop sleeps while it rests. */
+  let ringAngle = 0, ringRaf = 0, ringLast = 0, heroVisible = true, ringSpeed = 6, ringHold = false;
   function ringTick(now) {
     ringRaf = 0;
     const dt = ringLast ? Math.min(.05, (now - ringLast) / 1000) : 1 / 60; ringLast = now;
-    ringAngle = (ringAngle + 6 * dt) % 360;
+    ringSpeed += ((ringHold ? 0 : 6) - ringSpeed) * (1 - Math.exp(-dt / .16));
+    if (ringHold && ringSpeed < .02) ringSpeed = 0;
+    ringAngle = (ringAngle + ringSpeed * dt) % 360;
     if (ringSvg) ringSvg.style.transform = `translate(-50%,-50%) rotate(${ringAngle.toFixed(3)}deg)`;
     knockPass(ringAngle);
-    if (heroVisible && !document.hidden) ringRaf = requestAnimationFrame(ringTick);
+    if (heroVisible && !document.hidden && ringSpeed > 0) ringRaf = requestAnimationFrame(ringTick);
   }
   function ringPlay() { if (F.still || ringRaf) return; ringLast = 0; ringRaf = requestAnimationFrame(ringTick); }
+  function ringRest(v) { ringHold = v; ringPlay(); }
 
   /* ── field modes: aperture in the hero, full in the footer, paused between ─ */
   let footerVisible = false;
@@ -372,8 +377,18 @@
     let ctx, mask, mctx, W = 0, H = 0, dpr = 1, raf = 0, last = 0, visible = false, seqW = 0, items = [];
     try { ctx = cv.getContext('2d'); mask = document.createElement('canvas'); mctx = mask.getContext('2d'); } catch (e) { return; }
     if (!ctx || !mctx) return;
-    const imgs = list.map((l) => { const im = new Image(); im.decoding = 'async'; im.src = 'assets/logos/' + l.id + '.png'; return { l, im }; });
-    Promise.all(imgs.map(({ im }) => (im.decode ? im.decode().catch(() => {}) : Promise.resolve()))).then(() => { clients.ready = true; size(); draw(0); });
+    /* 2026-10-22 (audit, mobile LCP): the 12 PNGs (170 KB) load a viewport ahead of the band, not with the hero, so
+       they stay out of the intro and window load no longer waits for them; ?static captures get them at once */
+    let imgs = [];
+    const fetchLogos = () => {
+      if (imgs.length) return;
+      imgs = list.map((l) => { const im = new Image(); im.decoding = 'async'; im.src = 'assets/logos/' + l.id + '.png'; return { l, im }; });
+      Promise.all(imgs.map(({ im }) => (im.decode ? im.decode().catch(() => {}) : Promise.resolve()))).then(() => { clients.ready = true; size(); draw(0); });
+    };
+    if ('IntersectionObserver' in window && !F.static) {
+      const lio = new IntersectionObserver(([e]) => { if (e.isIntersecting) { lio.disconnect(); fetchLogos(); } }, { rootMargin: '100% 0px' });
+      lio.observe(band);
+    } else fetchLogos();
 
     /* the scheme's --aurora-lit, token for token (css/system.css §1b) */
     const tk = (n, a) => { const c = FS.theme.rgb(n).map((v) => Math.round(v * 255)); return `rgba(${c.join(',')},${a})`; };
@@ -487,7 +502,7 @@
      leave the layout ([hidden]: display none, so out of the tab order and the accessibility tree) and the kept cards
      reflow into the two columns in number order, the original zigzag (1st left, 2nd right, 3rd left…), so All
      restores 01 03 05 | 02 04 06 under the right column's offset. Mobile is one column in number order (2026-10-05:
-     01 and 02, the two Recent work cards, lead together), and cards only hide. HOME.work.place() is the instant layout; stage 2 (HOME.work.run, js/motion.js) choreographs it. */
+     the Recent work cards lead together; 2026-10-22: Juno 01, then GALVANY 02, so 03 Bandcamp follows them), and cards only hide. HOME.work.place() is the instant layout; stage 2 (HOME.work.run, js/motion.js) choreographs it. */
   function work() {
     const tags = $$('.work-tags .tag'), cards = $$('.work-card'), cols = $$('.work-grid > .wcol'), bar = $('.work-tags');
     const per = cols.map((col) => $$('.work-card', col)), order = [];
@@ -577,7 +592,6 @@
     FS.ring(svg, 'ME@WERNERSDESIGNS.COM · CONTACT ME · ', R, size);
     const box = 2 * (R + size + 4);
     svg.style.width = svg.style.height = box + 'px';
-    svg.style.marginLeft = svg.style.marginTop = (-box / 2) + 'px';
   }
 
   /* ── smooth scroll (Lenis), wired to ScrollTrigger ─────────────────────── */
@@ -667,6 +681,23 @@
     }
     fieldMode();
     ringPlay();
+    const pl = $('.portrait-link');
+    if (pl) {   /* keyboard focus only: a click focuses the link too, and the ring would stay at rest after it */
+      const kf = () => { try { return pl.matches(':focus-visible'); } catch (e) { return document.activeElement === pl; } };
+      pl.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse' || e.pointerType === 'pen') ringRest(true); });
+      pl.addEventListener('pointerleave', () => { if (!kf()) ringRest(false); });
+      pl.addEventListener('focus', () => { if (kf()) ringRest(true); });
+      pl.addEventListener('blur', () => { if (!pl.matches(':hover')) ringRest(false); });
+    }
+    /* 2026-10-22 (audit, mobile LCP): the work cards' halo masks (5 .webp, 105 KB) load a viewport ahead of the cards,
+       not with the hero. Each halo waits hidden (inline in index.html, so its gradient never shows unmasked) until its
+       mask is set here; without IntersectionObserver, and in ?static captures, all at once */
+    const halos = $$('.wc-halo[data-halo]');
+    const setHalo = (el) => { const u = 'url(' + el.getAttribute('data-halo') + ')'; el.style.webkitMaskImage = u; el.style.maskImage = u; el.style.visibility = ''; el.removeAttribute('data-halo'); };
+    if ('IntersectionObserver' in window && !F.static) {
+      const hio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { hio.unobserve(e.target); setHalo(e.target); } }), { rootMargin: '100% 0px' });
+      halos.forEach((el) => hio.observe(el));
+    } else halos.forEach(setHalo);
 
     const ctx = { FS, HOME, F, hero, $, $$ };
     Object.keys(HOME.stage2).forEach((k) => { try { typeof HOME.stage2[k] === 'function' && HOME.stage2[k](ctx); } catch (e) { console.warn('stage2.' + k, e); } });

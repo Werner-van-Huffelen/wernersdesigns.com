@@ -30,25 +30,32 @@
   --f-mono:"Fragment Mono","Fragment Mono Fallback","Courier New",monospace;
   --t-hero:clamp(64px, min(11.5vw, 21svh), 188px);
   --t-footer:clamp(72px, 15.5vw, 224px);
-  --t-manifesto:clamp(40px, 6.4vw, 104px);
-  --t-h2:clamp(48px, 8vw, 128px);
-  --t-service:clamp(32px, 5.6vw, 88px);
   --t-menu:clamp(52px, 9vw, 144px);
-  --t-caption:clamp(28px, 3vw, 44px);
-  --t-card:clamp(24px, 2.1vw, 32px);
-  --t-stat:clamp(40px, 3.9vw, 56px);
-  --t-lead:clamp(19px, 1.6vw, 24px);
-  --t-body:clamp(16px, 1.25vw, 19px);
-  --t-ui:15px;
-  --t-micro:11px;
+  /* 2026-10-22 (audit): one 8-step scale for everything that is not fit or geometry. Fluid, exact at 390 and 1440
+     (11/14/16/18/24/28/32/44 → 12/15/18/24/32/44/64/96); the top three keep their slope past 1440, up to 1.25× */
+  --t-micro:clamp(11px, calc(11px + (100vw - 390px) / 1050), 12px);
+  --t-ui:clamp(14px, calc(14px + (100vw - 390px) / 1050), 15px);
+  --t-body:clamp(16px, calc(16px + 2 * (100vw - 390px) / 1050), 18px);
+  --t-lead:clamp(18px, calc(18px + 6 * (100vw - 390px) / 1050), 24px);
+  --t-title:clamp(24px, calc(24px + 8 * (100vw - 390px) / 1050), 32px);
+  --t-heading:clamp(28px, calc(28px + 16 * (100vw - 390px) / 1050), 55px);
+  --t-display:clamp(32px, calc(32px + 32 * (100vw - 390px) / 1050), 80px);
+  --t-section:clamp(44px, calc(44px + 52 * (100vw - 390px) / 1050), 120px);
   /* spacing, 4px unit */
   --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;--s9:96px;--s10:128px;--s11:160px;--s12:240px;
   --margin:48px; --gutter:24px; --cols:12;
+  --inset:32px;   /* 2026-10-22 (audit): a card's text inset (work stub, tear, Companies card): card text = column + --inset */
   --header-h:88px;
   /* geometry: circles only */
   --stop:.19em; --ctr:.34em; --punch:22px; --hole:4px; --hole-pitch:30px;
   --notch:14px; --notch-menu:20px; --r-card:28px; --r-card-m:24px; --r-stub:20px; --r-pill:999px;
   --btn-s:48px; --btn-m:56px; --btn-l:64px; --btn-xl:96px;
+  /* 2026-10-22 (audit): controls in three tiers, one shape, one face, one size. 1 ink + lit chip, 2 glass + rim,
+     3 no fill (an outline or text). Tiers 2 and 3 read the tone's own --glass, --rim, --fg, --fg-dim and --line: never
+     alias those here (a custom property resolves where it is declared, so an alias on :root would freeze the night) */
+  --btn-r:var(--r-pill); --btn-f:var(--f-sans); --btn-w:500; --btn-fs:var(--t-ui); --btn-ls:-.005em;
+  --btn-h-sm:40px; --btn-h-md:48px; --btn-h-lg:56px; --btn-press:.96;
+  --btn-1-bg:var(--ink); --btn-1-fg:var(--ice);
   --lens-text:120px; --lens-media:240px; --disc:280px; --disc-open:360px;
   /* motion */
   --ease-iris:cubic-bezier(.65,0,.15,1);
@@ -87,7 +94,7 @@ html[data-theme=borealis]{--dusk:#0F3A36;--iris:#2EE59D;--glacier:#7DEBFF;--orch
   --still:url(../assets/t/borealis/aurora-still.webp)}
 @supports not (transition-timing-function:linear(0,1)){:root{--ease-glass:cubic-bezier(.34,1.3,.64,1)}}
 @media (max-width:767px){
-  :root{--margin:16px;--gutter:12px;--cols:4;--header-h:64px;--t-micro:10px}
+  :root{--margin:16px;--gutter:12px;--cols:4;--inset:20px;--header-h:64px}
 }
 
 /* ── 2 · fonts: metric-matched fallbacks (no layout shift on swap) ───────── */
@@ -104,18 +111,19 @@ body{background:var(--night);color:var(--fg);font-family:var(--f-sans);font-size
   text-rendering:optimizeLegibility;overflow-x:clip}
 h1,h2,h3,h4,p,ul,ol,figure,blockquote{margin:0;padding:0}
 ul,ol{list-style:none}
+i{font-style:normal}   /* 2026-10-22 (audit): the empty decorative <i>s no longer pull in the Funnel Sans italic face */
 a{color:inherit;text-decoration:none}
 img,svg,canvas,video{display:block;max-width:100%}
 img{height:auto}
-button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button{font:var(--btn-w) var(--btn-fs)/1 var(--btn-f);border-radius:var(--btn-r);color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 a{-webkit-tap-highlight-color:transparent}
 ::selection{background:color-mix(in srgb,var(--iris) 45.1%,transparent);color:var(--moon)}
 :focus{outline:none}
 :focus-visible{outline:2px solid var(--glacier);outline-offset:3px;border-radius:var(--r-pill)}
 .on-ice :focus-visible{outline-color:var(--accent-ice)}
 .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
-.skip{position:fixed;left:16px;top:16px;z-index:100;padding:10px 18px;border-radius:var(--r-pill);background:var(--moon);color:var(--ink);
-  font:500 var(--t-ui)/1 var(--f-sans);transform:translateY(-200%)}
+.skip{position:fixed;left:16px;top:16px;z-index:100;display:inline-flex;align-items:center;min-height:var(--btn-h-md);padding:0 20px;border-radius:var(--btn-r);background:var(--moon);color:var(--ink);
+  font:var(--btn-w) var(--btn-fs)/1 var(--btn-f);letter-spacing:var(--btn-ls);transform:translateY(-200%)}   /* 2026-10-21 (audit): 44px tall, was 35. 2026-10-22: tier 1, ink with the glass rim (§10), 48 */
 .skip:focus-visible{transform:none}
 
 /* ── 4 · tone ───────────────────────────────────────────────────────────── */
@@ -127,9 +135,9 @@ a{-webkit-tap-highlight-color:transparent}
 .grid{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));column-gap:var(--gutter)}
 
 /* ── 6 · type ───────────────────────────────────────────────────────────── */
-.label{font:400 var(--t-micro)/1.3 var(--f-mono);letter-spacing:.02em;color:var(--fg-dim);display:flex;align-items:center;gap:10px}
+.label{font:400 var(--t-micro)/1.3 var(--f-mono);letter-spacing:.02em;color:var(--fg-dim);display:flex;align-items:center;gap:var(--s2)}
 .label .rule{flex:0 0 40px;height:1px;background:var(--line)}
-.h2{font:600 var(--t-h2)/.92 var(--f-display);letter-spacing:-.04em;text-wrap:balance}
+.h2{font:600 var(--t-section)/.92 var(--f-display);letter-spacing:-.04em;text-wrap:balance}
 .lead{font:400 var(--t-lead)/1.4 var(--f-sans);letter-spacing:-.005em}
 .body{font:400 var(--t-body)/1.6 var(--f-sans)}
 .mono{font-family:var(--f-mono);letter-spacing:.02em}
@@ -206,10 +214,10 @@ html.no-ctr .ctr::before{display:none}
   transition:clip-path 360ms var(--ease-glass)}
 
 /* ── 10 · pill CTA + tag ────────────────────────────────────────────────── */
-.pill{position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:16px;height:48px;padding:0 6px 0 22px;border-radius:var(--r-pill);
-  font:500 var(--t-ui)/1 var(--f-sans);letter-spacing:-.005em;color:var(--fg);white-space:nowrap;
+.pill{position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:16px;height:var(--btn-h-md);padding:0 6px 0 var(--s5);border-radius:var(--btn-r);
+  font:var(--btn-w) var(--btn-fs)/1 var(--btn-f);letter-spacing:var(--btn-ls);color:var(--fg);white-space:nowrap;
   background:var(--glass);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
-.pill::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim);pointer-events:none;
+.pill::before,.skip::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim);pointer-events:none;
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
   mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 .pill .chip{position:relative;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;flex:none;
@@ -219,26 +227,36 @@ html.no-ctr .ctr::before{display:none}
 .pill .chip .arr{position:relative;width:16px;height:16px;vertical-align:0;transition:color 240ms var(--ease-focus)}
 @media (hover:hover){.pill:hover .chip .b-light{--bl:50%}.pill:hover .chip .arr{color:var(--ink)}}
 .pill:focus-visible .chip .b-light{--bl:50%}.pill:focus-visible .chip .arr{color:var(--ink)}
-.pill--ink{background:var(--ink);color:var(--ice);-webkit-backdrop-filter:none;backdrop-filter:none}
+.pill--ink{background:var(--btn-1-bg);color:var(--btn-1-fg);-webkit-backdrop-filter:none;backdrop-filter:none}
 .pill--ink::before{display:none}
-.pill--ink .chip{background:none;box-shadow:none}
+.pill--ink .chip,.on-ice .pill--ink .chip{background:none;box-shadow:none}   /* 2026-10-22 (audit): .on-ice .pill .chip outranked it, a 5% ink fill under the lit chip */
 .pill--ink .chip .b-light{--bl:50%}
 .pill--ink .chip .arr{color:var(--ink)}
 .pill--ink .b-light{background-image:var(--aurora-lit)!important}
-.pill--sm{height:40px;padding:0 5px 0 18px;gap:12px}
+.pill--sm{height:var(--btn-h-sm);padding:0 5px 0 20px;gap:12px}
 .pill--sm .chip{width:30px;height:30px}
 .pill--sm .chip .arr{width:14px;height:14px}
 .pill--plain{padding:0 20px}
 
-.tag{position:relative;display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 16px 0 14px;border-radius:var(--r-pill);
-  box-shadow:inset 0 0 0 1px var(--line);font:500 var(--t-ui)/1 var(--f-sans);letter-spacing:-.005em;color:var(--fg);white-space:nowrap;
-  transition:background-color var(--d-short) var(--ease-focus),color var(--d-short) var(--ease-focus),box-shadow var(--d-short) var(--ease-focus)}
+.tag{position:relative;display:inline-flex;align-items:center;gap:var(--s2);height:var(--btn-h-sm);padding:0 var(--s4);border-radius:var(--btn-r);
+  box-shadow:inset 0 0 0 1px var(--line);font:var(--btn-w) var(--btn-fs)/1 var(--btn-f);letter-spacing:var(--btn-ls);color:var(--fg);white-space:nowrap;
+  transition:background-color var(--d-short) var(--ease-focus),color var(--d-short) var(--ease-focus),box-shadow var(--d-short) var(--ease-focus),scale 150ms ease-out}
 .tag .t-stop{position:relative;width:6px;height:6px;border-radius:50%;flex:none;background:var(--ground);box-shadow:inset 0 0 0 1px var(--fg-dim)}
 .tag .t-stop .lit{position:absolute;inset:0;border-radius:50%;clip-path:circle(var(--bl,0%) at 50% 50%);transition:clip-path 320ms var(--ease-glass)}
-.tag .t-count{font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:var(--fg-dim);margin-left:-2px}
+.tag .t-count{font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:var(--fg-dim)}
 button.tag{cursor:pointer}
-@media (hover:hover){button.tag:hover{box-shadow:inset 0 0 0 1px var(--fg-dim)}}
-.tag[aria-checked=true]{background:var(--ink);color:var(--ice);box-shadow:inset 0 0 0 1px var(--ink)}
+@media (hover:hover){button.tag:not([aria-checked=true]):hover{box-shadow:inset 0 0 0 1px var(--fg-dim)}}   /* 2026-10-22 (audit): no grey ring on the selected ink */
+/* 2026-10-21 (audit): a filter is drawn 40px tall but takes a 44px tap; the rows sit 48px apart on phones, so the
+   targets never overlap */
+button.tag::after{content:"";position:absolute;left:0;right:0;top:50%;height:max(100%,44px);translate:0 -50%}
+
+/* 2026-10-21 (audit): every control answers a press within the frame, the way the See badge and the case pages' pills
+   already did (scale .96); the brand is a 13px dot, so its press is the hover's glow. 2026-10-22: the stadiums ease in
+   150ms on every page (it was the case pages' only) */
+.skip:active,.menu-btn:active .glass,.pill:active,button.tag:active,.wc-btn:active{scale:var(--btn-press)}
+.skip,.pill{transition:scale 150ms ease-out}
+.brand:active .brand-dot{box-shadow:0 0 10px color-mix(in srgb,var(--iris) 65.1%,transparent),0 0 2px color-mix(in srgb,var(--pearl) 50.2%,transparent)}
+.tag[aria-checked=true]{background:var(--btn-1-bg);color:var(--btn-1-fg);box-shadow:none}
 .tag[aria-checked=true] .t-count{color:#EDF0F5a6}
 .tag[aria-checked=true] .t-stop{box-shadow:none;background:var(--ink)}
 .tag[aria-checked=true] .t-stop .lit{--bl:50%;background-image:var(--aurora-lit)}
@@ -283,8 +301,9 @@ html.menu-open .site-header::before,html.is-loading .site-header::before{opacity
 .site-header [data-tone=night]{--fg:var(--moon);--fg-dim:var(--haze);--line:var(--line-night);--glass:var(--glass-fill);--rim:var(--glass-rim);--aurora:var(--aurora-lit)}
 .site-header [data-tone=ice],.site-header[data-tone=ice]{--fg:var(--ink);--fg-dim:var(--haze-ink);--line:var(--line-ice);--glass:var(--glass-fill-ice);--rim:var(--glass-rim-ice);--aurora:var(--aurora-sky)}
 .brand,.f-pill,.nav-r,.menu-btn .glass{color:var(--fg);transition:color var(--d-short) var(--ease-focus)}
-/* the brand is the full stop: a small lit disc (Ø13, Ø12 < 768) inside a 44px target, its left edge on the margin */
-.brand{--bd:13px;justify-self:start;display:grid;place-items:center;width:44px;height:44px;margin-left:calc((var(--bd) - 44px) / 2);border-radius:50%}
+/* the brand is the full stop: a small lit disc (Ø13, Ø12 < 768) inside a 44px target, its left edge on the margin.
+   2026-10-22 (audit): the optical nudges here and on the phone menu button are translates, not margins */
+.brand{--bd:13px;justify-self:start;display:grid;place-items:center;width:44px;height:44px;translate:calc((var(--bd) - 44px) / 2) 0;border-radius:50%}
 .brand-dot{display:block;width:var(--bd);height:var(--bd);border-radius:50%;box-shadow:0 0 6px color-mix(in srgb,var(--iris) 40%,transparent);transition:box-shadow var(--d-short) var(--ease-focus)}
 /* on ice the stop stays lit (the favicon's own light, not the sky sample, which reads as a flat navy bullet),
    set into the ground by a 1px ink ring and the ice-stop inset */
@@ -298,7 +317,7 @@ html.menu-open .site-header::before,html.is-loading .site-header::before{opacity
 .brand:focus-visible{outline:none}
 .brand:focus-visible .brand-dot{outline:2px solid var(--glacier);outline-offset:4px}
 .brand[data-tone=ice]:focus-visible .brand-dot{outline-color:var(--accent-ice)}
-.f-pill{justify-self:center;height:40px;padding:0 16px 0 12px;display:inline-flex;align-items:center;gap:10px;font:400 12px/1 var(--f-mono);letter-spacing:.02em}
+.f-pill{justify-self:center;height:40px;padding:0 16px 0 12px;display:inline-flex;align-items:center;gap:var(--s2);font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em}
 .f-pill>*{position:relative;z-index:1}
 .ap-icon{position:relative;display:block;width:var(--ai,14px);height:var(--ai,14px);border-radius:50%;box-shadow:inset 0 0 0 1px var(--line);flex:none}
 .ap-icon .lit{position:absolute;inset:0;border-radius:50%;clip-path:circle(calc(var(--ai-in,5.5px) * var(--ap,1)) at 50% 50%);transition:clip-path 320ms var(--ease-glass)}
@@ -310,10 +329,10 @@ html.menu-open .site-header::before,html.is-loading .site-header::before{opacity
 html:not(.f-ready) [data-readout] .roll{opacity:0}
 .nav-r{justify-self:end;display:flex;align-items:center}
 /* menu trigger: a glass circle with two lines that turn into an × (300 ms, --ease-glass) */
-.menu-btn{display:block;border-radius:50%}
+.menu-btn{display:block}
 .menu-btn .g-menu{width:44px;height:44px}
 .burger{--bw:18px;position:relative;display:block;width:var(--bw);height:var(--bw)}
-.burger i{position:absolute;left:0;top:50%;width:var(--bw);height:1.75px;margin-top:-.875px;border-radius:1px;background:currentColor;
+.burger i{position:absolute;left:0;top:50%;width:var(--bw);height:1.75px;translate:0 -50%;border-radius:1px;background:currentColor;
   transition:transform 300ms var(--ease-glass)}
 .burger i:first-child{transform:translateY(-3px)}
 .burger i:last-child{transform:translateY(3px)}
@@ -322,10 +341,10 @@ html.menu-on .burger i:last-child{transform:rotate(-45deg)}
 .menu-btn:focus-visible{outline:none}
 .menu-btn:focus-visible .glass{outline:2px solid var(--glacier);outline-offset:3px;border-radius:50%}
 .site-header [data-tone=ice] .menu-btn:focus-visible .glass{outline-color:var(--accent-ice)}
-@media (max-width:767px){.site-header::before{opacity:1}.f-pill{height:36px;padding:0 12px 0 10px}
+@media (max-width:767px){.site-header::before{opacity:1}.f-pill{height:36px;padding:0 12px 0 8px}
   .brand{--bd:12px}
   /* a 40px glass inside a 44px target, its right edge on the margin */
-  .menu-btn{display:grid;place-items:center;width:44px;height:44px;margin-right:-2px}
+  .menu-btn{display:grid;place-items:center;width:44px;height:44px;translate:2px 0}
   .menu-btn .g-menu{width:40px;height:40px}
   .burger{--bw:16px}}
 
@@ -340,9 +359,9 @@ html.cursor-on .cursor{opacity:1}
 .cursor-lens .lens-media{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:var(--night-2);opacity:0;transition:opacity 160ms linear}
 .cursor-lens .lens-media img{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0}
 .cursor-lens[data-mode=media] .lens-media,.cursor-lens[data-mode=portrait] .lens-media{opacity:1}
-.cursor-lens .lens-rim{position:absolute;inset:0;border-radius:50%;padding:1.5px;background:var(--glass-rim);opacity:0;
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
-  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.cursor-lens .lens-rim{position:absolute;inset:0;border-radius:50%;border:1.5px solid transparent;background:var(--glass-rim) border-box;opacity:0;
+  -webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) padding-box exclude,linear-gradient(#000 0 0)}
 .cursor-lens[data-mode=media] .lens-rim,.cursor-lens[data-mode=portrait] .lens-rim{opacity:1}
 /* the loupe's ring text turns only while the loupe is open (2026-10-08 motion cut: it spun on, unseen, while closed) */
 .cursor-lens .lens-ring{position:absolute;inset:0;width:240px;height:240px;color:var(--moon);opacity:0;animation:spin 12s linear infinite paused;
@@ -381,9 +400,12 @@ html.field-still .menu .m-still{display:block}
 /* 2026-10-09 (Werner): no half-disc notch on the menu card either, like the work and Companies cards; the tear stays,
    inset evenly now there is no notch to clear */
 .menu-card .mc-top{padding:36px 36px 0;display:flex;flex-direction:column;gap:0;flex:0 0 var(--mc-ty)}
-.menu-card .mc-name{font:600 32px/1.05 var(--f-display);letter-spacing:-.02em}
-.menu-card .mc-role{font:400 17px/1.4 var(--f-sans);color:var(--haze-ink);margin-top:10px}
-.menu-card .mc-mail{font:500 20px/1.3 var(--f-sans);letter-spacing:-.01em;margin-top:10px;display:inline-block;align-self:flex-start}
+.menu-card .mc-name{font:600 var(--t-title)/1.05 var(--f-display);letter-spacing:-.02em}
+.menu-card .mc-role{font:400 var(--t-body)/1.4 var(--f-sans);color:var(--haze-ink);margin-top:var(--s2)}
+.menu-card .mc-mail{position:relative;font:500 var(--t-lead)/1.3 var(--f-sans);letter-spacing:-.01em;margin-top:var(--s2);display:inline-block;align-self:flex-start}
+/* 2026-10-22 (audit check): 44px taps for the card's email and pills; the email stays inside the card up to 1279 */
+.menu-card .mc-mail::after{content:"";position:absolute;inset:-10px 0}.menu-card .pill--sm::after{content:"";position:absolute;inset:-2px 0}
+@media (max-width:1279px){.menu-card .mc-mail{font-size:var(--t-body)}}
 .menu-card .mc-social{display:flex;gap:8px;margin:20px 0 36px}
 .menu-card .mc-stub{flex:1;background:var(--ice-2);padding:0 36px;display:flex;align-items:center;justify-content:space-between}
 .menu-card .mc-stub .label{color:var(--haze-ink)}
@@ -392,16 +414,17 @@ html.field-still .menu .m-still{display:block}
   background-position:0 50%;background-repeat:round no-repeat}
 .menu-card .tear--h{--hole-c:#15111F2e}
 .menu-foot{position:absolute;left:var(--margin);right:var(--margin);bottom:28px;display:flex;justify-content:flex-end;font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:#F3F1F8b3}
-@media (max-width:767px){
+/* 2026-10-22 (audit check): the card stacks under the links up to 1179, where four columns can hold the email and both pills (it clipped them at 768 to 1179) */
+@media (max-width:1179px){
   .menu-inner{display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;min-height:100svh;padding:96px var(--margin) 16px;gap:32px}
-  .menu-links{gap:2px;margin-block:auto}
+  .menu-links{gap:var(--s1);margin-block:auto}
   .menu-link{font-size:clamp(52px,15vw,60px)}
   .menu .m-vignette{background:radial-gradient(100% 62% at 0% 42%,#110D1Cb3,#110D1C00 74%),radial-gradient(120% 100% at 50% 50%,#0000 45%,#110D1C4d)}
   .menu-card{width:100%;height:auto;-webkit-mask:none;mask:none;border-radius:var(--r-card-m)}
   .menu-card .mc-top{flex:none;padding:24px 24px 0}
   .menu-card .mc-name,.menu-card .mc-role{display:none}
   .menu-card .mc-label{margin-top:0}
-  .menu-card .mc-mail{margin-top:0;font-size:18px}
+  .menu-card .mc-mail{margin-top:0}
   .menu-card .mc-social{margin:16px 0 24px}
   .menu-card .tear--h{display:none}
   .menu-card .mc-stub{padding:16px 24px;border-top:1px solid var(--line-ice)}
@@ -424,8 +447,8 @@ html.is-static *,html.is-static *::before,html.is-static *::after{animation-play
 html.is-static .cursor-lens .lens-ring{animation:none}
 
 /* ── 18 · stage 2: motion pieces ─────────────────────────────────────────── */
-/* loader readout: a plain percentage, Mono 11, beside the pinhole */
-.ld-read{position:fixed;left:0;top:0;z-index:6;pointer-events:none;font:400 11px/1 var(--f-mono);letter-spacing:.02em;color:var(--moon);
+/* loader readout: a plain percentage, Mono at the micro step, beside the pinhole */
+.ld-read{position:fixed;left:0;top:0;z-index:6;pointer-events:none;font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:var(--moon);
   font-variant-numeric:tabular-nums;will-change:transform;white-space:nowrap}
 .ld-read .roll{min-width:4ch}
 html.is-loading{cursor:progress}
