@@ -126,6 +126,7 @@
   for (var i = 1; i <= 7; i++) WORK.live['heycar/finance-0' + i] = scr('heycar/finance-0' + i, 2400, 1500);
   /* Juno: its own pages, the made-up example report and Juno's quick audit of this site (tools/juno.py) */
   WORK.live['juno/report-summary'] = scr('juno/report-summary', 2008, 798);
+  WORK.live['juno/report-summary-after'] = scr('juno/report-summary-after', 2008, 800);   /* the re-run with the fixes live, 22 Oct */
   WORK.live['juno/scores'] = scr('juno/report-scores', 2064, 884);
   WORK.live['juno/finding'] = scr('juno/report-finding', 1920, 1096);
   WORK.live['juno/six-questions'] = scr('juno/home-questions', 2544, 1703);
@@ -164,7 +165,7 @@
   /* ── the projects ─────────────────────────────────────────────────────────── */
   WORK.projects = {
     /* Juno (2026-10-22): junoknows.design, a website audit Werner designed and built alone with Claude Code. The
-       numbers are his own site's quick audit of 21 Oct 2026. */
+       numbers are his own site's quick audits of 21 Oct 2026 (48) and 22 Oct 2026, with the fixes live (56). */
     juno: {
       type: 'case', no: '01', hue: { h1: 'glacier', h2: 'orchid', ax: '26%', ay: '20%' },   /* a case study; on the homepage also under Recent work */
       card: 'juno/laptop', cardAlt: 'Juno’s homepage on a laptop: “Your website, seen by a designer.” beside Juno the jellyfish',
@@ -190,8 +191,8 @@
         { heading: 'The six questions customers ask', body: 'Inside, the report has six audits with expert names, like UX and SEO. On the homepage, I framed the audit as six questions a customer asks. Can people find you? Is it clear in 5 seconds? Each card lists the checks behind its question, with no design jargon.', image: 'juno-3', imageAlt: 'Six cards, one per question, from “Can people find you?” to “Do you look trustworthy?”' },
         { heading: 'What to fix first', body: 'Each finding is ranked by how serious it is and how widely it shows. After the scores, the report picks the three that matter most, no more than two from one audit. When two findings matter equally, the quicker fix comes first.', image: 'juno-4', imageAlt: '“If you only do three things” from my site’s report: three numbered fixes, each with why it matters' },
       ],
-      outcome: 'Juno is live at junoknows.design. I designed and built it in 4 days with Claude Code. It reviews a website against a rubric of 68 checks. On my own site it scored 48, and I fixed 12 of its 19 findings.',
-      stats: [{ n: '4', label: 'Days to build' }, { n: '68', label: 'Checks in the rubric' }, { n: '48', label: 'My site’s score out of 100' }],
+      outcome: 'Juno is live at junoknows.design. I designed and built it in 4 days with Claude Code. It reviews a website against a rubric of 68 checks. My own site went from 48 to 56 after I fixed 12 of its 19 findings.',
+      stats: [{ n: '4', label: 'Days to build' }, { n: '68', label: 'Checks in the rubric' }, { from: '48', to: '56', label: 'My site’s score out of 100' }],
       nextSlug: 'galvany',
     },
     affinidi: {
@@ -397,10 +398,11 @@
           'That day I fixed small things, like 44px tap targets and instant press feedback. The next day I took on the design and copy findings. The site now has one type scale of eight steps. Almost all its spacing sits on a 4px grid. No sentence on a case page runs past 20 words, and the pages load faster.',
         ], cols: 2 },
         { figs: [
-          { m: L('juno/report-summary'), label: 'Quick audit · 21 Oct 2026', alt: 'Juno’s summary for wernersdesigns.com: 48 of 100, Poor, with 3 critical, 6 major and 10 minor findings, 51% checked' },
+          { m: L('juno/report-summary'), label: 'Before · 21 Oct 2026', span: 6, alt: 'Juno’s summary for wernersdesigns.com on 21 October: 48 of 100, Poor, with 3 critical, 6 major and 10 minor findings, 51% checked' },
+          { m: L('juno/report-summary-after'), label: 'After the fixes · 22 Oct 2026', span: 6, alt: 'Juno’s summary for wernersdesigns.com on 22 October: 56 of 100, Needs work, with 3 critical, 3 major and 13 minor findings, 51% checked' },
         ] },
         { p: ['Not every finding held up. One critical finding was about words in my intro that start dim and sharpen as you scroll. Juno measured them while dim, at a contrast of 1.42:1. Its report said they might be mid-animation. They are. They reach full contrast once read and never dim with reduced motion, so I left them.'] },
-        { note: 'That 48 is from before the fixes. I haven’t run Juno on the site since.' },
+        { p: ['On 22 October, with the fixes live, I ran it again. The score went from 48 to 56. Copy rose from 75 to 88, SEO from 70 to 85 and UI from 47 to 56. Accessibility stayed at 38. Its five findings are the ones I checked and left, like those words in my intro.'] },
       ] },
       audit: { name: 'The audit', h2: 'One link in, six answers out.', blocks: [
         { steps: [
