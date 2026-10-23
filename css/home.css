@@ -11,15 +11,18 @@ section{position:relative;z-index:3}
    Bottom-left group, stacked: headline → 28px → subline, whose last baseline sits 64px above the viewport bottom
    (round 2: the CTA became the See-the-work badge, bottom-right). Gaps are optical, measured from rendered Funnel
    Display/Sans ink: the "pp" descender ends 1.745em below the h1 box top; the subline's ink starts .28em into its box
-   and its second baseline is 2.287em down.
+   and its last baseline sits .313em above the box bottom (two lines: 2.287em down).
+   2026-10-23 (Werner): the role leads the subline, so it is three lines on desktop and as many as a phone needs. The
+   stack uses its measured box height, --sub-h (HOME.layoutHero writes it), where it assumed two lines (2.007em).
    --h1-size here is the ceiling; HOME.fitHeadline() lowers it (inline, px) until every glyph of the headline stays
    ≥ 24px outside the aperture edge. The headline may pass over the ring's text band (masked there), never the photo.
    ?hero=a (html.hero-a) keeps the first refinement: portrait 78svh, headline sized to clear the whole ring. */
 .hero{height:100svh;min-height:560px;background:transparent;overflow:clip;
   --acx:68vw;--acy:calc(50svh + 25px);--ar:36svh;--sy:0px;
-  --sub-size:clamp(28px, 3.8vw, 40px);                /* round 4: doubled, then capped at 40px (Werner) */
+  --sub-size:clamp(28px, 3.8vw, 32px);                /* round 4: doubled, then capped at 40px (Werner); 2026-10-23 (Juno): the audit's 8 type steps moved the cap to 32 */
   --h1-size:clamp(64px, min(11.5vw, 18.5svh), 188px);
-  --h1-top:calc(100svh - 64px - 28px - 2.007 * var(--sub-size) - 1.745 * var(--h1-size));
+  --sub-h:calc(3.9 * var(--sub-size));                /* three lines at 1.3 until js measures it */
+  --h1-top:calc(100svh - 64px - 28px - (var(--sub-h) - .593 * var(--sub-size)) - 1.745 * var(--h1-size));
   --sub-top:calc(var(--h1-top) + 1.745 * var(--h1-size) + 28px - .28 * var(--sub-size))}
 html.hero-a .hero{--acx:66vw;--acy:52svh;--ar:39svh;--h1-size:clamp(64px, min(11.5vw, 21svh, 17.5vw - 12.73svh - 15.9px), 188px)}
 .aperture{position:fixed;inset:0;z-index:0;pointer-events:none;clip-path:circle(var(--ar) at var(--acx) var(--acy))}
@@ -48,11 +51,14 @@ html.hero-off:not(.is-static) .aperture,html.hero-off:not(.is-static) .barrel{vi
 .b-hair--out{width:calc(2 * (var(--br,var(--ar)) + var(--hair-out,46px)));height:calc(2 * (var(--br,var(--ar)) + var(--hair-out,46px)))}
 .barrel .ring-svg{color:#8C86A3cc}
 
-.portrait-link{position:absolute;inset:0;z-index:1;clip-path:circle(var(--ar) at var(--acx) calc(var(--acy) + var(--sy)))}
-.portrait-link:focus-visible{outline:none}
-/* the link is clipped to the aperture, so its focus ring is drawn on the (unclipped) barrel */
+/* 2026-10-23 (Juno): the link is a circle on the aperture (it was the hero's box, clipped to it), so it draws its own
+   focus ring, 6px outside the photo as before (that ring was .b-focus, on the barrel). It is placed by translate, not
+   left/top, so following the aperture (the loader, the stop-down) is no layout shift. .b-focus stays, unlit: the
+   cursor lens reads its size (data-lens-circle) */
+.portrait-link{position:absolute;z-index:1;left:0;top:0;width:calc(2 * var(--ar));height:calc(2 * var(--ar));border-radius:50%;
+  translate:calc(var(--acx) - var(--ar)) calc(var(--acy) + var(--sy) - var(--ar))}
+.portrait-link:focus-visible{outline-offset:6px}
 .b-focus{width:calc(2 * (var(--ar) + 6px));height:calc(2 * (var(--ar) + 6px));border-radius:50%;box-shadow:0 0 0 2px var(--glacier);opacity:0;transition:opacity 160ms linear}
-html.portrait-focus .b-focus{opacity:1}
 html.portrait-focus .barrel{opacity:1!important}
 
 .hero-sub{position:absolute;z-index:2;left:var(--margin);top:var(--sub-top);margin:0;font:400 var(--sub-size)/1.3 var(--f-sans);letter-spacing:-.02em;color:#F3F1F8d1}
@@ -63,9 +69,13 @@ html.portrait-focus .barrel{opacity:1!important}
    top + --h1-cap em, measured on Funnel Display 600 at line-height .88). Glass keys like the menu button, then the words,
    then the five schemes as five stops, this one lit. Clicking it reloads, which moves to the next scheme. */
 .hero{--eb-h:36px;--eb-gap:clamp(24px, 2.2vw, 32px);--h1-cap:.105}
+/* 2026-10-23 (Juno): the box itself is the 44px tap (it was a 44px ::after around a 36px box, 30 on phones), centred on
+   the keys, which keep --eb-h, so nothing moves; square at rest like the other no-fill controls (its focus ring keeps
+   the stadium), and the line presses toward the margin on pointer-down */
 .hero-eyebrow{position:absolute;z-index:2;left:var(--margin);top:calc(var(--h1-top) + var(--h1-cap) * var(--h1-size) - var(--eb-gap) - var(--eb-h));
-  height:var(--eb-h);display:inline-flex;align-items:center;gap:16px;border-radius:var(--btn-r);
-  font:var(--btn-w) var(--btn-fs)/1 var(--btn-f);letter-spacing:.02em;color:var(--moon);white-space:nowrap}
+  height:max(var(--eb-h),44px);margin-top:calc((var(--eb-h) - max(var(--eb-h),44px)) / 2);display:inline-flex;align-items:center;gap:16px;border-radius:0;
+  font:var(--btn-w) var(--btn-fs)/1 var(--btn-f);letter-spacing:.02em;color:var(--moon);white-space:nowrap;
+  transform-origin:0 50%;transition:scale 150ms ease-out}
 /* 2026-10-22 (audit): the button carries the control face (tier 3, text); its sentence keeps the Mono hint */
 .eb-text{font:400 var(--t-ui)/1 var(--f-mono);letter-spacing:.02em;color:#F3F1F8b3;transition:color var(--d-short) var(--ease-focus)}
 .eb-keys{display:inline-flex;gap:var(--s1)}
@@ -80,10 +90,10 @@ html:not(.kbd-mac) .k-mac,html:not(.kbd-pc) .k-pc,html:not(.kbd-touch) .k-touch,
 .eb-dots [data-s=violet]{--c:#7C6BFF}.eb-dots [data-s=ember]{--c:#FF6B2B}.eb-dots [data-s=cobalt]{--c:#3F6BFF}
 .eb-dots [data-s=sodium]{--c:#FFC933}.eb-dots [data-s=borealis]{--c:#2EE59D}
 @media (hover:hover){.hero-eyebrow:hover .eb-text{color:var(--moon)}.hero-eyebrow:hover .eb-key::after{opacity:1}.hero-eyebrow:hover .eb-dots i{opacity:.7}.hero-eyebrow:hover .eb-dots i.is-on{opacity:1}}
-.hero-eyebrow.is-pressed .eb-key{transform:scale(.9)}
+.hero-eyebrow:active{scale:var(--btn-press)}
+.hero-eyebrow:active .eb-key,.hero-eyebrow.is-pressed .eb-key{transform:scale(.9)}   /* 2026-10-23 (Juno): the keys go down on pointer-down too */
 .hero-eyebrow.is-pressed .eb-r{transition-delay:60ms}
-.hero-eyebrow:focus-visible{outline-offset:6px}
-.hero-eyebrow::after{content:"";position:absolute;left:0;right:0;top:50%;height:max(100%,44px);translate:0 -50%}   /* 2026-10-21 (audit): a 44px tap (drawn 30px on phones) */
+.hero-eyebrow:focus-visible{outline-offset:2px;border-radius:var(--r-pill)}   /* 2026-10-23: 2px around the 44px box hugs the keys as 6px did around 36 */
 @media (max-width:767px){.hero-eyebrow{gap:var(--s2)}.eb-key .k-touch{width:14px;height:14px}
   .eb-dots{gap:var(--s2);margin-left:var(--s1)}.eb-dots i{width:6px;height:6px}}
 @media (max-width:359px){.eb-dots{display:none}}   /* 2026-10-22 (audit): a 320px phone fits the keys and the sentence, the five stops step aside */
@@ -92,8 +102,10 @@ html:not(.kbd-mac) .k-mac,html:not(.kbd-pc) .k-pc,html:not(.kbd-touch) .k-touch,
    FS.ring fit 'fill' with the portrait ring's tracking, spaces and colour. 2026-10-08 motion cut: it no longer spins
    (nor speeds up on hover/focus), and the arrow no longer slides: the core lighting up is the hover. */
 .see{position:absolute;z-index:2;left:calc(var(--see-x,-999px) - var(--see-d,132px) / 2);top:calc(var(--see-y,-999px) - var(--see-d,132px) / 2);
-  width:var(--see-d,132px);height:var(--see-d,132px);border-radius:50%;color:var(--moon);-webkit-tap-highlight-color:transparent}
-.see:focus-visible{outline:none}
+  width:var(--see-d,132px);height:var(--see-d,132px);border-radius:50%;color:var(--moon);-webkit-tap-highlight-color:transparent;
+  transition:scale 320ms var(--ease-glass)}
+/* 2026-10-23 (Juno): the ring is the badge's own outline (it was the core's), drawn 3px outside the core as before */
+.see:focus-visible{outline-offset:calc((var(--see-core,64px) - var(--see-d,132px)) / 2 + 3px)}
 .see-in{position:absolute;inset:0;border-radius:50%;transition:transform 320ms var(--ease-glass)}
 .see-in>*{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
 .see-in>.see-ring{color:#8C86A3cc;pointer-events:none}
@@ -105,8 +117,7 @@ html:not(.kbd-mac) .k-mac,html:not(.kbd-pc) .k-pc,html:not(.kbd-touch) .k-touch,
 .see-core .arr{width:var(--see-arr,18px);height:var(--see-arr,18px);vertical-align:0;transition:color 240ms var(--ease-focus)}
 @media (hover:hover){.see:hover .b-light{--bl:50%}.see:hover .arr{color:var(--ink)}.see:hover .glass::after{opacity:1}}
 .see:focus-visible .b-light{--bl:50%}.see:focus-visible .arr{color:var(--ink)}
-.see:focus-visible .see-core{outline:2px solid var(--glacier);outline-offset:3px}
-.see:active .see-in,.see.is-pressed .see-in{transform:scale(var(--btn-press))}
+.see:active{scale:var(--btn-press)}   /* 2026-10-23 (Juno): the badge itself (it was its inner .see-in) */
 
 .hero-title{position:absolute;z-index:2;left:var(--margin);top:var(--h1-top);margin:0;white-space:nowrap;
   padding-right:.3em;                                  /* the mask covers the box only: room for the overhanging full stop */
@@ -174,20 +185,21 @@ html:not(.kbd-mac) .k-mac,html:not(.kbd-pc) .k-pc,html:not(.kbd-touch) .k-touch,
 .bio-eye img{position:absolute;left:-9%;top:-12%;width:118%;height:118%;max-width:none;object-fit:contain}
 .bio-eye .be-soft{opacity:0}                         /* 2026-10-08 motion cut: the eye no longer pulls focus, it rests sharp */
 .bio-now{font:400 var(--t-title)/1.2 var(--f-sans);letter-spacing:-.015em;max-width:13em;text-wrap:balance}
-.bio-now strong{font-weight:700;letter-spacing:.01em}
+.bio-now strong{font-weight:700;letter-spacing:0}   /* 2026-10-23 (Juno): was .01em, loose at 32px */
 .bio-facts{margin:auto 0 clamp(32px, 3.3vw, 48px);margin:auto 0 round(clamp(32px, 3.3vw, 48px), 4px);width:100%;border-top:1px solid var(--line-ice)}
 .bio-facts>div{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s5);padding:clamp(16px, 1.3vw, 22px) 0;padding:round(clamp(16px, 1.3vw, 22px), 4px) 0;border-bottom:1px solid var(--line-ice)}
 .bio-facts dt{font:400 var(--t-micro)/1.3 var(--f-mono);letter-spacing:.02em;color:var(--haze-ink);white-space:nowrap}
 .bio-facts dd{margin:0;font:500 var(--t-body)/1.3 var(--f-sans);letter-spacing:-.01em;text-align:right}
 /* the resume pill, one size up for a chapter this large. 2026-10-22 (audit): the lg stadium (56) on the control face,
    its chip 44 at the concentric 6px inset */
-.pill--lg{height:var(--btn-h-lg);padding:0 6px 0 24px;gap:16px}
+.pill--lg{height:var(--btn-h-lg);padding:0 6px 0 var(--btn-px);gap:16px}   /* 2026-10-23 (Juno): the stadiums' inset, was 24 */
 .pill--lg .chip{width:44px;height:44px}
 .pill--lg .chip .arr{width:18px;height:18px}
 
 /* ── clients ──────────────────────────────────────────────────────── */
 .clients{background:var(--night);padding-top:var(--s9);padding-bottom:var(--s6)}
 .caption{font:500 var(--t-heading)/1.05 var(--f-display);letter-spacing:-.02em;margin-top:var(--s4)}
+@media (min-width:768px){.caption{font-size:max(28px, var(--t-title))}}   /* 2026-10-23 (Juno): the title step (32 at 1440, was 44); phones keep 28 */
 .logo-band{position:relative;height:120px;margin-top:40px}
 .logo-band canvas{position:absolute;inset:0;width:100%;height:100%}
 .logo-band::before,.logo-band::after{content:"";position:absolute;top:0;bottom:0;width:96px;z-index:1;pointer-events:none}
@@ -281,6 +293,12 @@ html.is-static .logo-band::before,html.is-static .logo-band::after,html.is-reduc
 .nw{white-space:nowrap}
 .svc-sub{grid-column:9 / 12;font:400 var(--t-body)/1.4 var(--f-sans);color:var(--haze)}
 .svc-toggle{grid-column:12;justify-self:end}
+/* 2026-10-23 (Juno): from 1280 the row's 48px margin is two edge tracks of the grid, not the button's padding (the
+   columns stay where they were) */
+@media (min-width:1280px){
+  .svc-head{padding-inline:0;grid-template-columns:calc(var(--margin) - var(--gutter)) repeat(12,minmax(0,1fr)) calc(var(--margin) - var(--gutter))}
+  .svc-idx{grid-column:2}.svc-title{grid-column:3 / 10}.svc-sub{grid-column:10 / 13}.svc-toggle{grid-column:13}
+}
 .svc-toggle i{position:absolute;left:50%;top:50%;width:14px;height:1.5px;translate:-50% -50%;background:currentColor;border-radius:1px;transition:transform 320ms var(--ease-focus)}
 .svc-toggle i:last-child{width:1.5px;height:14px}
 .svc.is-open .svc-toggle i:last-child{transform:scaleY(0)}
@@ -297,7 +315,7 @@ html.is-static .logo-band::before,html.is-static .logo-band::after,html.is-reduc
 
 /* ── companies ─────────────────────────────────────────────────────── */
 .companies{--ground:var(--ice);background:var(--ice);padding-top:var(--s11);padding-bottom:var(--s11)}
-.co-head{max-width:960px;margin:0 auto;text-align:center;display:flex;flex-direction:column;align-items:center}
+.co-head{display:flex;flex-direction:column;align-items:flex-start}   /* 2026-10-23 (Juno): on the margin like every other section head (was centred) */
 .co-head .h2{margin-top:var(--s4);max-width:8.4em}
 .co-intro{max-width:640px;margin-top:var(--s6);color:var(--haze-ink);text-wrap:balance}   /* 2026-10-22 (audit): no lone word on its last line */
 .co-list{max-width:960px;margin:var(--s9) auto 0;display:flex;flex-direction:column;gap:var(--s4)}
@@ -327,6 +345,18 @@ html.is-static .logo-band::before,html.is-static .logo-band::after,html.is-reduc
 .co-punch{justify-self:center;width:var(--punch);height:var(--punch);border-radius:50%;clip-path:circle(var(--pr,50%) at 50% 50%);
   box-shadow:inset 0 1px 3px #0000008c,inset 0 0 0 1px #15111F33}
 .co-punch.is-unlit{background:var(--ice);box-shadow:inset 0 0 0 1px var(--line-ice);clip-path:none}
+/* 2026-10-23 (Juno): from 768 the list spans the page grid (it was a centred 960): the name and line start on the work
+   cards' text edge (the margin + --inset), the number follows, and the stub (the year over its sector) sits at the
+   right end beside the punch, the tear on its left. Phones keep their own layout (the 390 block) */
+@media (min-width:768px){
+  .co-list{max-width:none;margin:var(--s9) 0 0}
+  .co-card{--tx:calc(100% - 248px);grid-template-columns:minmax(0,1fr) auto 168px 80px}
+  .co-card>.co-body{grid-column:1;padding-left:var(--inset)}
+  .co-card>.co-out{grid-column:2;padding-right:var(--s6)}
+  .co-card>.co-year,.co-card>.co-tag{grid-column:3}
+  .co-card>.co-punch{grid-column:4}
+}
+@media (min-width:1600px){.co-list{max-width:calc(1440px - 2 * var(--margin))}}   /* 2026-10-23: wider screens keep the 1440 row, left on the margin (at 1920 a name sat 1,100px from its number) */
 
 /* ── footer ────────────────────────────────────────────────────────── */
 .footer{z-index:3;min-height:max(100svh,820px);padding-top:var(--s9);display:flex;flex-direction:column;color:var(--moon);overflow:clip}
@@ -344,7 +374,7 @@ html.is-static .ft-sky,html.field-borrowed .ft-sky,html.field-still .ft-sky{disp
 .ft-line{font:400 var(--t-lead)/1.35 var(--f-sans);letter-spacing:-.01em;max-width:520px;text-wrap:pretty}
 .ft-connect .label,.ft-kicker{color:#F3F1F8b3}
 /* the section kicker, clear of the header when the menu's "Contact" lands the footer at the top */
-.ft-kicker{display:block;margin:0 0 var(--s4)}   /* 2026-10-22 (audit): one text run: the case pages' number span no longer sets a second edge after a flex gap */
+.ft-kicker{display:block;margin:0 var(--margin) var(--s4);padding-inline:0}   /* 2026-10-22 (audit): one text run: the case pages' number span no longer sets a second edge after a flex gap. 2026-10-23 (Juno): the margin outside the box (was .wrap's padding), so the box starts where the text does */
 .ft-pills{display:flex;gap:var(--s2);margin-top:var(--s4)}
 .ft-disc{grid-column:8 / 13;display:grid;place-items:center}
 .disc-wrap{position:relative;width:360px;height:360px}
@@ -357,11 +387,11 @@ html:not(.disc-js) .disc{transition:clip-path 520ms var(--ease-glass)}
   clip-path:circle(0 at 50% 50%);transition:clip-path 520ms var(--ease-focus)}   /* 2026-10-08 motion cut: no spin. 2026-10-22 (audit): centred by translate, so js sets only the box */
 @media (hover:hover){html:not(.disc-js) .disc-wrap:hover .disc{--dr:180px}html:not(.disc-js) .disc-wrap:hover .disc-ring{clip-path:circle(71% at 50% 50%)}}
 html:not(.disc-js) .disc:focus-visible{--dr:180px}
-.disc:focus-visible{outline:none}
+.disc:focus-visible{outline-color:var(--ink);outline-offset:-12px}   /* 2026-10-23 (Juno): a 2px ink ring 12px inside the opened disc, keyboard focus only (its clip hides anything outside) */
 .disc-wrap.is-open .disc-ring,.disc-wrap:focus-within .disc-ring{clip-path:circle(71% at 50% 50%)}
 .ft-bottom{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center;border-top:1px solid var(--line-night);
   padding-top:var(--s5);padding-bottom:var(--s5);font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:#F3F1F8a6}
-.ft-bottom .fb-c{grid-column:1 / 5}.ft-bottom .fb-b{grid-column:9 / 11}   /* 2026-10-22 (audit): on column 9, with the bio stub and the services' right column */
+.ft-bottom .fb-c{grid-column:1 / 5}.ft-bottom .fb-l{grid-column:5 / 9}.ft-bottom .fb-b{grid-column:9 / 11}   /* 2026-10-22 (audit): on column 9, with the bio stub and the services' right column */
 /* the page ends on its full stop: the brand's lit disc, as a sign-off */
 .ft-dot{grid-column:12;justify-self:end;display:block;width:13px;height:13px;border-radius:50%;box-shadow:0 0 6px color-mix(in srgb,var(--iris) 40%,transparent)}
 
@@ -386,6 +416,17 @@ html:not(.disc-js) .disc:focus-visible{--dr:180px}
   .hero,html.hero-a .hero{--acx:50vw;--acy:266px;--ar:37vw;--h1-size:64px;--h1-top:calc(557px - .815 * 64px);--sub-size:clamp(24px, 7.2vw, 28px);
     --eb-h:30px;--eb-gap:18px;
     --hair-in:6px;--hair-out:23px;min-height:760px}
+  /* 2026-10-23 (Werner): with the role line the phone subline is 24px ("24px subline"), so "Lead Product Designer in
+     Berlin." holds one line from 360 up and the subline stays three lines. The stack keeps its top under the portrait
+     and grows down. A line wraps 6px short of the edge */
+  .hero,html.hero-a .hero{--sub-size:24px;--sub-h:calc(3.9 * var(--sub-size))}
+  .hero-sub{max-width:calc(100% - var(--margin) - 6px)}
+  /* 2026-10-23 (Werner): the See badge overlaps the photo's bottom-right (HOME.buildSee), on its own night disc that
+     reaches --see-moat (one air) past its outer hairline: the photo and the portrait ring's hairlines stop there, its
+     own ring and glass core read as on the night. It fades with the badge (.see-in) and presses with it. .see-in goes
+     under the badge's own layer (z-index −1 in .see), so the focus ring round the core still paints on top of the disc */
+  .see-in{z-index:-1}
+  .see-in::before{content:"";position:absolute;inset:calc(-1 * var(--see-moat,0px));border-radius:50%;background:var(--night)}
 
   .vision{padding-top:var(--s9);padding-bottom:var(--s7)}
   .m-br{display:inline}
@@ -462,7 +503,7 @@ html:not(.disc-js) .disc:focus-visible{--dr:180px}
   html:not(.disc-js) .disc:focus-visible{--dr:130px}
   .ft-bottom{grid-template-columns:minmax(0,1fr) auto;row-gap:var(--s4);padding-bottom:var(--s6)}
   .ft-bottom .fb-c{grid-column:1;grid-row:1}.ft-dot{grid-column:2;grid-row:1;width:12px;height:12px}
-  .ft-bottom .fb-b{grid-column:1;grid-row:2}
+  .ft-bottom .fb-b{grid-column:1;grid-row:2}.ft-bottom .fb-l{grid-column:1 / -1;grid-row:3}
   html.is-static .logo-band,html.is-reduced .logo-band{height:256px}
 }
 

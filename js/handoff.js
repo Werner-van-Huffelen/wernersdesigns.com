@@ -21,7 +21,8 @@
  *             and once the hero's own light has drawn, the cover dissolves into it (760ms): nothing moves or shrinks,
  *             and WORK.hero.focusIn() brings the device, copy and meta into focus under it. Without a handoff (a direct
  *             visit, a reload) work.js plays its own intro, the light's iris from the device; never both.
- *   back      the "Selected work" pill, "Back to all work" and the menu's homepage links: sessionStorage['fs.back'] (the
+ *   back      the "Selected work" pill, "Back to all work" and the menu's homepage links (2026-10-23, Juno: all four, as
+ *             ./#about, ./#work, ./#companies, ./#footer): sessionStorage['fs.back'] (the
  *             click time), and the page focuses out into the night (a veil under the header) and goes. The homepage's
  *             head then turns its pinhole loader (is-loading) into html.is-back: the night stays up until the section
  *             is landed (after the pins are measured), then lifts, the blur racking out behind it. Other visits keep
@@ -172,8 +173,10 @@
     const a = e.target.closest('a[href]');
     if (busy) { if (a) e.preventDefault(); return; }     /* on the way out already (a key can still reach a link) */
     /* back: the pills, and on a work page the menu's homepage links (About, Case studies, Companies): a return to the
-       homepage like the pills, so they land their section at once instead of replaying the loader in front of it */
-    if (a && (a.hasAttribute('data-back') || (onWork && a.classList.contains('menu-link') && /^index\.html#[a-z]/i.test(a.getAttribute('href'))))) {
+       homepage like the pills, so they land their section at once instead of replaying the loader in front of it.
+       2026-10-23 (Juno): the homepage is ./ now (index.html still counts), and Contact (./#footer) is one of them; a bare
+       #footer, this page's own footer, is not */
+    if (a && (a.hasAttribute('data-back') || (onWork && a.classList.contains('menu-link') && /^(?:index\.html|\.\/)#[a-z]/i.test(a.getAttribute('href'))))) {
       if (mod(e)) return;                                 /* a new tab: a normal visit, with its loader */
       put(BACK, String(Date.now()));
       if (!motion) return;

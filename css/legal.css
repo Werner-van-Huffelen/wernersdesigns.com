@@ -1,0 +1,22 @@
+/* ==========================================================================
+   Full Stop · the legal pages (Impressum, Datenschutz; 2026-10-23, Werner: "Add Impressum + privacy page", in German
+   with an English line). Static and script-free: the header is the brand alone (home), the type is the site's own
+   steps (label, section, title, body), and the footer row is the one every page ends on.
+   ========================================================================== */
+body.legal{background:var(--night);color:var(--moon)}
+.legal .site-header{pointer-events:auto}
+.legal main{padding:calc(var(--header-h) + var(--s8)) var(--margin) var(--s9)}
+.legal-doc{max-width:44rem}
+.legal-doc .label{color:var(--haze)}
+.legal-doc h1{margin:var(--s4) 0 0;font:600 var(--t-section)/.98 var(--f-display);letter-spacing:-.04em;text-wrap:balance}
+.legal-doc .legal-en{margin-top:var(--s5);font:400 var(--t-body)/1.5 var(--f-sans);color:var(--haze)}
+.legal-doc h2{margin:var(--s8) 0 0;font:600 var(--t-title)/1.1 var(--f-display);letter-spacing:-.02em}
+.legal-doc p,.legal-doc li{font:400 var(--t-body)/1.6 var(--f-sans);color:#F3F1F8d9;text-wrap:pretty}
+.legal-doc h2+p,.legal-doc p+p,.legal-doc p+ul,.legal-doc ul+p{margin-top:var(--s4)}
+.legal-doc ul{margin:var(--s4) 0 0;padding-left:var(--s5)}
+.legal-doc li+li{margin-top:var(--s2)}
+.legal-doc a{color:var(--moon);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.2em;text-decoration-color:var(--haze)}
+@media (hover:hover){.legal-doc a:hover{text-decoration-color:var(--moon)}}
+.legal-doc .legal-date{margin-top:var(--s8);font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:var(--haze)}
+.legal-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--s4);margin:0 var(--margin);
+  padding:var(--s5) 0;border-top:1px solid var(--line-night);font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:#F3F1F8a6}

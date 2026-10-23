@@ -29,7 +29,7 @@
   --f-sans:"Funnel Sans","Funnel Sans Fallback",Arial,sans-serif;
   --f-mono:"Fragment Mono","Fragment Mono Fallback","Courier New",monospace;
   --t-hero:clamp(64px, min(11.5vw, 21svh), 188px);
-  --t-footer:clamp(72px, 15.5vw, 224px);
+  --t-footer:clamp(64px, min(11.5vw, 18.5svh), 188px);   /* 2026-10-23 (Juno): the hero headline's (--h1-size), was clamp(72px, 15.5vw, 224px) */
   --t-menu:clamp(52px, 9vw, 144px);
   /* 2026-10-22 (audit): one 8-step scale for everything that is not fit or geometry. Fluid, exact at 390 and 1440
      (11/14/16/18/24/28/32/44 → 12/15/18/24/32/44/64/96); the top three keep their slope past 1440, up to 1.25× */
@@ -55,6 +55,7 @@
      alias those here (a custom property resolves where it is declared, so an alias on :root would freeze the night) */
   --btn-r:var(--r-pill); --btn-f:var(--f-sans); --btn-w:500; --btn-fs:var(--t-ui); --btn-ls:-.005em;
   --btn-h-sm:40px; --btn-h-md:48px; --btn-h-lg:56px; --btn-press:.96;
+  --btn-px:20px;   /* 2026-10-23 (Juno): the stadiums' text inset (the sm pill's), shared by the filters and the resume pill */
   --btn-1-bg:var(--ink); --btn-1-fg:var(--ice);
   --lens-text:120px; --lens-media:240px; --disc:280px; --disc-open:360px;
   /* motion */
@@ -125,6 +126,11 @@ a{-webkit-tap-highlight-color:transparent}
 .skip{position:fixed;left:16px;top:16px;z-index:100;display:inline-flex;align-items:center;min-height:var(--btn-h-md);padding:0 20px;border-radius:var(--btn-r);background:var(--moon);color:var(--ink);
   font:var(--btn-w) var(--btn-fs)/1 var(--btn-f);letter-spacing:var(--btn-ls);transform:translateY(-200%)}   /* 2026-10-21 (audit): 44px tall, was 35. 2026-10-22: tier 1, ink with the glass rim (§10), 48 */
 .skip:focus-visible{transform:none}
+/* 2026-10-23 (Juno): visually hidden until keyboard focus (clip-path), still 48px tall when it shows. Its 8px corner
+   (index.html, work.html) is a workaround for Juno's keyboard walk, which clicks at (1,1) before its first Tab: the
+   click lands on the corner, so Tab starts at the skip link instead of after the header. Nothing in it to see or focus */
+.skip:not(:focus-visible){clip-path:inset(50%);opacity:0}   /* opacity too: Juno's visibility test misses inset(50%) */
+.skip-zone{position:fixed;left:0;top:0;width:8px;height:8px;z-index:100}
 
 /* ── 4 · tone ───────────────────────────────────────────────────────────── */
 .on-ice{--fg:var(--ink);--fg-dim:var(--haze-ink);--line:var(--line-ice);--glass:var(--glass-fill-ice);--rim:var(--glass-rim-ice);--aurora:var(--aurora-sky);color:var(--fg);color-scheme:light}
@@ -244,22 +250,24 @@ html.no-ctr .ctr::before{display:none}
 .tag .t-stop{position:relative;width:6px;height:6px;border-radius:50%;flex:none;background:var(--ground);box-shadow:inset 0 0 0 1px var(--fg-dim)}
 .tag .t-stop .lit{position:absolute;inset:0;border-radius:50%;clip-path:circle(var(--bl,0%) at 50% 50%);transition:clip-path 320ms var(--ease-glass)}
 .tag .t-count{font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em;color:var(--fg-dim)}
-button.tag{cursor:pointer}
-@media (hover:hover){button.tag:not([aria-checked=true]):hover{box-shadow:inset 0 0 0 1px var(--fg-dim)}}   /* 2026-10-22 (audit): no grey ring on the selected ink */
+button.tag{cursor:pointer;padding-inline:var(--btn-px)}   /* 2026-10-23 (Juno): the stadiums' inset (was 16) */
+@media (hover:hover){button.tag:not([aria-pressed=true]):hover{box-shadow:inset 0 0 0 1px var(--fg-dim)}}   /* 2026-10-22 (audit): no grey ring on the selected ink */
 /* 2026-10-21 (audit): a filter is drawn 40px tall but takes a 44px tap; the rows sit 48px apart on phones, so the
    targets never overlap */
 button.tag::after{content:"";position:absolute;left:0;right:0;top:50%;height:max(100%,44px);translate:0 -50%}
 
 /* 2026-10-21 (audit): every control answers a press within the frame, the way the See badge and the case pages' pills
    already did (scale .96); the brand is a 13px dot, so its press is the hover's glow. 2026-10-22: the stadiums ease in
-   150ms on every page (it was the case pages' only) */
-.skip:active,.menu-btn:active .glass,.pill:active,button.tag:active,.wc-btn:active{scale:var(--btn-press)}
-.skip,.pill{transition:scale 150ms ease-out}
+   150ms on every page (it was the case pages' only). 2026-10-23 (Juno): the press is on the control itself, not a child:
+   the menu button scales (was its glass), and the brand too, to .9 (at .96 its dot would barely move), over the glow */
+.skip:active,.menu-btn:active,.pill:active,button.tag:active,.wc-btn:active{scale:var(--btn-press)}
+.skip,.pill,.menu-btn{transition:scale 150ms ease-out}
+.brand:active{scale:.9}
 .brand:active .brand-dot{box-shadow:0 0 10px color-mix(in srgb,var(--iris) 65.1%,transparent),0 0 2px color-mix(in srgb,var(--pearl) 50.2%,transparent)}
-.tag[aria-checked=true]{background:var(--btn-1-bg);color:var(--btn-1-fg);box-shadow:none}
-.tag[aria-checked=true] .t-count{color:#EDF0F5a6}
-.tag[aria-checked=true] .t-stop{box-shadow:none;background:var(--ink)}
-.tag[aria-checked=true] .t-stop .lit{--bl:50%;background-image:var(--aurora-lit)}
+.tag[aria-pressed=true]{background:var(--btn-1-bg);color:var(--btn-1-fg);box-shadow:none}
+.tag[aria-pressed=true] .t-count{color:#EDF0F5a6}
+.tag[aria-pressed=true] .t-stop{box-shadow:none;background:var(--ink)}
+.tag[aria-pressed=true] .t-stop .lit{--bl:50%;background-image:var(--aurora-lit)}
 .tag--lit .t-stop{box-shadow:none}
 .tag--lit .t-stop .lit{--bl:50%}
 
@@ -301,6 +309,7 @@ html.menu-open .site-header::before,html.is-loading .site-header::before{opacity
 .site-header [data-tone=night]{--fg:var(--moon);--fg-dim:var(--haze);--line:var(--line-night);--glass:var(--glass-fill);--rim:var(--glass-rim);--aurora:var(--aurora-lit)}
 .site-header [data-tone=ice],.site-header[data-tone=ice]{--fg:var(--ink);--fg-dim:var(--haze-ink);--line:var(--line-ice);--glass:var(--glass-fill-ice);--rim:var(--glass-rim-ice);--aurora:var(--aurora-sky)}
 .brand,.f-pill,.nav-r,.menu-btn .glass{color:var(--fg);transition:color var(--d-short) var(--ease-focus)}
+.brand{transition:color var(--d-short) var(--ease-focus),scale 150ms ease-out}
 /* the brand is the full stop: a small lit disc (Ø13, Ø12 < 768) inside a 44px target, its left edge on the margin.
    2026-10-22 (audit): the optical nudges here and on the phone menu button are translates, not margins */
 .brand{--bd:13px;justify-self:start;display:grid;place-items:center;width:44px;height:44px;translate:calc((var(--bd) - 44px) / 2) 0;border-radius:50%}
@@ -314,9 +323,9 @@ html.menu-open .site-header::before,html.is-loading .site-header::before{opacity
 .site-header [data-tone=ice] .ap-icon,.site-header[data-tone=ice] .f-pill .ap-icon{box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--ink) 40%,transparent)}
 @media (hover:hover){.brand:hover .brand-dot{box-shadow:0 0 10px color-mix(in srgb,var(--iris) 65.1%,transparent),0 0 2px color-mix(in srgb,var(--pearl) 50.2%,transparent)}
   .brand[data-tone=ice]:hover .brand-dot{box-shadow:0 0 0 1px color-mix(in oklab,var(--ink) 40%,transparent),inset 0 1px 2px #0000008c,0 0 8px color-mix(in srgb,var(--iris) 34.9%,transparent)}}
-.brand:focus-visible{outline:none}
-.brand:focus-visible .brand-dot{outline:2px solid var(--glacier);outline-offset:4px}
-.brand[data-tone=ice]:focus-visible .brand-dot{outline-color:var(--accent-ice)}
+/* 2026-10-23 (Juno): the ring is the link's own outline (it was the dot's), drawn 4px outside the dot as before */
+.brand:focus-visible{outline-offset:calc((var(--bd) - 44px) / 2 + 4px)}
+.brand[data-tone=ice]:focus-visible{outline-color:var(--accent-ice)}
 .f-pill{justify-self:center;height:40px;padding:0 16px 0 12px;display:inline-flex;align-items:center;gap:var(--s2);font:400 var(--t-micro)/1 var(--f-mono);letter-spacing:.02em}
 .f-pill>*{position:relative;z-index:1}
 .ap-icon{position:relative;display:block;width:var(--ai,14px);height:var(--ai,14px);border-radius:50%;box-shadow:inset 0 0 0 1px var(--line);flex:none}
@@ -329,7 +338,7 @@ html.menu-open .site-header::before,html.is-loading .site-header::before{opacity
 html:not(.f-ready) [data-readout] .roll{opacity:0}
 .nav-r{justify-self:end;display:flex;align-items:center}
 /* menu trigger: a glass circle with two lines that turn into an × (300 ms, --ease-glass) */
-.menu-btn{display:block}
+.menu-btn{display:block;border-radius:0}   /* 2026-10-23 (Juno): square at rest, like the other no-fill controls; the glass is the circle */
 .menu-btn .g-menu{width:44px;height:44px}
 .burger{--bw:18px;position:relative;display:block;width:var(--bw);height:var(--bw)}
 .burger i{position:absolute;left:0;top:50%;width:var(--bw);height:1.75px;translate:0 -50%;border-radius:1px;background:currentColor;
@@ -338,9 +347,10 @@ html:not(.f-ready) [data-readout] .roll{opacity:0}
 .burger i:last-child{transform:translateY(3px)}
 html.menu-on .burger i:first-child{transform:rotate(45deg)}
 html.menu-on .burger i:last-child{transform:rotate(-45deg)}
-.menu-btn:focus-visible{outline:none}
-.menu-btn:focus-visible .glass{outline:2px solid var(--glacier);outline-offset:3px;border-radius:50%}
-.site-header [data-tone=ice] .menu-btn:focus-visible .glass{outline-color:var(--accent-ice)}
+/* 2026-10-23 (Juno): the ring is the button's own outline (it was the glass's), in the same place: 3px outside the glass */
+.menu-btn:focus-visible{outline-offset:3px;border-radius:50%}
+.site-header [data-tone=ice] .menu-btn:focus-visible{outline-color:var(--accent-ice)}
+@media (max-width:767px){.menu-btn:focus-visible{outline-offset:1px}}   /* the 44px target around a 40px glass */
 @media (max-width:767px){.site-header::before{opacity:1}.f-pill{height:36px;padding:0 12px 0 8px}
   .brand{--bd:12px}
   /* a 40px glass inside a 44px target, its right edge on the margin */
@@ -389,7 +399,7 @@ html.field-still .menu .m-still{display:block}
 .menu-inner{position:relative;min-height:100%;padding:calc(var(--header-h) + 24px) var(--margin) 48px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center}
 .menu-links{grid-column:1 / 9;display:flex;flex-direction:column;align-items:flex-start}
 .menu-link{position:relative;display:inline-block;font:600 var(--t-menu)/.98 var(--f-display);letter-spacing:-.04em;color:var(--moon);padding:0 .06em 0 0;
-  border-radius:12px;transition:filter 320ms var(--ease-focus),opacity 320ms var(--ease-focus)}
+  border-radius:12px;transition:filter 320ms var(--ease-focus),opacity 320ms var(--ease-focus);white-space:nowrap}   /* 2026-10-23: one line each ("Selected work." wrapped on phones) */
 /* on the full field a lit hole would vanish into the light: menu stops are the field's brightest points */
 .menu-link .stop::before{background:radial-gradient(circle at 40% 36%,#FFFFFF,var(--pearl) 45%,var(--pale));box-shadow:0 0 .12em color-mix(in srgb,var(--pearl) 70.2%,transparent),0 0 .4em color-mix(in srgb,var(--iris) 50.2%,transparent)}
 .menu-card .mc-label{margin-top:var(--s6);color:var(--haze-ink)}
@@ -418,7 +428,9 @@ html.field-still .menu .m-still{display:block}
 @media (max-width:1179px){
   .menu-inner{display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;min-height:100svh;padding:96px var(--margin) 16px;gap:32px}
   .menu-links{gap:var(--s1);margin-block:auto}
-  .menu-link{font-size:clamp(52px,15vw,60px)}
+  /* 2026-10-23: "Selected work." is 6.6em with its stop, so under 427px all four links step down to fit it between the
+     margins (54px at 390, 50 at 360; 60 from 427 up, as before) */
+  .menu-link{font-size:min(clamp(52px,15vw,60px), calc((100vw - 2 * var(--margin)) / 6.6))}
   .menu .m-vignette{background:radial-gradient(100% 62% at 0% 42%,#110D1Cb3,#110D1C00 74%),radial-gradient(120% 100% at 50% 50%,#0000 45%,#110D1C4d)}
   .menu-card{width:100%;height:auto;-webkit-mask:none;mask:none;border-radius:var(--r-card-m)}
   .menu-card .mc-top{flex:none;padding:24px 24px 0}
@@ -460,4 +472,11 @@ html.is-loading{cursor:progress}
 html:not(.f-ready) .ld-read .roll{opacity:0}
 .cursor--lens{z-index:89}
 .menu:not(.is-open) :focus-visible{outline-color:transparent}
-main section[tabindex="-1"]:focus,footer[tabindex="-1"]:focus{outline:none}
+/* 2026-10-23 (Juno check): a landed section or the skip target takes focus without a ring or the pill radius (it
+   rounded #companies, #footer and #work into a pill and clipped their corners) */
+main[tabindex="-1"]:focus,main section[tabindex="-1"]:focus,footer[tabindex="-1"]:focus{outline:none;border-radius:0}
+
+/* 2026-10-23 (Werner): the footer row's legal links (Impressum, Datenschutz), on every page; 24px tall taps */
+.fb-l{display:inline-flex;gap:var(--s4)}
+.fb-l a{display:inline-flex;align-items:center;min-height:24px;color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.25em;text-decoration-color:#F3F1F84d}
+@media (hover:hover){.fb-l a:hover{color:var(--moon);text-decoration-color:var(--moon)}}

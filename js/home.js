@@ -42,6 +42,15 @@
   const RG = { ref: 324, inner: 23, size: 14, air: 1.35, sMin: 11, sMax: 17, mRef: 152, mInner: 14, mSize: 10, mAir: 1.2 };
   RG.out = (RG.inner + (2 * RG.air + 1) * RING.cap * RG.size) / RG.ref;
   HOME.heroA = heroA;
+  /* 2026-10-23 (Werner): the role leads the subline, three lines on desktop, as many as a phone needs. The stack reads
+     its measured box (css --sub-h) where it assumed two lines (2.007em): ink runs from .28em into the box to the last
+     baseline, .313em above its bottom. Where it sits never changes how it wraps, so it is measured in place */
+  const subEl = $('.hero-sub');
+  const subBox = () => {
+    if (!subEl) return { h: 0, ink: 0 };
+    const h = subEl.getBoundingClientRect().height, fs = parseFloat(getComputedStyle(subEl).fontSize);
+    return { h, ink: h - .593 * fs };
+  };
   HOME.rest = function () {
     const w = html.clientWidth, h = hero ? hero.clientHeight : innerHeight;
     if (mobile()) return { cx: w * .5, cy: 266, r: w * .37 };
@@ -49,8 +58,8 @@
     if (h > w * 1.15) {
       /* portrait tablets (768–1023 wide, taller than wide): the portrait goes above the stack, centred, like mobile.
          Its ring lives between the header and the headline's ink (at the ceiling size), 24px clear of it. */
-      const s = Math.max(64, Math.min(188, .115 * w, .185 * h)), sub = Math.max(28, Math.min(40, .038 * w));
-      const floor = h - 64 - 28 - 2.007 * sub - 1.745 * s + .08 * s - 24 - 36 - 28, half = (floor - RING.top) / 2;
+      const s = Math.max(64, Math.min(188, .115 * w, .185 * h));
+      const floor = h - 64 - 28 - subBox().ink - 1.745 * s + .08 * s - 24 - 36 - 28, half = (floor - RING.top) / 2;   /* 2026-10-23: the measured subline */
       return { cx: w * .5, cy: RING.top + half, r: Math.max(120, Math.min(h * .36, w / 2 - RING.side - RING.minGap, half - RING.size - RING.minGap)), floor };
     }
     const band = (h - RING.top - RING.bottom) / 2;                       /* the ring's outer text radius may reach this */
@@ -119,7 +128,11 @@
   function buildRing() {
     if (!ringSvg) return;
     const g = HOME.ringGeom(), m = mobile();
-    const res = FS.ring(ringSvg, 'WERNER VAN HUFFELEN · LEAD PRODUCT DESIGNER · GALVANY · BERLIN · ', g.R, g.size, { track: RING.track, fit: 'fill', range: g.range });
+    const fill = (s, range) => FS.ring(ringSvg, 'WERNER VAN HUFFELEN · LEAD PRODUCT DESIGNER · GALVANY · BERLIN · ', g.R, s, { track: RING.track, fit: 'fill', range });
+    let res = fill(g.size, g.range);
+    /* 2026-10-23: between two repeat counts the fill can close the word spaces up (768×1024 once the three-line subline
+       lowered the portrait's floor: −.02 of a cell, the words ran together); the text then gives up to 15% of its size */
+    for (let k = .95; res && res.space < .3 && k > .8; k -= .05) res = fill(g.size * k, [g.range[0] * k, g.range[1] * k]);
     const size = res ? res.size : g.size, R = res ? res.R : g.R, gap = R - g.r0;
     const box = 2 * (R + size + 4);
     ringSvg.style.width = ringSvg.style.height = box + 'px';
@@ -141,10 +154,11 @@
      glyph now fades out whole (120ms, css) before the halo can cut it, so the ring breaks once, cleanly, around the
      headline. The halo stays as the backstop for the hairlines. Headline ink boxes are hero-local px (the same
      Range + canvas ink metrics as fitHeadline); the ring centre is the aperture's, rotated by the live ring angle. */
-  let ringGlyphs = [], knock = null;
-  const KNOCK = { halo: 10, glyph: .46, margin: 4 };   /* glyph: its half-diagonal in em (mono caps .7 × .6 + tracking) */
+  let ringGlyphs = [], knock = null, bridge = null, bridgeKey = '';
+  /* glyph: its half-diagonal in em (mono caps .7 × .6 + tracking). bridge (phones, 2026-10-23): see knockPass */
+  const KNOCK = { halo: 10, glyph: .46, margin: 4, bridge: 8 };
   function headlineBoxes() {
-    knock = null;
+    knock = null; bridgeKey = '';
     if (!h1 || !hero) return;
     const hb = hero.getBoundingClientRect(), cs = getComputedStyle(h1), fs = parseFloat(cs.fontSize);
     inkCtx = inkCtx || document.createElement('canvas').getContext('2d');
@@ -177,8 +191,10 @@
       $$('.arr', sub).forEach((ar) => { const q = ar.getBoundingClientRect(); boxes.push({ l: q.left - hb.left, r: q.right - hb.left, t: q.top - hb.top, b: q.bottom - hb.top }); });
       inkCtx.font = `${cs.fontWeight} ${fs}px ${cs.fontFamily}`;
     }
-    const eb = $('.hero-eyebrow');                                 /* the scheme line: the ring breaks for it too */
-    if (eb) { const q = eb.getBoundingClientRect(); boxes.push({ l: q.left - hb.left, r: q.right - hb.left, t: q.top - hb.top, b: q.bottom - hb.top }); }
+    /* the scheme line: the ring breaks for it too. 2026-10-23 (Juno): its box is the 44px tap now, so the height is the
+       keys' (--eb-h), as before, and the ring's gap stays the same */
+    const eb = $('.hero-eyebrow');
+    if (eb) { const q = eb.getBoundingClientRect(), k = (eb.querySelector('.eb-keys') || eb).getBoundingClientRect(); boxes.push({ l: q.left - hb.left, r: q.right - hb.left, t: k.top - hb.top, b: k.bottom - hb.top }); }
     const sd = $('#hero-stop') ? FS.iris.stopCentre($('#hero-stop')) : null;
     if (sd) boxes.push({ l: sd.x - sd.r - hb.left, r: sd.x + sd.r - hb.left, t: sd.y - sd.r - .08 * fs - hb.top, b: sd.y + sd.r - hb.top });
     /* the bridge between "d" and the stop (css .knock .stop::after), less the halo that the pad adds back */
@@ -189,14 +205,44 @@
     const hull = boxes.reduce((a, k) => ({ l: Math.min(a.l, k.l), r: Math.max(a.r, k.r), t: Math.min(a.t, k.t), b: Math.max(a.b, k.b) }));
     knock = { boxes, hull };
   }
+  /* 2026-10-23 (Werner): on a phone the See badge sits on the ring too (HOME.see.knock: its night disc, hero px). A glyph
+     that comes within it, plus the same glyph pad, fades the same way, so the ring passes under the badge whole letter
+     by whole letter as it turns. From about 405 to 470 wide the ring also breaks for the scheme line just under the
+     badge, and the arc between the two breaks held a scrap of one to six letters ("GA" at 430); an arc between two
+     breaks shorter than KNOCK.bridge em (≈ 8 letters, the ring's longest word) fades too, so the two read as one. The
+     arcs are found on the circle itself (720 samples, again only when the centre moves), not by counting the letters
+     in them, so nothing blinks as the letters flow through */
+  function bridgeArcs(N, hitAt, max) {
+    const off = [], out = new Array(N).fill(false);
+    for (let i = 0; i < N; i++) off.push(hitAt(i * 2 * Math.PI / N));
+    const st = off.indexOf(true);
+    if (st < 0) return out;
+    for (let k = 1, run = 0; k <= N; k++) {
+      const j = (st + k) % N;
+      if (!off[j]) { run++; continue; }
+      /* the short arc and a sample of the break on either side, so the two masks overlap: no sliver between them */
+      if (run && run * 2 * Math.PI / N < max) for (let q = 0; q <= run + 1; q++) out[(j - q + N) % N] = true;
+      run = 0;
+    }
+    return out;
+  }
+  const seeInEl = $('.see-in');
   function knockPass(angle) {
-    if (!knock || !ringGlyphs.length || !HOME.ring) return;
+    /* the badge's gap closes again once it has faded on the first scroll (js/motion.js renderHero) */
+    const sk = HOME.see && HOME.see.knock && !(seeInEl && parseFloat(seeInEl.style.opacity) < .5) ? HOME.see.knock : null;
+    if ((!knock && !sk) || !ringGlyphs.length || !HOME.ring) return;
     const ring = HOME.ring, s = ring.size, Rc = ring.R + RING.cap * s / 2, pad = KNOCK.halo + KNOCK.glyph * s + KNOCK.margin;
-    const cx = A.cx, cy = A.cy + (F.still ? 0 : HOME.syv || 0), a0 = angle * Math.PI / 180, H = knock.hull;
+    const cx = A.cx, cy = A.cy + (F.still ? 0 : HOME.syv || 0), a0 = angle * Math.PI / 180, H = knock && knock.hull;
     const near = (x, y, k) => Math.hypot(Math.max(0, k.l - x, x - k.r), Math.max(0, k.t - y, y - k.b)) < pad;
+    const sr = sk ? sk.r + KNOCK.glyph * s + KNOCK.margin : 0, N = 720;
+    const hit = (x, y) => (!!H && near(x, y, H) && knock.boxes.some((k) => near(x, y, k))) || (!!sk && Math.hypot(x - sk.x, y - sk.y) < sr);
+    if (sk) {
+      const key = [cx, cy, Rc].map((v) => v.toFixed(1)).join();
+      if (key !== bridgeKey) { bridgeKey = key; bridge = bridgeArcs(N, (t) => hit(cx + Rc * Math.sin(t), cy - Rc * Math.cos(t)), KNOCK.bridge * s / Rc); }
+    }
     for (const gl of ringGlyphs) {
       const th = gl.th + a0, x = cx + Rc * Math.sin(th), y = cy - Rc * Math.cos(th);
-      const off = near(x, y, H) && knock.boxes.some((k) => near(x, y, k));
+      const off = hit(x, y) || (!!sk && !!bridge && bridge[((Math.round(th / (2 * Math.PI) * N) % N) + N) % N]);
       if (off !== gl.off) { gl.off = off; gl.el.style.opacity = off ? '0' : ''; }
     }
   }
@@ -207,8 +253,8 @@
      follows from the text size (R ∝ size) and the circle closes with identical separators. The hairlines use the
      portrait ring's cap/band ratio; the glass core is half the badge (≈64px at 128) and the arrow 18px at that size. The outer hairline is
      right-aligned to the menu button and sits 48px above the hero bottom. The size starts at the portrait ring's and
-     only gives way (to 104px across at least) to keep ≥ 12px between the two rings' outer hairlines. Mobile: 16px
-     right margin, below the subline. */
+     only gives way (to 104px across at least) to keep ≥ 12px between the two rings' outer hairlines. Mobile: on the
+     photo's edge at 4:30 (2026-10-23, below). */
   const seeEl = $('.see'), seeSvg = $('#see-ring');
   /* gap: the air between the two rings' outer hairlines, 1.25 bands of the portrait ring (24px at 1440×900) so the
      badge reads as a placed sibling, not tangent to the big ring (round 2 review) */
@@ -225,13 +271,16 @@
   function buildSee() {
     if (!seeEl || !seeSvg || !hero) return;
     const m = mobile(), w = html.clientWidth, h = hero.clientHeight, rest = A.rest, ring = HOME.ring;
-    const mb = $('.menu-btn'), right = m ? w - 16 : (mb ? mb.getBoundingClientRect().right : w - 48);
+    const mb = $('.menu-btn'), right = m ? w - 8 : (mb ? mb.getBoundingClientRect().right : w - 48);
     const s0 = ring ? Math.max(SEE.mMin, SEE.rel * ring.size) : 12, k = seeOut(seeR(s0).R, s0) / s0;   /* b = k·s: every length scales with the size */
+    /* 2026-10-23 (Werner: "have the scrolldown circle overlap on the bottom right of the image"): on a phone the badge sits
+       on the photo like a badge on an avatar, its centre on the photo's edge at 4:30 (r down the 45° diagonal). The edge
+       then runs through its core, so the overlap reads as placed, not as a near miss: one half on the photo, the other
+       on the ring band, the same at every width. Its own size stays (9.5px text, ≈95px across): it keeps its text a
+       sibling of the portrait ring's. Never closer than 8px to the right edge (360 has 38px) */
     const place = (b) => {
-      const x = right - b;
-      let y = h - SEE.bottom - b;
-      if (m) { const sub = $('.hero-sub'), sb = sub ? sub.getBoundingClientRect().bottom - hero.getBoundingClientRect().top : 0; y = Math.max(y, sb + 20 + b); }
-      return { x, y };
+      if (m && rest) { const d = rest.r * Math.SQRT1_2; return { x: Math.min(rest.cx + d, right - b), y: rest.cy + d }; }
+      return { x: right - b, y: h - SEE.bottom - b };
     };
     const gap = ring ? SEE.gap * RING.cap * ring.size / RING.fill : 24;
     const clear = (b) => {
@@ -249,8 +298,13 @@
     set('--see-x', p.x); set('--see-y', p.y); set('--see-d', 2 * bo + 1);
     set('--see-hin', sg.inner + .5);
     set('--see-core', core); set('--see-arr', Math.max(12, .3 * core));
+    /* 2026-10-23 (Werner): over the photo the badge needs its own ground: a night disc one air (its 1.2 caps, ≈8px) past
+       its outer hairline (css .see-in::before), the rhythm of its own ring, so the photo and the portrait ring's
+       hairlines stop that far from it. The ring's letters under it fade whole (knockPass, HOME.see.knock) */
+    if (m) set('--see-moat', sg.air); else seeEl.style.removeProperty('--see-moat');
     HOME.see = { x: p.x, y: p.y, b: bo, d: 2 * bo, size: s, R: res.R, n: res.n, space: res.space, gap,
-      clear: ring && rest ? Math.hypot(p.x - rest.cx, p.y - rest.cy) - ring.r0 - ring.outer - bo : null };
+      clear: ring && rest ? Math.hypot(p.x - rest.cx, p.y - rest.cy) - ring.r0 - ring.outer - bo : null,
+      knock: m ? { x: p.x, y: p.y, r: bo + sg.air } : null };
   }
 
   /* ── the headline: as large as the ceiling allows while every glyph stays ≥ 24px outside the aperture ──
@@ -314,6 +368,7 @@
   };
 
   function layoutHero() {
+    if (hero && subEl) hero.style.setProperty('--sub-h', subBox().h.toFixed(2) + 'px');   /* first: the stack hangs on it */
     A.rest = HOME.rest();
     HOME.fitHeadline();
     if (HOME.renderHero) HOME.renderHero(); else HOME.setAperture(A.rest.cx, A.rest.cy, A.rest.r);
@@ -334,17 +389,29 @@
      that cross the headline, the subline or the eyebrow fade out whole. 2026-10-08 motion cut: the scroll-velocity
      speed-up is gone, and so is the See badge's spin (3× on hover/focus): its ring rests at 0°, the core lights.
      2026-10-22 (Werner): the ring rests while the pointer is on the portrait or the portrait link has focus. It slows to
-     a stop and picks up again from there (about half a second each way), and the loop sleeps while it rests. */
-  let ringAngle = 0, ringRaf = 0, ringLast = 0, heroVisible = true, ringSpeed = 6, ringHold = false;
+     a stop and picks up again from there (about half a second each way), and the loop sleeps while it rests.
+     2026-10-23 (Juno): the turn is a Web Animation (one turn a minute, the same 6°/s), so the browser runs it and no style
+     is written every frame; the frame loop keeps the ease to rest (the playback rate), the whole-letter pass and the
+     pause off-screen. Under reduced motion and ?static=1 it is never created. Werner's call: WCAG 2.2.2 still asks
+     for a stop after 5 s or a pause control for motion that runs on; the hover/focus rest only covers part of that. */
+  let ringAngle = 0, ringRaf = 0, ringLast = 0, heroVisible = true, ringSpeed = 6, ringHold = false, ringAnim = null;
   function ringTick(now) {
     ringRaf = 0;
     const dt = ringLast ? Math.min(.05, (now - ringLast) / 1000) : 1 / 60; ringLast = now;
     ringSpeed += ((ringHold ? 0 : 6) - ringSpeed) * (1 - Math.exp(-dt / .16));
     if (ringHold && ringSpeed < .02) ringSpeed = 0;
-    ringAngle = (ringAngle + ringSpeed * dt) % 360;
-    if (ringSvg) ringSvg.style.transform = `translate(-50%,-50%) rotate(${ringAngle.toFixed(3)}deg)`;
+    if (!ringAnim && ringSvg && ringSvg.animate) ringAnim = ringSvg.animate([{ transform: 'translate(-50%,-50%) rotate(0deg)' }, { transform: 'translate(-50%,-50%) rotate(360deg)' }], { duration: 60000, iterations: Infinity });
+    const go = heroVisible && !document.hidden && ringSpeed > 0;
+    if (ringAnim) {
+      /* never a rate of exactly 0 (a resumed animation would stay frozen), and only a changed rate is set (setting it
+         every frame keeps the play pending) */
+      if (go) { const r = Math.round(ringSpeed / 6 * 1000) / 1000 || .001; if (r !== ringAnim.playbackRate) ringAnim.updatePlaybackRate(r); if (ringAnim.playState !== 'running') ringAnim.play(); }
+      else ringAnim.pause();
+      ringAngle = ((ringAnim.currentTime || 0) % 60000) * .006;
+    }
+    else ringAngle = (ringAngle + ringSpeed * dt) % 360;
     knockPass(ringAngle);
-    if (heroVisible && !document.hidden && ringSpeed > 0) ringRaf = requestAnimationFrame(ringTick);
+    if (go) ringRaf = requestAnimationFrame(ringTick);
   }
   function ringPlay() { if (F.still || ringRaf) return; ringLast = 0; ringRaf = requestAnimationFrame(ringTick); }
   function ringRest(v) { ringHold = v; ringPlay(); }
@@ -480,7 +547,7 @@
     clients.redraw = () => draw(0);
   })();
 
-  /* ── services: one open at a time ───────────────────────────────────────── */
+  /* ── services: one open at a time. 2026-10-23 (Juno): all four start collapsed (the first one opened on load) ── */
   function services() {
     const rows = $$('.svc');
     const set = (li, open) => {
@@ -493,7 +560,6 @@
       set(li, open);                                    /* 2026-10-08 motion cut: the index no longer pings */
       setTimeout(() => ScrollRefresh(), 700);
     }));
-    if (rows[0]) set(rows[0], true);
   }
   const ScrollRefresh = () => { if (window.ScrollTrigger) window.ScrollTrigger.refresh(); };
 
@@ -534,7 +600,7 @@
     });
     const select = (tag) => {
       const f = tag.dataset.filter;
-      tags.forEach((t) => t.setAttribute('aria-checked', String(t === tag)));
+      tags.forEach((t) => t.setAttribute('aria-pressed', String(t === tag)));
       W.filter = f;
       const list = W.pick(f);
       cards.forEach((c) => { if (!list.includes(c) && c.contains(document.activeElement)) document.activeElement.blur(); });
@@ -548,16 +614,14 @@
     try { matchMedia('(max-width: 767px)').addEventListener('change', () => { if (W.stop) W.stop(); W.place(W.pick(W.filter)); }); } catch (e) { /* old Safari */ }
     W.place(W.pick(W.filter));   /* phones load in number order (desktop: the markup's zigzag already is the layout) */
     tags.forEach((t) => t.addEventListener('click', () => select(t)));
+    /* 2026-10-23 (Juno): the filters are toggle buttons in a group (aria-pressed), each its own Tab stop (the radio group's
+       roving tabindex is gone); Left and Right only move focus along the row, Enter or Space picks (Up and Down scroll) */
     $('.work-tags') && $('.work-tags').addEventListener('keydown', (e) => {
-      if (!/Arrow(Left|Right|Up|Down)/.test(e.key)) return;
-      e.preventDefault();
+      if (!/Arrow(Left|Right)/.test(e.key)) return;
       const i = tags.indexOf(document.activeElement); if (i < 0) return;
-      const n = tags[(i + (/Right|Down/.test(e.key) ? 1 : tags.length - 1)) % tags.length];
-      n.focus(); select(n);
+      e.preventDefault();
+      tags[(i + (e.key === 'ArrowRight' ? 1 : tags.length - 1)) % tags.length].focus();
     });
-    tags.forEach((t) => (t.tabIndex = t.getAttribute('aria-checked') === 'true' ? 0 : -1));
-    new MutationObserver(() => tags.forEach((t) => (t.tabIndex = t.getAttribute('aria-checked') === 'true' ? 0 : -1)))
-      .observe($('.work-tags'), { subtree: true, attributes: true, attributeFilter: ['aria-checked'] });
     cards.forEach((c) => c.addEventListener('click', (e) => {
       const btn = $('.wc-btn', c);
       if (!btn || e.target.closest('a')) return;

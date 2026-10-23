@@ -732,8 +732,9 @@
   /* ── the page's sections ──────────────────────────────────────────────────────────────────────────────────────
      Every section after the hero gets its number, its tone and its readout stop from its place (render): the Brief is
      01 and night, then night and ice alternate, so the order can change without a section knowing where it is. */
+  /* 2026-10-23 (Juno): home is ./ on every page, never index.html (the homepage is /) */
   var backPill = function (label, cls) {
-    return '<a class="pill pill--sm pill--back ' + (cls || '') + '" href="index.html#work" data-back>' +
+    return '<a class="pill pill--sm pill--back ' + (cls || '') + '" href="./#work" data-back>' +
       '<span class="chip"><i class="b-light lit"></i>' + ARR.replace('class="arr"', 'class="arr arr--back"') + '</span><span>' + esc(label) + '</span></a>';
   };
   WORK.backPill = backPill;
@@ -742,10 +743,12 @@
   var open = function (id, c, name, cls) {
     return '<section id="' + id + '" class="w-sec ' + (cls || '') + ' on-' + c.tone + '" data-tone="' + c.tone + '" data-name="' + esc(name) + '" data-f="' + c.f + '" aria-labelledby="' + id + '-h">';
   };
-  /* section head: a mono label, an H2 in the homepage's --t-h2 (or a statement size for a sentence) with its stop */
+  /* section head: a mono label, an H2 in the homepage's --t-h2 (or a statement size for a sentence) with its stop.
+     2026-10-23 (Juno): the labels here (and the hero's label and name, the feature, guide and stage numbers) are divs,
+     not paragraphs: read as copy, they ran into the sentences around them */
   var head = function (id, c, lab, h2, size) {
     var t = String(h2).replace(/\.$/, '');
-    return '<div class="w-head wrap"><p class="label">' + c.n + ' · ' + esc(lab) + '</p> <h2 class="h2' + (size ? ' h2--' + size : '') + '" id="' + id + '-h" data-lens="text">' + esc(t).replace(/(\S+-\S+)/g, '<span class="nw">$1</span>') + STOP + '</h2></div>';   /* compounds never break at their hyphen */
+    return '<div class="w-head wrap"><div class="label">' + c.n + ' · ' + esc(lab) + '</div> <h2 class="h2' + (size ? ' h2--' + size : '') + '" id="' + id + '-h" data-lens="text">' + esc(t).replace(/(\S+-\S+)/g, '<span class="nw">$1</span>') + STOP + '</h2></div>';   /* compounds never break at their hyphen */
   };
   WORK.head = head;
 
@@ -766,8 +769,8 @@
       '<div class="wh-stage rack">' + WORK.fx(m, p.cardAlt, { eager: true }) + '</div> ' +
       '<div class="wh-stack">' +
         backPill('Selected work', 'wh-back') + ' ' +
-        '<p class="label wh-label">' + esc(label(p)) + '</p> ' +
-        '<p class="wh-name">' + esc(p.name) + '</p> ' +
+        '<div class="label wh-label">' + esc(label(p)) + '</div> ' +
+        '<div class="wh-name">' + esc(p.name) + '</div> ' +
         '<h1 class="wh-title" id="w-title" data-lens="text">' + words(p.headline) + '</h1> ' +
         '<ul class="wh-tags" aria-label="Disciplines">' + p.tags.map(function (t) { return '<li class="tag"><i class="t-stop"><i class="lit"></i></i>' + esc(t) + '</li>'; }).join(' ') + '</ul>' +
       '</div> ' +
@@ -870,7 +873,7 @@
         '</span> ' +
         '<span class="nx-go glass g-l" aria-hidden="true"><i class="b-light lit"></i>' + ARR + '</span>' +
       '</a> ' +
-      backPill('Back to all work', 'nx-back') +
+      backPill('Selected work', 'nx-back') +
     '</section>';
   }
 
@@ -910,7 +913,7 @@
   function features(list) {
     return '<div class="feat" style="--n:' + list.length + '"><div class="feat-pin"><ol class="feat-track">' + list.map(function (f, i) {
       return '<li class="feat-it">' + WORK.plate(f.m, { alt: f.alt, lens: 'IDEATION · ' + pad2(i + 1) + ' · ' }) + ' ' +
-        '<p class="label feat-no">' + pad2(i + 1) + ' / ' + pad2(list.length) + '</p> ' +
+        '<div class="label feat-no">' + pad2(i + 1) + ' / ' + pad2(list.length) + '</div> ' +
         '<h3 class="feat-h">' + esc(f.name) + '</h3> <p class="feat-p">' + esc(f.text) + '</p></li>';
     }).join(' ') + '</ol></div></div>';
   }
@@ -939,11 +942,11 @@
     var rail = '<nav class="stg-rail" aria-label="The five stages"><ol>' + s.list.map(function (st, i) {
       return '<li><a class="stg-a" href="#stage-' + (i + 1) + '" data-i="' + i + '"><i class="stg-d" style="--d:' + DISC[i] + 'px" aria-hidden="true"><i class="lit"></i></i><span class="stg-n">' + esc(st.name) + '</span></a></li>';
     }).join(' ') + '</ol></nav>';
-    return '<div class="w-b stg-guide"><p class="label stg-gl">' + esc(g.name) + '</p> <p class="stg-gp">' + esc(g.text) + '</p> ' +
+    return '<div class="w-b stg-guide"><div class="label stg-gl">' + esc(g.name) + '</div> <p class="stg-gp">' + esc(g.text) + '</p> ' +
         '<figure class="pf pf--guide" data-kind="board">' + WORK.plate(g.fig.m, { alt: g.fig.alt, lens: 'STYLE GUIDE · ' }) + '</figure></div> ' +
       '<div class="w-b stg">' + rail + ' <div class="stg-body">' + s.list.map(function (st, i) {
         return '<div class="stage" id="stage-' + (i + 1) + '" data-i="' + i + '">' +
-          '<p class="label stage-no">' + pad2(i + 1) + ' / ' + pad2(s.list.length) + '</p> ' +
+          '<div class="label stage-no">' + pad2(i + 1) + ' / ' + pad2(s.list.length) + '</div> ' +
           '<h3 class="stage-h" data-lens="text">' + esc(st.name) + '</h3> ' +
           '<p class="stage-p">' + esc(st.text) + '</p>' +
           (st.figs ? ' ' + figs(st.figs, ring + ' · ' + st.name.toUpperCase()) : '') + (st.seq ? ' ' + seq(st.seq) : '') +

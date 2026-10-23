@@ -664,8 +664,17 @@ void main(){
       lens.style.clipPath = `circle(${Math.max(0, rv).toFixed(2)}px at 50% 50%)`;
       if (fc) {
         const mx = (fc.x - lc.x + L).toFixed(1), my = (fc.y - lc.y + L).toFixed(1), R = fc.r;
-        const mk = `radial-gradient(circle ${R.toFixed(1)}px at ${mx}px ${my}px,#000 ${(R - .5).toFixed(1)}px,#0000 ${(R + .5).toFixed(1)}px)`;
+        let mk = `radial-gradient(circle ${R.toFixed(1)}px at ${mx}px ${my}px,#000 ${(R - .5).toFixed(1)}px,#0000 ${(R + .5).toFixed(1)}px)`;
+        /* 2026-10-23 (Werner): in the phone layout the See badge sits on the photo's edge; the colour fill leaves its disc
+           alone (a narrow window with a mouse, or a tablet with a trackpad) */
+        const see = window.HOME && HOME.see && HOME.see.knock && document.querySelector('.see'), si = see && see.querySelector('.see-in');
+        const two = !!see && see.style.visibility !== 'hidden' && !(si && parseFloat(si.style.opacity) < .5);
+        if (two) {
+          const sb = see.getBoundingClientRect(), sx = (sb.left + sb.width / 2 - lc.x + L).toFixed(1), sy = (sb.top + sb.height / 2 - lc.y + L).toFixed(1), sr = HOME.see.knock.r;
+          mk += `,radial-gradient(circle ${(sr + 1).toFixed(1)}px at ${sx}px ${sy}px,#0000 ${(sr - .5).toFixed(1)}px,#000 ${(sr + .5).toFixed(1)}px)`;
+        }
         lensMedia.style.webkitMaskImage = lensMedia.style.maskImage = mk;
+        lensMedia.style.webkitMaskComposite = two ? 'source-in' : ''; lensMedia.style.maskComposite = two ? 'intersect' : '';
       }
       dot.style.transform = `translate(${(pos.x - 5).toFixed(2)}px, ${(pos.y - 5).toFixed(2)}px)`;
       dot.style.clipPath = `circle(${Math.max(0, dv).toFixed(2)}px at 50% 50%)`;

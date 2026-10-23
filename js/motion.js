@@ -62,8 +62,11 @@
     if (barrel && H.mode === 'rest') {
       const o = H.p > 0 ? E.smoothstep(.55, .9, r / rest.r).toFixed(3) : '';   /* gone before the aperture reaches the subline */
       if (barrel.style.opacity !== o) barrel.style.opacity = o;
-      /* the See-the-work badge fades with the ring, and leaves the tab order and the pointer once it is gone */
-      if (seeIn && seeIn.__o !== o) { seeIn.__o = o; seeIn.style.opacity = o; seeA.style.visibility = o === '0.000' ? 'hidden' : ''; }
+      /* the See-the-work badge fades with the ring, and leaves the tab order and the pointer once it is gone.
+         2026-10-23 (Werner): on a phone it sits on the photo's edge, so it leaves on the first bit of scroll (gone by
+         p .18), before the shrinking photo can slide under it */
+      const sa = mobile() && H.p > 0 ? (1 - E.smoothstep(.02, .18, H.p)).toFixed(3) : o;
+      if (seeIn && seeIn.__o !== sa) { seeIn.__o = sa; seeIn.style.opacity = sa; seeA.style.visibility = sa === '0.000' ? 'hidden' : ''; }
     }
   };
 
@@ -189,7 +192,11 @@
          the subline, the header and the See badge fade in together, opacity only, as the pinhole lands. They keep their
          inline opacity 1 until is-loading lifts: clearing it earlier handed them back to html.is-loading's opacity 0
          (the ring and 'Zero to' blinked out at the end of the FLIP); finish() clears it */
-      L.fade = [barrel, ...$$('.hero-title .w'), ...chrome, $('.see')].filter(Boolean);
+      /* 2026-10-23 (Werner): on a phone the badge sits on the photo's edge, so it fades in once the photo has landed
+         (T + .9), not while the photo still grows under it */
+      const seeLate = mobile() ? $('.see') : null;
+      L.fade = [barrel, ...$$('.hero-title .w'), ...chrome, seeLate ? null : $('.see')].filter(Boolean);
+      L.late = seeLate ? [seeLate] : [];
       tl = gsap.timeline();
       /* 2026-10-22 (audit): the pinhole's landing runs at 0.75× its length (finish at T + 900, not 1200), the same
          sequence; the bleed keeps its pace. The failsafe's timeScale(2.5) still overrides this */
@@ -200,6 +207,8 @@
       tl.to(f, { v: 1, duration: .7, ease: E.focus, onUpdate: () => HOME.setFocus(f.v) }, .2)
         .fromTo(L.fade, { opacity: 0 }, { opacity: 1, duration: .48, ease: E.focus, immediateRender: false,
           onComplete() { if (!html.classList.contains('is-loading')) gsap.set(L.fade, { clearProps: 'opacity' }); } }, .5)
+        .fromTo(L.late, { opacity: 0 }, { opacity: 1, duration: .3, ease: E.focus, immediateRender: false,
+          onComplete() { if (!html.classList.contains('is-loading')) gsap.set(L.late, { clearProps: 'opacity' }); } }, .9)
         .to($$('.hero .ctr'), { '--cr': '50%', duration: .42, ease: E.glass }, .76)
         .to($$('.hero .stop'), { '--sr': '50%', duration: .24, ease: E.glass }, 1.1);
       tl.call(() => FS.ping($('#hero-stop')), null, 1.2)
@@ -214,7 +223,7 @@
       html.classList.remove('is-loading');
       /* the hero fade hands its opacity back now (the barrel's was already reset by renderHero above); if it is still
          running, it clears it itself on complete */
-      if (L.fade) L.fade.forEach((el) => { if (!gsap.isTweening(el)) gsap.set(el, { clearProps: 'opacity' }); });
+      if (L.fade) L.fade.concat(L.late || []).forEach((el) => { if (!gsap.isTweening(el)) gsap.set(el, { clearProps: 'opacity' }); });
       /* tweens still running clear their own props when they end; only the readout goes now */
       if (rd) rd.remove();
       ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((t) => removeEventListener(t, skip, true));
@@ -281,7 +290,7 @@
       words.forEach((w, i) => {
         const win = clamp((prog - i * step) / .18, 0, 1);
         const b = 12 * (1 - E.focus(win));
-        const o = .14 + .86 * (1 - b / 12);
+        const o = .38 + .62 * (1 - b / 12);                 /* 2026-10-23 (Juno): the unread words' floor was .14 (1.42:1); .38 is 3.3:1 */
         const c = cur[i];
         if (Math.abs(c.b - b) > .04) { c.b = b; w.style.filter = b < .05 ? 'none' : `blur(${b.toFixed(2)}px)`; }
         if (Math.abs(c.o - o) > .004 || (o >= .999) !== (c.o >= .999)) { c.o = o; w.style.opacity = o >= .999 ? '' : o.toFixed(3); }   /* sharp hands back to the CSS default */
